@@ -3,7 +3,6 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-
         <q-toolbar-title>
           Quasar App
         </q-toolbar-title>
@@ -39,7 +38,6 @@ const localeOptions = [
   { value: 'en-US', label: 'English' },
   { value: 'zh-TW', label: '繁體中文' }
 ]
-console.log(useQuasar().lang.getLocale())
 const { locale } = useI18n({ useScope: 'global' })
 // 這段把預設語言設為偵測到電腦的語言
 locale.value = 'zh-TW'
