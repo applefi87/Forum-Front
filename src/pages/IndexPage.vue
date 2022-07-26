@@ -3,6 +3,7 @@
     <p>{{ text }}</p>
     <img alt="Quasar logo" src="~assets/quasar-logo-vertical.svg" style="width: 200px; height: 200px">
     <p>{{ $t('message') }}</p>
+    <p>{{ process.env.GOOGLE_SHEET }}</p>
     <QuillEditor class="editor" toolbar="full" theme="bubble" v-model:content="text" contentType="html" />
     <!-- <button @click="send">send</button> -->
   </q-page>
