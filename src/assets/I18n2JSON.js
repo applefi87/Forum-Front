@@ -2,20 +2,20 @@
 import { extractSheets } from 'spreadsheet-to-json'
 import fs from 'fs-extra'
 import unflatten from 'flat'
-import { fileURLToPath } from 'url'
-import path, { dirname } from 'path'
-const config = import('./google-generated-creds.local.json')
+// import { fileURLToPath } from 'url'
+import path from 'path'
+// import path, { dirname } from 'path'
+// const config = import('./google-generated-creds.local.json')
 // const formatCell = (sheetTitle, columnTitle, value) => value.toUpperCase()
-const uf = unflatten.unflatten
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+// const __filename = fileURLToPath(import.meta.url)
+// const __dirname = dirname(__filename)
 
 extractSheets(
   {
     // your google spreadhsheet key
     spreadsheetKey: '1LtigX97NFNdeORWIIf74klonHvkFM26wJCKxN7PSR8k',
     // your google oauth2 credentials or API_KEY
-    credentials: config,
+    credentials: require('./google-generated-creds.local.json'),
     // optional: names of the sheets you want to extract
     sheetsToExtract: ['page1']
     // optional: custom function to parse the cells
@@ -47,7 +47,7 @@ extractSheets(
       )
       fs.writeJSONSync(
         path.resolve(__dirname, '../i18n', `${fileName}.json`),
-        uf(result[fileName], { object: true }),
+        unflatten.unflatten(result[fileName], { object: true }),
         { spaces: 2 }
       )
     }
