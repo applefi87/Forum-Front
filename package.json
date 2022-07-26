@@ -6,23 +6,24 @@
   "author": "applefi87 <werrtyyui@yahoo.com.tw>",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.vue ./",
-    "dev": "yarn quasar dev"
+    "build": "quasar build",
+    "dev": "quasar dev",
+    "prebuild":"node ./src/i18n/sheet2JSON.js"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "@vueup/vue-quill": "^1.0.0-beta.9",
     "axios": "^0.21.1",
+    "dotenv": "^16.0.1",
     "flat": "^5.0.2",
     "fs-extra": "^10.1.0",
-    "@vueup/vue-quill": "^1.0.0-beta.9",
     "nodemailer": "^6.7.7",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "spreadsheet-to-json": "^2.0.0",
     "vue": "^3.0.0",
     "vue-i18n": "^9.0.0",
-    "vue-router": "^4.0.0",
-    "dotenv": "^16.0.1"
+    "vue-router": "^4.0.0"
   },
   "devDependencies": {
     "@intlify/vite-plugin-vue-i18n": "^3.3.1",

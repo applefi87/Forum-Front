@@ -1,6 +1,6 @@
-import enUS from './en-US.json'
-import zhTW from './zh-TW.json'
-import jaJP from './ja-JP.json'
+import enUS from './language/en-US.json'
+import zhTW from './language/zh-TW.json'
+import jaJP from './language/ja-JP.json'
 
 export default {
   'en-US': enUS,

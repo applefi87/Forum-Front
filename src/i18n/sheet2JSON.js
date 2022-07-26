@@ -1,21 +1,18 @@
-// 裝這3插件 spreadsheet-to-json fs-extra flat
-import { extractSheets } from 'spreadsheet-to-json'
-import fs from 'fs-extra'
-import unflatten from 'flat'
-// import { fileURLToPath } from 'url'
-import path from 'path'
-// import path, { dirname } from 'path'
-// const config = import('./google-generated-creds.local.json')
-// const formatCell = (sheetTitle, columnTitle, value) => value.toUpperCase()
-// const __filename = fileURLToPath(import.meta.url)
-// const __dirname = dirname(__filename)
+require('dotenv').config()
+const fs = require('fs-extra')
+const unflatten = require('flat').unflatten
+const { extractSheets } = require('spreadsheet-to-json')
+const path = require('path')
+
+// const key = atob(process.env.GOOGLE_SHEET)
+const key = Buffer.from(process.env.GOOGLE_SHEET, 'base64').toString('utf8')
 
 extractSheets(
   {
     // your google spreadhsheet key
     spreadsheetKey: '1LtigX97NFNdeORWIIf74klonHvkFM26wJCKxN7PSR8k',
     // your google oauth2 credentials or API_KEY
-    credentials: require('./google-generated-creds.local.json'),
+    credentials: JSON.parse(key),
     // optional: names of the sheets you want to extract
     sheetsToExtract: ['page1']
     // optional: custom function to parse the cells
@@ -42,12 +39,12 @@ extractSheets(
     for (const fileName of files) {
       fs.ensureDirSync(
         path.dirname(
-          path.resolve(__dirname, '../i18n', `${fileName}.json`)
+          path.resolve(__dirname, '../i18n/language', `${fileName}.json`)
         )
       )
       fs.writeJSONSync(
-        path.resolve(__dirname, '../i18n', `${fileName}.json`),
-        unflatten.unflatten(result[fileName], { object: true }),
+        path.resolve(__dirname, '../i18n/language', `${fileName}.json`),
+        unflatten(result[fileName], { object: true }),
         { spaces: 2 }
       )
     }

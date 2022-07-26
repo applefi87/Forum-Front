@@ -36,7 +36,8 @@ import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 const localeOptions = [
   { value: 'en-US', label: 'English' },
-  { value: 'zh-TW', label: '繁體中文' }
+  { value: 'zh-TW', label: '繁體中文' },
+  { value: 'ja-JP', label: '日文' }
 ]
 const { locale } = useI18n({ useScope: 'global' })
 // 這段把預設語言設為偵測到電腦的語言

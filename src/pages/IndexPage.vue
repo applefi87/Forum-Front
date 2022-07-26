@@ -2,7 +2,7 @@
   <q-page class="flex flex-center">
     <p>{{ text }}</p>
     <img alt="Quasar logo" src="~assets/quasar-logo-vertical.svg" style="width: 200px; height: 200px">
-    <p>{{ $t('success') }}</p>
+    <p>{{ $t('message') }}</p>
     <QuillEditor class="editor" toolbar="full" theme="bubble" v-model:content="text" contentType="html" />
     <!-- <button @click="send">send</button> -->
   </q-page>
@@ -15,7 +15,7 @@ import { QuillEditor } from '@vueup/vue-quill'
 // 造型
 import '@vueup/vue-quill/dist/vue-quill.bubble.css'
 // import nodemailer from 'nodemailer'
-import sendMail from '../assets/sendMail'
+// import sendMail from '../assets/sendMail'
 
 // const send = () => {
 //   console.log(process.env.Gmail_PWD)
