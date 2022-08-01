@@ -1,15 +1,11 @@
-<template>
-  <q-item clickable tag="a" target="_blank" :href="link.link">
-    <q-item-section v-if="link.icon" avatar>
-      <q-icon :name="link.icon" />
-    </q-item-section>
-
-    <q-item-section>
-      <q-item-label>{{ link.title }}</q-item-label>
-      <q-item-label caption>{{ link.caption }}</q-item-label>
-      <q-item-label>{{ t(link.test) }}</q-item-label>
-    </q-item-section>
-  </q-item>
+<template lang="pug">
+q-item(clickable tag="a" target="_blank" :href="link.link")
+  q-item-section(v-if="link.icon" avatar)
+    q-icon(:name="link.icon")
+  q-item-section
+    q-item-label {{ link.title }}
+    q-item-label(caption) {{ link.caption }}
+    q-item-label {{ t(link.test) }}
 </template>
 
 <script setup>

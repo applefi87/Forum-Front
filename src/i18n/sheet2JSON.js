@@ -14,17 +14,16 @@ extractSheets(
     // your google oauth2 credentials or API_KEY
     credentials: JSON.parse(key),
     // optional: names of the sheets you want to extract
-    sheetsToExtract: ['page1']
+    sheetsToExtract: ['basic', 'user', 'form']
     // optional: custom function to parse the cells
     // formatCell
   },
   (err, data) => {
     if (err) throw err
-    console.log(data)
-    const read = [...data.page1]
+    const read = []
+    Object.keys(data).forEach(t => read.push(...data[t]))
     const result = {}
     const files = []
-
     for (const key in read[0]) {
       if (key !== 'key') {
         files.push(key)

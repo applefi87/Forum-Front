@@ -1,5 +1,8 @@
 {
   "message": "訊息",
   "thank": "謝謝",
-  "success": "成功"
+  "success": "成功",
+  "login": "登錄",
+  "register": "註冊",
+  "submit": "送出"
 }

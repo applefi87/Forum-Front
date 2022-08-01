@@ -1,5 +1,8 @@
 {
   "message": "msg",
   "thank": "Thank you",
-  "success": "success"
+  "success": "success",
+  "login": "Login",
+  "register": "Register",
+  "submit": "Submit"
 }
