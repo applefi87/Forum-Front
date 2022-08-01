@@ -9,9 +9,9 @@
           </q-avatar>
           Leasure
         </q-toolbar-title>
-        <q-select v-model="locale" :options="localeOptions" label="Change Language" emit-value map-options
-          style="min-width: 150px" />
-        <q-btn dense flat round icon="login" @click="login" :label='t("login")' />
+        <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
+          map-options />
+        <q-btn class="login" dense flat icon="login" @click="login" :label='t("login")' />
         <q-btn class="lt-lg" dense flat round icon="menu" @click="toggleRightDrawer" />
       </q-toolbar>
     </q-header>
@@ -61,10 +61,18 @@ const toggleLeftDrawer = () => {
 const toggleRightDrawer = () => {
   rightDrawerState.value = !rightDrawerState.value
 }
+//
+const login = () => {
+
+}
 
 </script>
 
 <style lang="sass" scoped>
 .q-header
   height: 48px
+.langSelect
+  width: 100px
+  & *
+    color: white
 </style>
