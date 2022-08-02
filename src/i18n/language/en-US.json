@@ -7,5 +7,10 @@
   "account": "Account",
   "password": "Password",
   "cantNull": "Please type something",
+  "keepLogin": "Keep login",
+  "onlyStudent": "Only support school email register now(contain '.edu')",
+  "pwdRule": "At least one uppercase , lowercase character and number",
+  "pwdCheck": "Confirm password",
+  "pwdCheckFail": "Not metch",
   "submit": "Submit"
 }

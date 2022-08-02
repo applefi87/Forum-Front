@@ -2,10 +2,15 @@
   "message": "訊息",
   "thank": "謝謝",
   "success": "成功",
-  "login": "登錄",
+  "login": "登入",
   "register": "註冊",
   "account": "帳號",
   "password": "密碼",
   "cantNull": "忘記填瞜~",
+  "keepLogin": "自動登入",
+  "onlyStudent": "初期僅開放學校信箱註冊(信箱含.edu)",
+  "pwdRule": "必須含英文大、小寫與數字",
+  "pwdCheck": "確認密碼",
+  "pwdCheckFail": "密碼不相符",
   "submit": "送出"
 }
