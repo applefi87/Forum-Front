@@ -12,5 +12,7 @@
   "pwdRule": "必須含英文大、小寫與數字",
   "pwdCheck": "確認密碼",
   "pwdCheckFail": "密碼不相符",
+  "schoolEmail": "學校信箱",
+  "schoolEmailCode": "信箱驗證碼",
   "submit": "送出"
 }

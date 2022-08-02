@@ -75,6 +75,7 @@ module.exports = configure(function (/* ctx */) {
       // analyze: true,
       env: {
         GOOGLE_SHEET: process.env.GOOGLE_SHEET
+        // SERVER_URL: process.env.SERVER_URL
       },
       // rawDefine: {}
       // ignorePublicFolder: true,

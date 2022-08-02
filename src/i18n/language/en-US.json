@@ -12,5 +12,7 @@
   "pwdRule": "At least one uppercase , lowercase character and number",
   "pwdCheck": "Confirm password",
   "pwdCheckFail": "Not metch",
+  "schoolEmail": "School email",
+  "schoolEmailCode": "Email verification code",
   "submit": "Submit"
 }
