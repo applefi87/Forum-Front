@@ -11,9 +11,46 @@
         </q-toolbar-title>
         <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
           map-options />
-        <q-btn class="login" dense flat icon="login" @click="login" :label='t("login")' />
+        <!-- https://quasar.dev/vue-components/button-dropdown -->
+        <div class="q-pa-md">
+          <q-btn-dropdown class="login" dense flat icon="login" @click="login" :label='t("login")' dropdown-icon="none">
+            <div class="row no-wrap q-pa-md">
+              <div class="column">
+                <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-xs">
+                  <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
+                    :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                  <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
+                    :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                  <div>
+                    <div>
+                      <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' />
+                    </div>
+                    <q-btn :label='t("login")' type="submit" color="primary" />
+                    <q-btn :label='t("register")' type="reset" color="primary" flat class="q-ml-sm" />
+                  </div>
+                </q-form>
+              </div>
+            </div>
+          </q-btn-dropdown>
+        </div>
         <q-btn class="lt-lg" dense flat round icon="menu" @click="toggleRightDrawer" />
       </q-toolbar>
+      <q-dialog v-model="prompt" persistent>
+        <q-card style="min-width: 350px">
+          <q-card-section>
+            <div class="text-h6">Your address</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            <q-input dense v-model="address" autofocus @keyup.enter="prompt = false" />
+          </q-card-section>
+
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Cancel" v-close-popup />
+            <q-btn flat label="Add address" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </q-header>
     <q-drawer v-model='leftDrawerState' side="left" mini-to-overlay persistent bordered show-if-above :breakpoint="767"
       :width="300">
@@ -40,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 
@@ -66,6 +103,7 @@ const login = () => {
 
 }
 
+const loginForm = reactive({ password: '', account: '', keepLogin: false })
 </script>
 
 <style lang="sass" scoped>

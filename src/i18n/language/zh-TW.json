@@ -4,5 +4,8 @@
   "success": "成功",
   "login": "登錄",
   "register": "註冊",
+  "account": "帳號",
+  "password": "密碼",
+  "cantNull": "忘記填瞜~",
   "submit": "送出"
 }

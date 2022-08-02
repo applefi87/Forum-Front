@@ -4,5 +4,8 @@
   "success": "success",
   "login": "Login",
   "register": "Register",
+  "account": "Account",
+  "password": "Password",
+  "cantNull": "Please type something",
   "submit": "Submit"
 }
