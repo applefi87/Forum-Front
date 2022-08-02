@@ -164,14 +164,14 @@ const registerForm = reactive({ schoolEmail: '', schoolEmailCode: '', account: '
 // login
 const login = async () => {
   console.log(process.env.GOOGLE_SHEET)
-  const rep = await user.login(loginForm)
-  console.log(rep)
-  alertMsg.title = rep.title
-  alertMsg.text = rep.text
-  alertState.value = true
-  setInterval(() => {
-    alertState.value = false
-  }, rep.duration)
+  // const rep = await user.login(loginForm)
+  // console.log(rep)
+  // alertMsg.title = rep.title
+  // alertMsg.text = rep.text
+  // alertState.value = true
+  // setInterval(() => {
+  //   alertState.value = false
+  // }, rep.duration)
 }
 
 // 寄email
