@@ -75,7 +75,8 @@
             <q-card-section class="q-pt-none">
               <q-input filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")' lazy-rules
                 :rules="[val => val && val.length > 0 || t('cantNull')]" />
-              <q-btn dense flat rounded :loading="mailSending" @click="sendMail" label="寄驗證信"> <template v-slot:loading>
+              <q-btn dense flat rounded :loading="mailSending" @click="sendMail(false)" label="寄驗證信"> <template
+                  v-slot:loading>
                   <q-spinner-radio />
                 </template></q-btn>
               <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")' lazy-rules
@@ -180,8 +181,8 @@ const login = async () => {
 
 // 寄email
 const mailSending = ref(false)
-const sendMail = async () => {
-  const rep = await users.sendMail(registerForm.schoolEmail)
+const sendMail = async (school) => {
+  const rep = await users.sendMail(registerForm.schoolEmail, school)
   alert(rep)
 }
 const onSubmit = () => { }

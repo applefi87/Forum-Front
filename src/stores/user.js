@@ -41,9 +41,9 @@ export const useUserStore = defineStore('counter', {
         return { success: false, title: '伺服器錯誤', text: error }
       }
     },
-    async sendMail(mail) {
+    async sendMail(email, isSchool) {
       try {
-        const { data } = await api.post('/user/sendMail', { mail })
+        const { data } = await api.post('/user/sendMail', { email, isSchool })
         console.log(data)
         return data.message
       } catch (error) {
