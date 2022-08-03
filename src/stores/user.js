@@ -40,6 +40,15 @@ export const useUserStore = defineStore('counter', {
         // 因為調整boot/axios，4xx也能回傳訊息不會這裡
         return { success: false, title: '伺服器錯誤', text: error }
       }
+    },
+    async sendMail(mail) {
+      try {
+        const { data } = await api.post('/user/sendMail', { mail })
+        console.log(data)
+        return data.message
+      } catch (error) {
+        return { success: false, title: '伺服器錯誤', text: error }
+      }
     }
   //   async logout () {
   //     try {

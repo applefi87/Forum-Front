@@ -73,12 +73,12 @@
           <!--  -->
           <q-step :name="1" title="驗證學校信箱" icon="email" :done="step > 1">
             <q-card-section class="q-pt-none">
-              <q-input filled v-model="loginForm.schoolEmail" :label='t("schoolEmail")' lazy-rules
+              <q-input filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")' lazy-rules
                 :rules="[val => val && val.length > 0 || t('cantNull')]" />
               <q-btn dense flat rounded :loading="mailSending" @click="sendMail" label="寄驗證信"> <template v-slot:loading>
                   <q-spinner-radio />
                 </template></q-btn>
-              <q-input filled v-model="loginForm.schoolEmailCode" :label='t("schoolEmailCode")' lazy-rules
+              <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")' lazy-rules
                 :rules=schoolEmailVal />
               <div>
               </div>
@@ -163,22 +163,26 @@ const schoolEmailVal = [
 ]
 const loginForm = reactive({ account: '', password: '', keepLogin: false })
 const registerForm = reactive({ schoolEmail: '', schoolEmailCode: '', account: '', password: '', passwordCheck: '', gender: '0' })
-// login
-const login = async () => {
-  const user = await users.login(loginForm)
-  alertMsg.success = user.success
-  alertMsg.title = user.title
-  alertMsg.text = user.text
+const alert = (info) => {
+  alertMsg.success = info.success
+  alertMsg.title = info.title
+  alertMsg.text = info.text
   alertState.value = true
   setInterval(() => {
     alertState.value = false
-  }, (user.duration ? user.duration : 2) * 1000)
+  }, (info.duration ? info.duration : 2) * 1000)
+}
+// login
+const login = async () => {
+  const rep = await users.login(loginForm)
+  alert(rep)
 }
 
 // 寄email
 const mailSending = ref(false)
-const sendMail = () => {
-
+const sendMail = async () => {
+  const rep = await users.sendMail(registerForm.schoolEmail)
+  alert(rep)
 }
 const onSubmit = () => { }
 
