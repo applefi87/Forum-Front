@@ -115,11 +115,13 @@
     </q-form>
     <!-- 註冊對話框 -->
     <q-dialog v-model="alertState">
-      <q-card>
+      <q-card :style="{
+        'background': alertMsg.success ? 'green' : 'red', 'color': 'white'
+      }">
         <q-card-section v-if="alertMsg.title">
           <div class="text-h6">{{ alertMsg.title }}</div>
         </q-card-section>
-        <q-card-section v-if="alertMsg.text" class="q-pt-none">{{ alertMsg.text }}</q-card-section>
+        <q-card-section v-if="alertMsg.text.length > 0" class="q-pt-none">{{ alertMsg.text }}</q-card-section>
       </q-card>
     </q-dialog>
   </q-layout>
@@ -130,7 +132,7 @@ import { ref, reactive } from 'vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-const user = useUserStore()
+const users = useUserStore()
 
 // 增加多國語言可選+讀取預設語言
 const localeOptions = [
@@ -143,7 +145,7 @@ locale.value = useQuasar().lang.getLocale()
 const register = ref(false)
 const step = ref(1)
 const alertState = ref(false)
-const alertMsg = reactive({ title: 'tt', text: 'tt', second: 1 })
+const alertMsg = reactive({ success: false, title: '', text: '', second: 1 })
 // 切換左右選單顯示
 const leftDrawerState = ref(false)
 const rightDrawerState = ref(false)
@@ -163,15 +165,14 @@ const loginForm = reactive({ account: '', password: '', keepLogin: false })
 const registerForm = reactive({ schoolEmail: '', schoolEmailCode: '', account: '', password: '', passwordCheck: '', gender: '0' })
 // login
 const login = async () => {
-  console.log(process.env.GOOGLE_SHEET)
-  // const rep = await user.login(loginForm)
-  // console.log(rep)
-  // alertMsg.title = rep.title
-  // alertMsg.text = rep.text
-  // alertState.value = true
-  // setInterval(() => {
-  //   alertState.value = false
-  // }, rep.duration)
+  const user = await users.login(loginForm)
+  alertMsg.success = user.success
+  alertMsg.title = user.title
+  alertMsg.text = user.text
+  alertState.value = true
+  setInterval(() => {
+    alertState.value = false
+  }, (user.duration ? user.duration : 2) * 1000)
 }
 
 // 寄email

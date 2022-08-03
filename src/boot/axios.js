@@ -8,8 +8,20 @@ import { boot } from 'quasar/wrappers'
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({ baseURL: 'http://localhost:4000' })
-const apiAuth = axios.create({ baseURL: 'http://localhost:4000' })
+const api = axios.create({
+  baseURL: process.env.SERVER_URL,
+  validateStatus: function (status) {
+    // 為了能回傳4xx的錯誤訊息給alert使用
+    return status >= 200 && status < 500 // <300default
+  }
+})
+const apiAuth = axios.create({
+  baseURL: process.env.SERVER_URL,
+  validateStatus: function (status) {
+    // 為了能回傳4xx的錯誤訊息給alert使用
+    return status >= 200 && status < 500 // <300default
+  }
+})
 // apiAuth.interceptors.request.use(config => {
 //   const user = useUserStore()
 //   config.headers.authorization = `Bearer ${user.token}`
@@ -46,11 +58,11 @@ const apiAuth = axios.create({ baseURL: 'http://localhost:4000' })
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
-  // app.config.globalProperties.$axios = axios
+  app.config.globalProperties.$axios = axios
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
-  // app.config.globalProperties.$api = api
+  app.config.globalProperties.$api = api
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
 })

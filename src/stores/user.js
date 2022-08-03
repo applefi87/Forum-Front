@@ -26,18 +26,19 @@ export const useUserStore = defineStore('counter', {
     async login (form) {
       try {
         const { data } = await api.post('/user/login', form)
-        console.log(data)
-        if (!data?.result) {
-          return { title: 'loginFail', text: data.message, duration: 1 }
+        if (!data.message.success) {
+          return data.message
         }
+        console.log(data)
+        // 使用者資訊存起來
         this.token = data.result.token
         this.account = data.result.account
         this.role = data.result.role
         this.score = data.result.score
-        this.router.push('/')
-        return { title: 'loginSuccess', text: '', duration: 1 }
+        return data.message
       } catch (error) {
-        return { title: 'loginFail', text: '伺服器錯誤', duration: 1 }
+        // 因為調整boot/axios，4xx也能回傳訊息不會這裡
+        return { success: false, title: '伺服器錯誤', text: error }
       }
     }
   //   async logout () {
