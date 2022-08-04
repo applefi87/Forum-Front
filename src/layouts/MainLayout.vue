@@ -13,7 +13,8 @@
           map-options />
         <!-- https://quasar.dev/vue-components/button-dropdown -->
         <div class="q-pa-md">
-          <q-btn-dropdown class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none">
+          <q-btn-dropdown v-if="!users.token" class="login" dense flat icon="login" :label='t("login")'
+            dropdown-icon="none">
             <div class="row no-wrap q-pa-md">
               <div class="column">
                 <q-form @submit.prevent="login" class="q-gutter-xs">
@@ -26,7 +27,26 @@
                       <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
                     </div>
                     <q-btn :label='t("login")' type="submit" color="primary" />
-                    <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="register = true" />
+                    <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
+                  </div>
+                </q-form>
+              </div>
+            </div>
+          </q-btn-dropdown>
+          <q-btn-dropdown v-else class="info" dense flat label='個人資料'>
+            <div class="row no-wrap q-pa-md">
+              <div class="column">
+                <q-form @submit.prevent="login" class="q-gutter-xs">
+                  <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
+                    :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                  <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
+                    :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                  <div>
+                    <div>
+                      <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
+                    </div>
+                    <q-btn :label='t("login")' type="submit" color="primary" />
+                    <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
                   </div>
                 </q-form>
               </div>
@@ -59,65 +79,71 @@
     </q-footer>
     <!--****************** 彈出視窗 ------>
     <!-- 註冊對話框 -->
-    <form class="q-gutter-md">
-      <q-dialog v-model="registerState" persistent>
-        <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green">
-          <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
-            <q-card-section>
-              <div class="text-h4">{{ t("register") }}</div>
-              <div class="text-h6">{{ t("onlyStudent") }}</div>
-            </q-card-section>
-            <!-- <p class="text-h6">1.可選匿名 <br>2.評價依照課程名保存，更好查閱 <br>3.好的評價置頂 <br>4.評價越受歡迎，帳號分數越高</p> -->
-          </q-step>
-          <!--  -->
-          <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
-            <q-card-section class="q-pt-none">
-              <q-input ref=emailFormatValid filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")'
-                :rules="emailVal(false)" />
-              <q-btn dense flat rounded :loading="mailSending" @click="sendMail(true)" label="寄驗證信"> <template
-                  v-slot:loading>
-                  <q-spinner-radio />
-                </template>
-              </q-btn>
-              <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")' :rules="mailCodeVal"
-                ref=mailCodeValid />
-              <q-btn dense flat rounded :loading="mailVerifying" @click="mailVerify()" label="驗證">
-                <template v-slot:loading>
-                  <q-spinner-radio />
-                </template>
-              </q-btn>
-            </q-card-section>
-          </q-step>
-          <!--  -->
-          <q-step :name="3" title="帳密" icon="settings" :done="step > 3">
-            <q-card-section class="q-pt-none">
-              <q-input filled v-model="registerForm.account" :label='t("account")' :rules="accountVal"
-                ref=accountValid />
-              <q-input filled v-model="registerForm.password" :label='t("password")' :hint='t("pwdRule")'
-                :type="isPwd ? 'password' : 'text'" :rules="passwordVal"><template v-slot:append>
-                  <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                    @click="isPwd = !isPwd" />
-                </template></q-input>
-              <q-input filled v-model="registerForm.nickName" label='nickName' :rules="nickNameVal" ref=nickNameValid />
-              <p class="gender">Gender:</p>
-              <div class="q-gutter-sm">
-                <q-radio v-model="registerForm.gender" val=1 :label='t("Male")' />
-                <q-radio v-model="registerForm.gender" val=2 :label='t("Female")' />
-                <q-radio v-model="registerForm.gender" val=0 :label='t("Others")' />
-              </div>
-            </q-card-section>
-          </q-step>
-          <template v-slot:navigation>
-            <q-stepper-navigation>
-              <q-btn v-if="step < 3" @click="$refs.stepper.next()" color="primary" label="Continue" />
-              <q-btn v-else @click="register" color="primary" label="register" />
-              <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back"
-                class="q-ml-sm" />
-            </q-stepper-navigation>
-          </template>
-        </q-stepper>
-      </q-dialog>
-    </form>
+
+    <q-dialog v-model="registerState" persistent>
+      <div>
+        <q-form class="q-gutter-md" @submit.prevent="register" ref="formRegisterValid">
+          <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green">
+            <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
+              <q-card-section>
+                <div class="text-h4">{{ t("register") }}</div>
+                <div class="text-h6">{{ t("onlyStudent") }}</div>
+              </q-card-section>
+              <!-- <p class="text-h6">1.可選匿名 <br>2.評價依照課程名保存，更好查閱 <br>3.好的評價置頂 <br>4.評價越受歡迎，帳號分數越高</p> -->
+            </q-step>
+            <!--  -->
+            <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
+              <q-card-section class="q-pt-none">
+                <q-input ref=emailFormatValid filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")'
+                  :rules="emailVal(false)" />
+                <q-btn dense flat rounded :loading="mailSending" @click="sendMail(true)" label="寄驗證信"> <template
+                    v-slot:loading>
+                    <q-spinner-radio />
+                  </template>
+                </q-btn>
+                <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")'
+                  :rules="mailCodeVal" ref=mailCodeValid />
+                <q-btn dense flat rounded :loading="mailVerifying" @click="mailVerify()" label="驗證">
+                  <template v-slot:loading>
+                    <q-spinner-radio />
+                  </template>
+                </q-btn>
+              </q-card-section>
+            </q-step>
+            <!--  -->
+            <q-step :name="3" title="帳密" icon="settings" :done="step > 3">
+              <q-card-section class="q-pt-none">
+                <q-input filled v-model="registerForm.account" :label='t("account")' :rules="accountVal"
+                  ref=accountValid />
+                <q-input filled v-model="registerForm.password" :label='t("password")' :hint='t("pwdRule")'
+                  :type="isPwd ? 'password' : 'text'" :rules="passwordVal"><template v-slot:append>
+                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                      @click="isPwd = !isPwd" />
+                  </template></q-input>
+                <q-input filled v-model="registerForm.nickName" label='nickName' :rules="nickNameVal"
+                  ref=nickNameValid />
+                <p class="gender">Gender:</p>
+                <div class="q-gutter-sm">
+                  <q-radio v-model="registerForm.gender" val=1 :label='t("Male")' />
+                  <q-radio v-model="registerForm.gender" val=2 :label='t("Female")' />
+                  <q-radio v-model="registerForm.gender" val=0 :label='t("Others")' />
+                </div>
+              </q-card-section>
+            </q-step>
+            <template v-slot:navigation>
+              <q-stepper-navigation>
+                <q-btn v-if="step < 3" @click="$refs.stepper.next()" color="primary" label="Continue" />
+                <q-btn v-else type="submit" color="primary" label="register" />
+                <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back"
+                  class="q-ml-sm" />
+                <q-btn v-else label='關閉' color="primary" flat class="q-ml-sm" @click="registerState = false" />
+              </q-stepper-navigation>
+            </template>
+          </q-stepper>
+        </q-form>
+      </div>
+    </q-dialog>
+
     <!-- Alert對話框 -->
     <q-dialog v-model="alertState">
       <q-card :style="{
@@ -147,7 +173,7 @@ const localeOptions = [
 const { locale, t } = useI18n({ useScope: 'global' })
 locale.value = useQuasar().lang.getLocale()
 // 初始變數
-const registerState = ref(true)
+const registerState = ref(false)
 const step = ref(3)
 const alertState = ref(false)
 const alertMsg = reactive({ success: false, title: '', text: '', second: 1 })
@@ -245,12 +271,26 @@ const login = async () => {
 // ****************註冊****
 const accountValid = ref(null)
 const nickNameValid = ref(null)
+const formRegisterValid = ref(null)
 const register = async () => {
-  console.log(emailFormatValid)
-  console.log(accountValid)
+  // 不知為何沒有
+  formRegisterValid.value.validate().then(success => {
+    if (success) {
+      // yay, models are correct
+      console.log('ok')
+    } else {
+      console.log('err')
+      // oh no, user has filled in
+      // at least one invalid value
+    }
+  })
+  // console.log(accountValid.value)
   // if (!(mailCodeValid.value.validate() && emailFormatValid.value.validate() && accountValid.value.validate() && nickNameValid.value.validate())) return
   // const rep = await users.register(registerForm)
   // alert(rep)
+  // if (rep.success) {
+  //   registerState.value = false
+  // }
   // if (rep.accountOccupied) {
   //   accountVal[2] = val => val !== rep.account || '已經有相同帳號'
   // } else {

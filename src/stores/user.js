@@ -7,8 +7,8 @@ export const useUserStore = defineStore('counter', {
   id: 'user',
   state () {
     return {
-      token: '',
-      account: '',
+      token: null,
+      account: null,
       role: 0,
       score: 0
     }
@@ -157,7 +157,6 @@ export const useUserStore = defineStore('counter', {
   //   }
   },
   persist: {
-    key: 'user',
-    paths: ['token']
+    key: 'users'
   }
 })
