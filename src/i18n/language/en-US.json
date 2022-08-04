@@ -14,5 +14,8 @@
   "pwdCheckFail": "Not metch",
   "schoolEmail": "School email",
   "schoolEmailCode": "Email verification code",
+  "Male": "Male",
+  "Female": "Female",
+  "Others": "Others",
   "submit": "Submit"
 }

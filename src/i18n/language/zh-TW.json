@@ -14,5 +14,8 @@
   "pwdCheckFail": "密碼不相符",
   "schoolEmail": "學校信箱",
   "schoolEmailCode": "信箱驗證碼",
+  "Male": "男",
+  "Female": "女",
+  "Others": "其他",
   "submit": "送出"
 }

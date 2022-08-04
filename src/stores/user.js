@@ -23,6 +23,22 @@ export const useUserStore = defineStore('counter', {
   //   }
   // },
   actions: {
+    async register (form) {
+      try {
+        const { data } = await api.post('/user/', form)
+        // 使用者資訊存起來
+        if (data?.success) {
+          this.token = data.result.token
+          this.account = data.result.account
+          this.role = data.result.role
+          this.score = data.result.score
+        }
+        return { success: data.success, ...data.message }
+      } catch (error) {
+        // 因為調整boot/axios，4xx也能回傳訊息不會這裡
+        return { success: false, title: '伺服器錯誤', text: error }
+      }
+    },
     async login (form) {
       try {
         const { data } = await api.post('/user/login', form)
@@ -35,7 +51,7 @@ export const useUserStore = defineStore('counter', {
         this.account = data.result.account
         this.role = data.result.role
         this.score = data.result.score
-        return data.message
+        return { success: data.success, ...data.message }
       } catch (error) {
         // 因為調整boot/axios，4xx也能回傳訊息不會這裡
         return { success: false, title: '伺服器錯誤', text: error }
@@ -45,6 +61,14 @@ export const useUserStore = defineStore('counter', {
       try {
         const { data } = await api.post('/user/sendMail', { email, isSchool })
         console.log(data)
+        return data.message
+      } catch (error) {
+        return { success: false, title: '伺服器錯誤', text: error }
+      }
+    },
+    async mailVerify(email, schoolEmailCode) {
+      try {
+        const { data } = await api.post('/user/mailVerify', { email, schoolEmailCode })
         return data.message
       } catch (error) {
         return { success: false, title: '伺服器錯誤', text: error }
