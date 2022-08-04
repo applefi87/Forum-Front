@@ -81,7 +81,7 @@
               </q-btn>
               <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")' lazy-rules
                 :rule="mailOK" />
-              <q-btn dense flat rounded :loading="mailVerifying" @click="mailVerify()" label="驗證">
+              <q-btn dense flat rounded :loading="mailVerifying" @click="mailVerify(true)" label="驗證">
                 <template v-slot:loading>
                   <q-spinner-radio />
                 </template>
@@ -250,7 +250,7 @@ const sendMail = async (isSchool) => {
 // 驗證email
 const mailVerifying = ref(false)
 const mailOK = ref(false)
-const mailVerify = async (school) => {
+const mailVerify = async (isSchool) => {
   mailVerifying.value = true
   const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
   await alert(rep)
