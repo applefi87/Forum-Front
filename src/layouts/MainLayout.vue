@@ -59,7 +59,7 @@
     </q-footer>
     <!--****************** 彈出視窗 ------>
     <!-- 註冊對話框 -->
-    <q-form @submit="onSubmit" class="q-gutter-xs">
+    <form class="q-gutter-md">
       <q-dialog v-model="registerState" persistent>
         <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green">
           <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
@@ -72,16 +72,16 @@
           <!--  -->
           <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
             <q-card-section class="q-pt-none">
-              <q-input ref="emailFormatOk" filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")'
+              <q-input ref=emailFormatValid filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")'
                 :rules="emailVal(false)" />
               <q-btn dense flat rounded :loading="mailSending" @click="sendMail(true)" label="寄驗證信"> <template
                   v-slot:loading>
                   <q-spinner-radio />
                 </template>
               </q-btn>
-              <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")' lazy-rules
-                :rule="mailOK" />
-              <q-btn dense flat rounded :loading="mailVerifying" @click="mailVerify(true)" label="驗證">
+              <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")' :rules="mailCodeVal"
+                ref=mailCodeValid />
+              <q-btn dense flat rounded :loading="mailVerifying" @click="mailVerify()" label="驗證">
                 <template v-slot:loading>
                   <q-spinner-radio />
                 </template>
@@ -94,7 +94,10 @@
               <q-input filled v-model="registerForm.account" :label='t("account")' :rules="accountVal"
                 ref=accountValid />
               <q-input filled v-model="registerForm.password" :label='t("password")' :hint='t("pwdRule")'
-                :rules="passwordVal" />
+                :type="isPwd ? 'password' : 'text'" :rules="passwordVal"><template v-slot:append>
+                  <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                    @click="isPwd = !isPwd" />
+                </template></q-input>
               <q-input filled v-model="registerForm.nickName" label='nickName' :rules="nickNameVal" ref=nickNameValid />
               <p class="gender">Gender:</p>
               <div class="q-gutter-sm">
@@ -106,16 +109,15 @@
           </q-step>
           <template v-slot:navigation>
             <q-stepper-navigation>
-              <q-btn @click="step < 3 ? $refs.stepper.next() : register()" color="primary"
-                :label="step === 3 ? 'Finish' : 'Continue'" />
+              <q-btn v-if="step < 3" @click="$refs.stepper.next()" color="primary" label="Continue" />
+              <q-btn v-else @click="register" color="primary" label="register" />
               <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back"
                 class="q-ml-sm" />
-
             </q-stepper-navigation>
           </template>
         </q-stepper>
       </q-dialog>
-    </q-form>
+    </form>
     <!-- Alert對話框 -->
     <q-dialog v-model="alertState">
       <q-card :style="{
@@ -149,6 +151,7 @@ const registerState = ref(true)
 const step = ref(3)
 const alertState = ref(false)
 const alertMsg = reactive({ success: false, title: '', text: '', second: 1 })
+const isPwd = ref(true)
 // 切換左右選單顯示
 const leftDrawerState = ref(false)
 const rightDrawerState = ref(false)
@@ -160,7 +163,7 @@ const toggleRightDrawer = () => {
 }
 // ***********rule val區******************************
 const accountVal = reactive([
-  val => (val && val.length >= 6 && val.length <= 30) || '長度需介於6~30字之間',
+  val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
   val => val.match(/^[a-z0-9]+$/) || '只能輸入英文小寫與數字'
 ])
 
@@ -174,7 +177,51 @@ const nickNameVal = reactive([
   val => (val && val.length >= 4 && val.length <= 20) || '長度需介於4~20字之間',
   val => true || '預留給有同名使用'
 ])
+const mailCodeVal = reactive([
+  val => (val.length === 6 && val.match(/^[0-9]+$/)) || '為六位數字',
+  val => true || '預留給有同名使用'
+])
 
+const emailVal = (isSchool) => {
+  const rule = [
+    val => (val !== null && val !== '') || 'Please type your email',
+    val => val.length <= 40 || '必須 40 個字以下'
+  ]
+  if (isSchool) {
+    rule.push(
+      // @後方必須含 .edu.
+      // eslint-disable-next-line no-useless-escape
+      val => val.match(/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/) || '格式錯誤，必須為學校信箱')
+  } else {
+    rule.push(
+      // eslint-disable-next-line no-useless-escape
+      val => val.match(/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/) || '格式錯誤，僅可含英小寫、數、@、.'
+    )
+  }
+  return rule
+}
+// ********************
+// 寄email
+const emailFormatValid = ref(null)
+const mailSending = ref(false)
+const sendMail = async (isSchool) => {
+  if (!emailFormatValid.value.validate()) return
+  mailSending.value = true
+  const rep = await users.sendMail(registerForm.schoolEmail, isSchool)
+  await alert(rep)
+  mailSending.value = false
+}
+// 驗證email
+const mailVerifying = ref(false)
+const mailCodeValid = ref(null)
+const mailVerify = async () => {
+  if (!mailCodeValid.value.validate()) return
+  mailVerifying.value = true
+  const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
+  await alert(rep)
+  mailVerifying.value = false
+}
+// ********************
 const loginForm = reactive({ account: '', password: '', keepLogin: false })
 const registerForm = reactive({ schoolEmail: 'wdadad@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdsfsfs', password: 'wdadawd66A', nickName: 'WDAWDAD', gender: '0' })
 //
@@ -194,71 +241,29 @@ const login = async () => {
   const rep = await users.login(loginForm)
   alert(rep)
 }
+
+// ****************註冊****
 const accountValid = ref(null)
 const nickNameValid = ref(null)
 const register = async () => {
-  const rep = await users.register(registerForm)
-  alert(rep)
-  if (rep.accountOccupied) {
-    accountVal[2] = val => val !== rep.account || '已經有相同帳號'
-  } else {
-    accountVal[2] = val => true || ''
-  }
-  if (rep.NickNameOccupied) {
-    nickNameVal[1] = val => val !== rep.nickName || '已經有相同名稱'
-  } else {
-    nickNameVal[1] = val => true || ''
-  }
-  accountValid.value.validate()
-  nickNameValid.value.validate()
+  console.log(emailFormatValid)
+  console.log(accountValid)
+  // if (!(mailCodeValid.value.validate() && emailFormatValid.value.validate() && accountValid.value.validate() && nickNameValid.value.validate())) return
+  // const rep = await users.register(registerForm)
+  // alert(rep)
+  // if (rep.accountOccupied) {
+  //   accountVal[2] = val => val !== rep.account || '已經有相同帳號'
+  // } else {
+  //   accountVal[2] = val => true || ''
+  // }
+  // if (rep.NickNameOccupied) {
+  //   nickNameVal[1] = val => val !== rep.nickName || '已經有相同名稱'
+  // } else {
+  //   nickNameVal[1] = val => true || ''
+  // }
+  // accountValid.value.validate()
+  // nickNameValid.value.validate()
 }
-// ******************
-// 登入/註冊驗證功能
-const emailVal = (isSchool) => {
-  const rule = [
-    val => (val !== null && val !== '') || 'Please type your email',
-    val => val.length <= 40 || '必須 40 個字以下'
-  ]
-  if (isSchool) {
-    rule.push(
-      // @後方必須含 .edu.
-      // eslint-disable-next-line no-useless-escape
-      val => val.match(/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/) || '格式錯誤，必須為學校信箱')
-  } else {
-    rule.push(
-      // eslint-disable-next-line no-useless-escape
-      val => val.match(/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/) || '格式錯誤，僅可含英小寫、數、@、.'
-    )
-  }
-  return rule
-}
-
-// 寄email
-const emailFormatOk = ref(null)
-const mailSending = ref(false)
-const sendMail = async (isSchool) => {
-  emailFormatOk.value.validate()
-  if (emailFormatOk.value.hasError) {
-    return
-  }
-  mailSending.value = true
-  const rep = await users.sendMail(registerForm.schoolEmail, isSchool)
-  console.log(rep)
-  await alert(rep)
-  mailSending.value = false
-}
-// 驗證email
-const mailVerifying = ref(false)
-const mailOK = ref(false)
-const mailVerify = async (isSchool) => {
-  mailVerifying.value = true
-  const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
-  await alert(rep)
-  mailVerifying.value = false
-  if (rep.success) { mailOK.value = true }
-}
-
-const onSubmit = () => { }
 
 </script>
 
