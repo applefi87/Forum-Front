@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useUserStore } from 'src/stores/user'
-import { boot } from 'quasar/wrappers'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -9,62 +8,48 @@ import { boot } from 'quasar/wrappers'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: process.env.SERVER_URL,
-  validateStatus: function (status) {
-    // 為了能回傳4xx的錯誤訊息給alert使用
-    return status >= 200 && status < 500 // <300default
-  }
+  baseURL: process.env.SERVER_URL
 })
 const apiAuth = axios.create({
-  baseURL: process.env.SERVER_URL,
-  validateStatus: function (status) {
-    // 為了能回傳4xx的錯誤訊息給alert使用
-    return status >= 200 && status < 500 // <300default
-  }
+  baseURL: process.env.SERVER_URL
 })
-// apiAuth.interceptors.request.use(config => {
-//   const user = useUserStore()
-//   config.headers.authorization = `Bearer ${user.token}`
-//   return config
-// })
-// apiAuth.interceptors.response.use(res => {
-//   return res
-// }, error => {
-//   // 如果請求有回應
-//   if (error.response) {
-//     // 如果是 401，可能是 JWT 過期
-//     if (error.response.status === 401) {
-//       // 確認原始請求的網址不是延長登入，才重新登入
-//       if (error.config.url !== '/users/extend' && error.config.url !== '/users/logout') {
-//         const user = useUserStore()
-//         // 傳送延長請求
-//         return apiAuth.post('/users/extend', {}).then(({ data }) => {
-//           // 更新 JWT
-//           user.token = data.result
-//           // 使用新的 JWT 再次嘗試原始請求
-//           error.config.headers.authorization = `Bearer ${user.token}`
-//           return axios(error.config)
-//         }).catch(_ => {
-//           // 重新登入失敗，強制登出
-//           user.logout()
-//           // 回傳延長登入請求的錯誤訊息到呼叫的地方
-//           return Promise.reject(error)
-//         })
-//       }
-//     }
-//   }
-//   return Promise.reject(error)
-// })
-export default boot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+// axios ---> axios 攔截請求 --> API SERVER --> axios 攔截回應 --> 呼叫的地方
+apiAuth.interceptors.request.use(config => {
+  const user = useUserStore()
+  config.headers.authorization = `Bearer ${user.token}`
+  return config
+})
 
-  // app.config.globalProperties.$axios = axios
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
-
-  // app.config.globalProperties.$api = api
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
+apiAuth.interceptors.response.use(res => {
+  return res
+}, async error => {
+  console.log('in Intersepter')
+  // 如果請求有回應
+  if (error.response) {
+    // 如果是 401，可能是 JWT 過期
+    if (error.response.status === 401) {
+      // 確認原始請求的網址不是延長登入，才重新登入
+      if (error.config.url !== '/user/extend' && error.config.url !== '/user/logout') {
+        // 傳送延長請求
+        const user = useUserStore()
+        try {
+          const { data } = await apiAuth.post('/user/extend', {})
+          // 更新 JWT
+          user.token = data.result
+          // 使用新的 JWT 再次嘗試原始請求
+          error.config.headers.authorization = `Bearer ${user.token}`
+          return await axios(error.config)
+        } catch (err) {
+          console.log('boot/axios Error')
+          console.log(err)
+          // 重新登入失敗，強制登出
+          user.logout()
+          return await Promise.reject(error)
+        }
+      }
+    }
+  }
+  return Promise.reject(error)
 })
 
 export { axios, api, apiAuth }

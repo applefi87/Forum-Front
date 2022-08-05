@@ -12,47 +12,45 @@
         <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
           map-options />
         <!-- https://quasar.dev/vue-components/button-dropdown -->
-        <div class="q-pa-md">
-          <q-btn-dropdown v-if="!users.token" class="login" dense flat icon="login" :label='t("login")'
-            dropdown-icon="none">
-            <div class="row no-wrap q-pa-md">
-              <div class="column">
-                <q-form @submit.prevent="login" class="q-gutter-xs">
-                  <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
-                    :rules="[val => val && val.length > 0 || t('cantNull')]" />
-                  <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
-                    :rules="[val => val && val.length > 0 || t('cantNull')]" />
+        <q-btn-dropdown v-if="users.token" class="info" dense flat label='個人資料'>
+          <div class="row no-wrap q-pa-md">
+            <div class="column">
+              <q-form @submit.prevent="login" class="q-gutter-xs">
+                <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
+                  :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
+                  :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                <div>
                   <div>
-                    <div>
-                      <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
-                    </div>
-                    <q-btn :label='t("login")' type="submit" color="primary" />
-                    <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
+                    <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
                   </div>
-                </q-form>
-              </div>
+                  <q-btn :label='t("login")' type="submit" color="primary" />
+                  <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
+                </div>
+              </q-form>
             </div>
-          </q-btn-dropdown>
-          <q-btn-dropdown v-else class="info" dense flat label='個人資料'>
-            <div class="row no-wrap q-pa-md">
-              <div class="column">
-                <q-form @submit.prevent="login" class="q-gutter-xs">
-                  <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
-                    :rules="[val => val && val.length > 0 || t('cantNull')]" />
-                  <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
-                    :rules="[val => val && val.length > 0 || t('cantNull')]" />
+          </div>
+        </q-btn-dropdown>
+        <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none">
+          <div class="row no-wrap q-pa-md">
+            <div class="column">
+              <q-form @submit.prevent="login" class="q-gutter-xs">
+                <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
+                  :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
+                  :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                <div>
                   <div>
-                    <div>
-                      <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
-                    </div>
-                    <q-btn :label='t("login")' type="submit" color="primary" />
-                    <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
+                    <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
                   </div>
-                </q-form>
-              </div>
+                  <q-btn :label='t("login")' type="submit" color="primary" />
+                  <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
+                </div>
+              </q-form>
             </div>
-          </q-btn-dropdown>
-        </div>
+          </div>
+        </q-btn-dropdown>
+        <q-btn v-if="users.token" :label='t("logout")' color="primary c-w" @click="logout" flat />
         <q-btn class="lt-lg" dense flat round icon="menu" @click="toggleRightDrawer" />
       </q-toolbar>
 
@@ -82,7 +80,7 @@
 
     <q-dialog v-model="registerState" persistent>
       <div>
-        <q-form class="q-gutter-md" @submit.prevent="register" ref="formRegisterValid">
+        <q-form class="q-gutter-md" @submit.prevent="register()">
           <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green">
             <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
               <q-card-section>
@@ -94,16 +92,16 @@
             <!--  -->
             <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
               <q-card-section class="q-pt-none">
-                <q-input ref=emailFormatValid filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")'
+                <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")'
                   :rules="emailVal(false)" />
-                <q-btn dense flat rounded :loading="mailSending" @click="sendMail(true)" label="寄驗證信"> <template
-                    v-slot:loading>
+                <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(true)" label="寄驗證信">
+                  <template v-slot:loading>
                     <q-spinner-radio />
                   </template>
                 </q-btn>
                 <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")'
-                  :rules="mailCodeVal" ref=mailCodeValid />
-                <q-btn dense flat rounded :loading="mailVerifying" @click="mailVerify()" label="驗證">
+                  :rules="mailCodeVal" ref="mailCodeValid" />
+                <q-btn dense color="secondary" :loading="mailVerifying" @click="mailVerify()" label="驗證">
                   <template v-slot:loading>
                     <q-spinner-radio />
                   </template>
@@ -136,7 +134,7 @@
                 <q-btn v-else type="submit" color="primary" label="register" />
                 <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back"
                   class="q-ml-sm" />
-                <q-btn v-else label='關閉' color="primary" flat class="q-ml-sm" @click="registerState = false" />
+                <q-btn label='關閉' color="primary" flat class="q-ml-sm close-register" @click="registerState = false" />
               </q-stepper-navigation>
             </template>
           </q-stepper>
@@ -174,7 +172,7 @@ const { locale, t } = useI18n({ useScope: 'global' })
 locale.value = useQuasar().lang.getLocale()
 // 初始變數
 const registerState = ref(false)
-const step = ref(3)
+const step = ref(1)
 const alertState = ref(false)
 const alertMsg = reactive({ success: false, title: '', text: '', second: 1 })
 const isPwd = ref(true)
@@ -241,6 +239,7 @@ const sendMail = async (isSchool) => {
 const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 const mailVerify = async () => {
+  console.log('in')
   if (!mailCodeValid.value.validate()) return
   mailVerifying.value = true
   const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
@@ -248,7 +247,7 @@ const mailVerify = async () => {
   mailVerifying.value = false
 }
 // ********************
-const loginForm = reactive({ account: '', password: '', keepLogin: false })
+const loginForm = reactive({ account: 'applefi87', password: 'ANan0213', keepLogin: false })
 const registerForm = reactive({ schoolEmail: 'wdadad@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdsfsfs', password: 'wdadawd66A', nickName: 'WDAWDAD', gender: '0' })
 //
 const alert = async (info) => {
@@ -262,7 +261,7 @@ const alert = async (info) => {
   }, (info.duration ? info.duration : 2) * 1000)
 }
 
-// login
+// ****************登陸****
 const login = async () => {
   const rep = await users.login(loginForm)
   alert(rep)
@@ -271,40 +270,33 @@ const login = async () => {
 // ****************註冊****
 const accountValid = ref(null)
 const nickNameValid = ref(null)
-const formRegisterValid = ref(null)
 const register = async () => {
-  // 不知為何沒有
-  formRegisterValid.value.validate().then(success => {
-    if (success) {
-      // yay, models are correct
-      console.log('ok')
-    } else {
-      console.log('err')
-      // oh no, user has filled in
-      // at least one invalid value
-    }
-  })
-  // console.log(accountValid.value)
-  // if (!(mailCodeValid.value.validate() && emailFormatValid.value.validate() && accountValid.value.validate() && nickNameValid.value.validate())) return
-  // const rep = await users.register(registerForm)
-  // alert(rep)
-  // if (rep.success) {
-  //   registerState.value = false
-  // }
-  // if (rep.accountOccupied) {
-  //   accountVal[2] = val => val !== rep.account || '已經有相同帳號'
-  // } else {
-  //   accountVal[2] = val => true || ''
-  // }
-  // if (rep.NickNameOccupied) {
-  //   nickNameVal[1] = val => val !== rep.nickName || '已經有相同名稱'
-  // } else {
-  //   nickNameVal[1] = val => true || ''
-  // }
-  // accountValid.value.validate()
-  // nickNameValid.value.validate()
+  // 不知為何沒有,到時請教**************???????????????????***************************************************????????????????????????????????
+  // mailCodeValid.value.validate() && emailFormatValid.value.validate() &&
+  if (!(accountValid.value.validate() && nickNameValid.value.validate())) return
+  const rep = await users.register(registerForm)
+  alert(rep)
+  if (rep.success) {
+    registerState.value = false
+  }
+  if (rep.accountOccupied) {
+    accountVal[2] = val => val !== rep.account || '已經有相同帳號'
+  } else {
+    accountVal[2] = val => true || ''
+  }
+  if (rep.NickNameOccupied) {
+    nickNameVal[1] = val => val !== rep.nickName || '已經有相同名稱'
+  } else {
+    nickNameVal[1] = val => true || ''
+  }
+  accountValid.value.validate()
+  nickNameValid.value.validate()
 }
-
+//* ***************登出****
+const logout = async () => {
+  const rep = await users.logout()
+  alert(rep)
+}
 </script>
 
 <style lang="sass" scoped >
@@ -326,6 +318,12 @@ const register = async () => {
     bottom: 0
   &:deep(.q-field)
     margin-top: 0.6rem
-
+.q-stepper__nav
+  width: 100%
+.close-register
+  float: right
+.c-w
+  &:deep(.block)
+    color: white
 </style>
 <!-- login 待處理同IP登陸5次要等15分鐘 (目前可一直試) -->

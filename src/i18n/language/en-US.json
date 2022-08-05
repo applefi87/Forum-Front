@@ -17,5 +17,6 @@
   "Male": "Male",
   "Female": "Female",
   "Others": "Others",
+  "logout": "Logout",
   "submit": "Submit"
 }

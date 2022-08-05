@@ -17,5 +17,6 @@
   "Male": "男",
   "Female": "女",
   "Others": "其他",
+  "logout": "登出",
   "submit": "送出"
 }

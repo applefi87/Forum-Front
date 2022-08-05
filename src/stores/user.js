@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
-import { api } from 'src/boot/axios'
+import { api, apiAuth } from 'src/boot/axios'
 // 給回傳跳出訊息用的懶人包
 const reply = (d) => { return { success: d.success, ...d.message } }
-const replyErr = (err) => { return { success: false, title: '伺服器錯誤', text: err } }
 export const useUserStore = defineStore('counter', {
   id: 'user',
   state () {
@@ -28,26 +27,14 @@ export const useUserStore = defineStore('counter', {
     async register (form) {
       try {
         const { data } = await api.post('/user/', form)
-        // 使用者資訊存起來
-        if (data?.success) {
-          this.token = data.result.token
-          this.account = data.result.account
-          this.role = data.result.role
-          this.score = data.result.score
-        }
         return reply(data)
       } catch (error) {
-        // 因為調整boot/axios，4xx也能回傳訊息不會這裡
-        return replyErr(error)
+        return reply(error.response.data)
       }
     },
     async login (form) {
       try {
         const { data } = await api.post('/user/login', form)
-        if (!data.message.success) {
-          return data.message
-        }
-        console.log(data)
         // 使用者資訊存起來
         this.token = data.result.token
         this.account = data.result.account
@@ -55,17 +42,32 @@ export const useUserStore = defineStore('counter', {
         this.score = data.result.score
         return reply(data)
       } catch (error) {
-        // 因為調整boot/axios，4xx也能回傳訊息不會這裡
-        return replyErr(error)
+        return reply(error.response.data)
+      }
+    },
+    async logout () {
+      try {
+        // apiAuth預帶抓users.token (boot裡)
+        const { data } = await apiAuth.delete('/user/logout')
+        this.token = ''
+        this.account = ''
+        this.role = 0
+        this.cart = 0
+        return reply(data)
+      } catch (error) {
+        this.token = ''
+        this.account = ''
+        this.role = 0
+        this.cart = 0
+        return reply(error.response.data)
       }
     },
     async sendMail(email, isSchool) {
       try {
         const { data } = await api.post('/user/sendMail', { email, isSchool })
-        console.log(data)
         return reply(data)
       } catch (error) {
-        return replyErr(error)
+        return reply(error.response.data)
       }
     },
     async mailVerify(email, schoolEmailCode) {
@@ -73,30 +75,10 @@ export const useUserStore = defineStore('counter', {
         const { data } = await api.post('/user/mailVerify', { email, schoolEmailCode })
         return reply(data)
       } catch (error) {
-        return replyErr(error)
+        return reply(error.response.data)
       }
     }
-  //   async logout () {
-  //     try {
-  //       // await api.delete('/users/logout', {
-  //       //   headers: {
-  //       //     authorization: `Bearer ${this.token}`
-  //       //   }
-  //       // })
-  //       await apiAuth.delete('/users/logout')
-  //       this.router.push('/')
-  //       // Swal.fire({
-  //       //   icon: 'success',
-  //       //   title: '成功',
-  //       //   text: '登出成功'
-  //       // })
-  //     } catch (_) {
-  //     }
-  //     this.token = ''
-  //     this.account = ''
-  //     this.role = 0
-  //     this.cart = 0
-  //   },
+
   //   async addCart (data) {
   //     if (this.token.length === 0) {
   //       // Swal.fire({
@@ -116,7 +98,7 @@ export const useUserStore = defineStore('counter', {
   //       return
   //     }
   //     try {
-  //       const { data: resData } = await apiAuth.post('/users/cart', data)
+  //       const { data: resData } = await apiAuth.post('/user/cart', data)
   //       this.cart = resData.result
   //       // Swal.fire({
   //       //   icon: 'success',
@@ -133,7 +115,7 @@ export const useUserStore = defineStore('counter', {
   //   },
   //   async updateCart (data) {
   //     try {
-  //       await apiAuth.patch('/users/cart', data)
+  //       await apiAuth.patch('/user/cart', data)
   //       return true
   //     } catch (error) {
   //       // Swal.fire({
@@ -147,7 +129,7 @@ export const useUserStore = defineStore('counter', {
   //   async getUser () {
   //     if (this.token.length === 0) return
   //     try {
-  //       const { data } = await apiAuth.get('/users')
+  //       const { data } = await apiAuth.get('/user')
   //       this.account = data.result.account
   //       this.role = data.result.role
   //       this.cart = data.result.cart
