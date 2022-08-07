@@ -25,7 +25,7 @@ const text = ref('')
 
 <style lang="sass">
 .q-page
-  height: 2000px
+  height: 500px
 .editor
   width: 400px
   height: 300px

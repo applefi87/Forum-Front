@@ -23,6 +23,7 @@
                 <div>
                   <div>
                     <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
+                    <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
                   </div>
                   <q-btn :label='t("login")' type="submit" color="primary" />
                   <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
@@ -40,8 +41,9 @@
                 <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
                   :rules="[val => val && val.length > 0 || t('cantNull')]" />
                 <div>
-                  <div>
+                  <div style="height:50px">
                     <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
+                    <q-btn label="忘記密碼?" type="submit" color="primary" class="f-r" flat to="/forgetPWD" />
                   </div>
                   <q-btn :label='t("login")' type="submit" color="primary" />
                   <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
@@ -63,7 +65,7 @@
       show-if-above:breakpoint="1023" :width="300">
     </q-drawer>
     <q-page-container>
-      <router-view />
+      <router-view :alert="alert" />
     </q-page-container>
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar>
@@ -320,7 +322,7 @@ const logout = async () => {
     margin-top: 0.6rem
 .q-stepper__nav
   width: 100%
-.close-register
+.f-r
   float: right
 .c-w
   &:deep(.block)
