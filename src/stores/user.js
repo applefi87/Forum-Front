@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia'
 import { api, apiAuth } from 'src/boot/axios'
 // 給回傳跳出訊息用的懶人包
-const reply = (d, result) => { return { success: d.success, ...d.message, result } }
+const reply = (d, result) => {
+  const ob = result ? { success: d.success, ...d.message, result } : { success: d.success, ...d.message }
+  return ob
+}
 export const useUserStore = defineStore('counter', {
   id: 'user',
   state () {
@@ -52,13 +55,20 @@ export const useUserStore = defineStore('counter', {
         this.token = ''
         this.account = ''
         this.role = 0
-        this.cart = 0
         return reply(data)
       } catch (error) {
         this.token = ''
         this.account = ''
         this.role = 0
-        this.cart = 0
+
+        return reply(error.response.data)
+      }
+    },
+    async changePWD (form) {
+      try {
+        const { data } = await apiAuth.post('/user/changePWD', form)
+        return reply(data)
+      } catch (error) {
         return reply(error.response.data)
       }
     },

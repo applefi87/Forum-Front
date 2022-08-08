@@ -5,7 +5,8 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') },
-      { path: 'forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') }
+      { path: 'forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
+      { path: 'changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') }
     ]
   },
   // Always leave this as last one,

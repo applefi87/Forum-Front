@@ -23,7 +23,7 @@ apiAuth.interceptors.request.use(config => {
 apiAuth.interceptors.response.use(res => {
   return res
 }, async error => {
-  console.log('in Intersepter')
+  console.log('in axios Intersepter')
   // 如果請求有回應
   if (error.response) {
     // 如果是 401，可能是 JWT 過期

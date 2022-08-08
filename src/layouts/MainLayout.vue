@@ -15,20 +15,7 @@
         <q-btn-dropdown v-if="users.token" class="info" dense flat label='個人資料'>
           <div class="row no-wrap q-pa-md">
             <div class="column">
-              <q-form @submit.prevent="login" class="q-gutter-xs">
-                <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
-                  :rules="[val => val && val.length > 0 || t('cantNull')]" />
-                <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
-                  :rules="[val => val && val.length > 0 || t('cantNull')]" />
-                <div>
-                  <div>
-                    <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
-                    <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
-                  </div>
-                  <q-btn :label='t("login")' type="submit" color="primary" />
-                  <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
-                </div>
-              </q-form>
+              <q-btn label='變更密碼' color="primary" flat class="q-ml-sm" to="/changePWD" />
             </div>
           </div>
         </q-btn-dropdown>
@@ -142,26 +129,18 @@
         </q-form>
       </div>
     </q-dialog>
-
-    <!-- Alert對話框 -->
-    <q-dialog v-model="alertState">
-      <q-card :style="{
-        'background': alertMsg.success ? 'green' : 'red', 'color': 'white'
-      }">
-        <q-card-section v-if="alertMsg.title">
-          <div class="text-h6">{{ alertMsg.title }}</div>
-        </q-card-section>
-        <q-card-section v-if="alertMsg.text.length > 0" class="q-pt-none">{{ alertMsg.text }}</q-card-section>
-      </q-card>
-    </q-dialog>
   </q-layout>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
 import { useQuasar } from 'quasar'
+import notify from '../utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
 const users = useUserStore()
 
 // 增加多國語言可選+讀取預設語言
@@ -172,8 +151,8 @@ const localeOptions = [
 const { locale, t } = useI18n({ useScope: 'global' })
 locale.value = useQuasar().lang.getLocale()
 // 初始變數
-const registerState = ref(true)
-const step = ref(3)
+const registerState = ref(false)
+const step = ref(1)
 const stepper = ref(null)
 const alertState = ref(false)
 const alertMsg = reactive({ success: false, title: '', text: '', second: 1 })
@@ -234,7 +213,7 @@ const sendMail = async (isSchool) => {
   if (!emailFormatValid.value.validate()) return
   mailSending.value = true
   const rep = await users.sendMail(registerForm.schoolEmail, isSchool)
-  await alert(rep)
+  notify(rep)
   mailSending.value = false
 }
 // 驗證email
@@ -242,24 +221,16 @@ const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 
 // ********************
-const loginForm = reactive({ account: 'applefi87', password: 'ANan0213', keepLogin: false })
+const loginForm = reactive({ account: 'efwdsfsfs', password: 'ANan0213', keepLogin: false })
 const registerForm = reactive({ schoolEmail: 'wdadad@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdsfsfs', password: 'wdadawd66A', nickName: 'WDAWDAD', gender: '0' })
-//
-const alert = async (info) => {
-  console.log(info)
-  alertMsg.success = info.success
-  alertMsg.title = info.title
-  alertMsg.text = info.text ? info.text : ''
-  alertState.value = true
-  setTimeout(() => {
-    alertState.value = false
-  }, (info.duration ? info.duration : 2) * 1000)
-}
 
 // ****************登陸****
 const login = async () => {
   const rep = await users.login(loginForm)
-  alert(rep)
+  notify(rep)
+  if (rep.success) {
+    router.push('/')
+  }
 }
 //
 const nextPage = async () => {
@@ -267,7 +238,7 @@ const nextPage = async () => {
     if (!(mailCodeValid.value.validate() && emailFormatValid.value.validate())) return
     mailVerifying.value = true
     const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
-    await alert(rep)
+    notify(rep)
     mailVerifying.value = false
     if (rep.success) { step.value++ } else { return }
   }
@@ -280,9 +251,10 @@ const nickNameValid = ref(null)
 const register = async () => {
   // 不知為何沒有,到時請教**************???????????????????***************************************************????????????????????????????????
   const rep = await users.register(registerForm)
-  alert(rep)
+  notify(rep)
   if (rep.success) {
     registerState.value = false
+    return
   }
   if (rep.accountOccupied) {
     accountVal[2] = val => val !== rep.account || '已經有相同帳號'
@@ -300,7 +272,7 @@ const register = async () => {
 //* ***************登出****
 const logout = async () => {
   const rep = await users.logout()
-  alert(rep)
+  notify(rep)
 }
 </script>
 

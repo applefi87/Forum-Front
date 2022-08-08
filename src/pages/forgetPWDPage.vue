@@ -27,6 +27,7 @@
 import { ref, reactive } from 'vue'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
+import notify from '../utils/notify'
 const { t } = useI18n({ useScope: 'global' })
 const users = useUserStore()
 const getTempPWD = ref(false)
@@ -35,11 +36,6 @@ const emailFormatValid = ref(null)
 const mailSending = ref(false)
 const account = ref('')
 const tempPWD = ref('')
-
-const props = defineProps({
-  alert: Function
-})
-
 // ***********rule val區******************************
 const emailVal = (isSchool) => {
   const rule = [
@@ -69,7 +65,7 @@ const sendPWDMail = async () => {
   if (!emailFormatValid.value.validate()) return
   mailSending.value = true
   const rep = await users.sendPWDMail(form.email)
-  await props.alert(rep)
+  notify(rep)
   mailSending.value = false
 }
 
@@ -81,7 +77,7 @@ const verifyPWDMail = async () => {
   if (!mailCodeValid.value.validate()) return
   mailVerifying.value = true
   const rep = await users.verifyPWDMail(form.email, form.code)
-  await props.alert(rep)
+  notify(rep)
   if (rep.success) {
     getTempPWD.value = true
     account.value = rep.result.account
