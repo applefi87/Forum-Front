@@ -10,7 +10,7 @@
   "keepLogin": "Keep login",
   "onlyStudent": "Only support school email register now(contain '.edu')",
   "pwdRule": "At least one uppercase , lowercase character and number",
-  "newPWD": "Original password",
+  "newPWD": "New password",
   "pwdCheck": "Confirm password",
   "pwdCheckFail": "Not metch",
   "schoolEmail": "School email",
@@ -19,5 +19,6 @@
   "Female": "Female",
   "Others": "Others",
   "logout": "Logout",
+  "email": "E-mail",
   "submit": "Submit"
 }

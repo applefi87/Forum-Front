@@ -60,7 +60,6 @@ export const useUserStore = defineStore('counter', {
         this.token = ''
         this.account = ''
         this.role = 0
-
         return reply(error.response.data)
       }
     },

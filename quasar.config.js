@@ -54,9 +54,6 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
-      alias: {
-        '@': path.join(__dirname, './src')
-      },
       extendViteConf (viteConf) {
         viteConf.base = ''
       },

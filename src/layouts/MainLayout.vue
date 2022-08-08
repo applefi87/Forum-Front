@@ -52,7 +52,7 @@
       show-if-above:breakpoint="1023" :width="300">
     </q-drawer>
     <q-page-container>
-      <router-view :alert="alert" />
+      <router-view />
     </q-page-container>
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar>
@@ -154,8 +154,6 @@ locale.value = useQuasar().lang.getLocale()
 const registerState = ref(false)
 const step = ref(1)
 const stepper = ref(null)
-const alertState = ref(false)
-const alertMsg = reactive({ success: false, title: '', text: '', second: 1 })
 const isPwd = ref(true)
 // 切換左右選單顯示
 const leftDrawerState = ref(false)
@@ -221,7 +219,7 @@ const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 
 // ********************
-const loginForm = reactive({ account: 'efwdsfsfs', password: 'ANan0213', keepLogin: false })
+const loginForm = reactive({ account: 'app99le45', password: 'mY1KsQkt', keepLogin: false })
 const registerForm = reactive({ schoolEmail: 'wdadad@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdsfsfs', password: 'wdadawd66A', nickName: 'WDAWDAD', gender: '0' })
 
 // ****************登陸****
@@ -249,7 +247,6 @@ const nextPage = async () => {
 const accountValid = ref(null)
 const nickNameValid = ref(null)
 const register = async () => {
-  // 不知為何沒有,到時請教**************???????????????????***************************************************????????????????????????????????
   const rep = await users.register(registerForm)
   notify(rep)
   if (rep.success) {
