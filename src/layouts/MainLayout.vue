@@ -103,11 +103,6 @@
                 </q-btn>
                 <q-input filled v-model="registerForm.schoolEmailCode" :label='t("schoolEmailCode")'
                   :rules="mailCodeVal" ref="mailCodeValid" />
-                <q-btn dense color="secondary" :loading="mailVerifying" @click="mailVerify()" label="驗證">
-                  <template v-slot:loading>
-                    <q-spinner-radio />
-                  </template>
-                </q-btn>
               </q-card-section>
             </q-step>
             <!--  -->
@@ -132,7 +127,11 @@
             </q-step>
             <template v-slot:navigation>
               <q-stepper-navigation>
-                <q-btn v-if="step < 3" @click="$refs.stepper.next()" color="primary" label="Continue" />
+                <q-btn v-if="step < 3" @click="nextPage()" color="primary" label="Continue" :loading="mailVerifying">
+                  <template v-slot:loading>
+                    <q-spinner-radio />
+                  </template>
+                </q-btn>
                 <q-btn v-else type="submit" color="primary" label="register" />
                 <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back"
                   class="q-ml-sm" />
@@ -173,8 +172,9 @@ const localeOptions = [
 const { locale, t } = useI18n({ useScope: 'global' })
 locale.value = useQuasar().lang.getLocale()
 // 初始變數
-const registerState = ref(false)
-const step = ref(1)
+const registerState = ref(true)
+const step = ref(3)
+const stepper = ref(null)
 const alertState = ref(false)
 const alertMsg = reactive({ success: false, title: '', text: '', second: 1 })
 const isPwd = ref(true)
@@ -240,14 +240,7 @@ const sendMail = async (isSchool) => {
 // 驗證email
 const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
-const mailVerify = async () => {
-  console.log('in')
-  if (!mailCodeValid.value.validate()) return
-  mailVerifying.value = true
-  const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
-  await alert(rep)
-  mailVerifying.value = false
-}
+
 // ********************
 const loginForm = reactive({ account: 'applefi87', password: 'ANan0213', keepLogin: false })
 const registerForm = reactive({ schoolEmail: 'wdadad@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdsfsfs', password: 'wdadawd66A', nickName: 'WDAWDAD', gender: '0' })
@@ -268,14 +261,24 @@ const login = async () => {
   const rep = await users.login(loginForm)
   alert(rep)
 }
+//
+const nextPage = async () => {
+  if (step.value === 2) {
+    if (!(mailCodeValid.value.validate() && emailFormatValid.value.validate())) return
+    mailVerifying.value = true
+    const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
+    await alert(rep)
+    mailVerifying.value = false
+    if (rep.success) { step.value++ } else { return }
+  }
+  stepper.value.next()
+}
 
 // ****************註冊****
 const accountValid = ref(null)
 const nickNameValid = ref(null)
 const register = async () => {
   // 不知為何沒有,到時請教**************???????????????????***************************************************????????????????????????????????
-  // mailCodeValid.value.validate() && emailFormatValid.value.validate() &&
-  if (!(accountValid.value.validate() && nickNameValid.value.validate())) return
   const rep = await users.register(registerForm)
   alert(rep)
   if (rep.success) {
