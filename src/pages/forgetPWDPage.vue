@@ -2,13 +2,13 @@
   <q-page class="flex flex-center">
     <q-card-section v-if="!getTempPWD" class="q-pt-none">
       <q-input ref="emailFormatValid" filled v-model="form.email" :label='t("email")' :rules="emailVal(true)" />
-      <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(true)" label="寄驗證信">
+      <q-btn dense color="secondary" :loading="mailSending" @click="sendPWDMail()" label="寄驗證信">
         <template v-slot:loading>
           <q-spinner-radio />
         </template>
       </q-btn>
       <q-input filled v-model="form.code" :label='t("schoolEmailCode")' :rules="mailCodeVal" ref="mailCodeValid" />
-      <q-btn dense color="secondary" :loading="mailVerifying" @click="mailVerify()" label="驗證">
+      <q-btn dense color="secondary" :loading="mailVerifying" @click="verifyPWDMail()" label="驗證">
         <template v-slot:loading>
           <q-spinner-radio />
         </template>
@@ -40,24 +40,12 @@ const props = defineProps({
   alert: Function
 })
 
-const sendMail = async (isSchool) => {
-  if (!emailFormatValid.value.validate()) return
-  mailSending.value = true
-  const rep = await users.sendMail(form.email, isSchool)
-  await props.alert(rep)
-  mailSending.value = false
-}
-
 // ***********rule val區******************************
 const emailVal = (isSchool) => {
   const rule = [
     val => (val !== null && val !== '') || 'Please type your email',
     val => val.length <= 40 || '必須 40 個字以下'
   ]
-  const mailCodeVal = reactive([
-    val => (val.length === 6 && val.match(/^[0-9]+$/)) || '為六位數字',
-    val => true || '預留給有同名使用'
-  ])
 
   if (isSchool) {
     rule.push(
@@ -73,18 +61,26 @@ const emailVal = (isSchool) => {
   return rule
 }
 const mailCodeVal = reactive([
-  val => (val.length === 6 && val.match(/^[0-9]+$/)) || '為六位數字',
+  val => (val.length === 10 && val.match(/^[0-9]+$/)) || '為十位數字',
   val => true || '預留給有同名使用'
 ])
+
+const sendPWDMail = async () => {
+  if (!emailFormatValid.value.validate()) return
+  mailSending.value = true
+  const rep = await users.sendPWDMail(form.email)
+  await props.alert(rep)
+  mailSending.value = false
+}
 
 // 驗證email
 const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
-const mailVerify = async () => {
+const verifyPWDMail = async () => {
   console.log('in')
   if (!mailCodeValid.value.validate()) return
   mailVerifying.value = true
-  const rep = await users.mailVerify(form.email, form.code)
+  const rep = await users.verifyPWDMail(form.email, form.code)
   await props.alert(rep)
   if (rep.success) {
     getTempPWD.value = true
