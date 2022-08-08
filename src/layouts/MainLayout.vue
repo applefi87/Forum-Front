@@ -219,7 +219,7 @@ const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 
 // ********************
-const loginForm = reactive({ account: 'app99le45', password: 'mY1KsQkt', keepLogin: false })
+const loginForm = reactive({ account: 'efwdfsfs', password: 'gK51EF9B', keepLogin: false })
 const registerForm = reactive({ schoolEmail: 'wdadad@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdsfsfs', password: 'wdadawd66A', nickName: 'WDAWDAD', gender: '0' })
 
 // ****************登陸****
