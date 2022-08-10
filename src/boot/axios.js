@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useUserStore } from 'src/stores/user'
-
+require('dotenv/config')
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
 // If any client changes this (global) instance, it might be a
