@@ -4,7 +4,7 @@
   "description": "A Quasar Project",
   "productName": "Quasar App",
   "author": "applefi87 <werrtyyui@yahoo.com.tw>",
-  "private": true,
+  "private": true, 
   "scripts": {
     "build": "quasar build",
     "dev": "quasar dev",
