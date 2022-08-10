@@ -7,7 +7,8 @@
   "private": true,
   "scripts": {
     "build": "quasar build",
-    "dev": "quasar dev"
+    "dev": "quasar dev",
+    "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=master"
   },
   "dependencies": {
     "@quasar/extras": "^1.15.1",
