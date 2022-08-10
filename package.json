@@ -36,6 +36,7 @@
     "eslint-plugin-vue": "^9.0.0",
     "flat": "^5.0.2",
     "fs-extra": "^10.1.0",
+    "push-dir": "^0.4.1",
     "spreadsheet-to-json": "^2.0.0"
   },
   "engines": {
