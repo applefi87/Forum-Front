@@ -7,7 +7,7 @@
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
-require('dotenv/config')
+// require('dotenv/config')
 
 const { configure } = require('quasar/wrappers')
 const path = require('path')
@@ -71,8 +71,9 @@ module.exports = configure(function (/* ctx */) {
       // publicPath: '/',
       // analyze: true,
       env: {
-        GOOGLE_SHEET: process.env.GOOGLE_SHEET,
-        SERVER_URL: process.env.SERVER_URL
+        env: require('dotenv').config().parsed
+        // GOOGLE_SHEET: process.env.GOOGLE_SHEET,
+        // SERVER_URL: process.env.SERVER_URL
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
