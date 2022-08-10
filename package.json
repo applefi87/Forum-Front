@@ -7,8 +7,7 @@
   "private": true,
   "scripts": {
     "build": "quasar build",
-    "dev": "quasar dev",
-    "prebuild": "node ./src/i18n/sheet2JSON.js"
+    "dev": "quasar dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.15.1",
