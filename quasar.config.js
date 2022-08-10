@@ -7,7 +7,7 @@
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
-// require('dotenv/config')
+require('dotenv/config')
 const { configure } = require('quasar/wrappers')
 const path = require('path')
 
