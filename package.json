@@ -7,8 +7,7 @@
   "private": true,
   "scripts": {
     "build": "quasar build",
-    "dev": "quasar dev",
-    "prebuild": "node ./src/i18n/sheet2JSON.js"
+    "dev": "quasar dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.15.1",
@@ -20,7 +19,8 @@
     "quasar": "^2.7.6",
     "vue": "^3.0.0",
     "vue-i18n": "^9.0.0",
-    "vue-router": "^4.0.0"
+    "vue-router": "^4.0.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@intlify/vite-plugin-vue-i18n": "^3.3.1",

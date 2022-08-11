@@ -142,7 +142,6 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const users = useUserStore()
-
 // 增加多國語言可選+讀取預設語言
 const localeOptions = [
   { value: 'en-US', label: 'English' },
