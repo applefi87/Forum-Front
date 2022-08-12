@@ -21,6 +21,7 @@ jobs:
         run: |
           yarn install
           yarn build
+        # quasar的vite 不用VITE_ 開頭
         env:
           SERVER_URL: ${{ secrets.SERVER_URL}}
           GOOGLE_SHEET: ${{ secrets.GOOGLE_SHEET}}
