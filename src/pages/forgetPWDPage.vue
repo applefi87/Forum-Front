@@ -83,7 +83,6 @@ const verifyPWDMail = async () => {
     account.value = rep.result.account
     tempPWD.value = rep.result.tempPWD
   }
-
   mailVerifying.value = false
 }
 </script>

@@ -81,9 +81,9 @@
             <!--  -->
             <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
               <q-card-section class="q-pt-none">
-                <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("schoolEmail")'
+                <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("email")'
                   :rules="emailVal(false)" />
-                <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(true)" label="寄驗證信">
+                <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(false)" label="寄驗證信">
                   <template v-slot:loading>
                     <q-spinner-radio />
                   </template>
@@ -218,8 +218,8 @@ const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 
 // ********************
-const loginForm = reactive({ account: 'efwdsfsfs', password: 'wdadawd66A', keepLogin: false })
-const registerForm = reactive({ schoolEmail: 'wdadad@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdsfsfs', password: 'wdadawd66A', nickName: 'WDAWDAD', gender: '0' })
+const loginForm = reactive({ account: 'testadmin', password: 'testadminA0', keepLogin: false })
+const registerForm = reactive({ schoolEmail: 'wdada5d@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdssfsfs', password: 'wdsadawd66A', nickName: 'WDAWDAD', gender: '0' })
 
 // ****************登陸****
 const login = async () => {
