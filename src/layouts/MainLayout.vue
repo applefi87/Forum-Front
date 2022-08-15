@@ -46,7 +46,9 @@
     </q-header>
     <q-drawer v-model='leftDrawerState' side="left" mini-to-overlay persistent bordered show-if-above :breakpoint="767"
       :width="300">
-
+      <q-select outlined v-model="filterList" :options="options" label="Outlined" dense options-dense disable
+        :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+      <h1>{{ title }}</h1>
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" mini-to-overlay persistent bordered
       show-if-above:breakpoint="1023" :width="300">
@@ -133,15 +135,18 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import notify from '../utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { api } from 'src/boot/axios'
+const route = useRoute()
 const router = useRouter()
 
 const users = useUserStore()
+// *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
 const localeOptions = [
   { value: 'en-US', label: 'English' },
@@ -164,26 +169,24 @@ const toggleRightDrawer = () => {
   rightDrawerState.value = !rightDrawerState.value
 }
 // ***********rule val區******************************
-const accountVal = reactive([
+const accountVal = [
   val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
   val => val.match(/^[a-z0-9]+$/) || '只能輸入英文小寫與數字'
-])
-
-const passwordVal = reactive([
+]
+const passwordVal = [
   val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
   val => (val.match(/[A-Z]/) && val.match(/[a-z]/) && val.match(/[0-9]/)) || '必須含英文大、小寫與數字',
   val => true || '預留給有同名使用'
-])
-
-const nickNameVal = reactive([
+]
+const nickNameVal = [
   val => (val && val.length >= 4 && val.length <= 20) || '長度需介於4~20字之間',
   val => true || '預留給有同名使用'
-])
-const mailCodeVal = reactive([
+]
+const mailCodeVal = [
   val => (val.length === 6 && val.match(/^[0-9]+$/)) || '為六位數字',
   val => true || '預留給有同名使用'
-])
-
+]
+//
 const emailVal = (isSchool) => {
   const rule = [
     val => (val !== null && val !== '') || 'Please type your email',
@@ -270,6 +273,45 @@ const logout = async () => {
   const rep = await users.logout()
   notify(rep)
 }
+
+// *********************************************************************左側介面
+// #透過網址，取得母版的資訊+過濾功能
+const title = ref('')
+onMounted(async () => {
+  const { data } = await api.get('/board/' + route.params.id)
+  if (data.result) {
+    title.value = data.result.title
+  }
+  // const uri = JSON.stringify({
+  //   filterData: [
+  //     {
+  //       col: 'c0',
+  //       text: '生科系（學）',
+  //       all: true
+  //     }
+  //   ],
+  //   filterUnique: [
+  //     {
+  //       col: 'c80',
+  //       text: '111-1'
+  //     }
+  //   ],
+  //   search: [
+  //     {
+  //       col: 'c40',
+  //       text: '生物'
+  //     }
+  //   ]
+  // })
+
+  // const encodedFilter = encodeURI(uri)
+  // const { data } = await api.get('/board/' + +route.params.id + '?' + 'test=' + encodedFilter)
+})
+// 不用ref節省效能
+// https://quasar.dev/vue-components/select#render-performance
+const filterList = []
+// 等著丟到前端用
+//
 </script>
 
 <style lang="sass" scoped >

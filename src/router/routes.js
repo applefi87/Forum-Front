@@ -4,9 +4,9 @@ const routes = [
     displayName: 'main',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') },
       { path: 'forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
-      { path: 'changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') }
+      { path: 'changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') },
+      { path: ':id', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }
     ]
   },
   // Always leave this as last one,
