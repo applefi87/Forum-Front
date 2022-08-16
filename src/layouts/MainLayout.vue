@@ -46,13 +46,13 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above :breakpoint="767" :width="300">
       <h5>{{ title }}</h5>
-      <q-select outlined v-model="filterUnique" :options="['110-1', '110-2', '111-1']" label="開課系所" dense options-dense
-        :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+      <q-select outlined v-model="filterUnique" :options="['110-1', '110-2', '111-1']" label="學期" dense options-dense
+        :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
       <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
         :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
       <q-checkbox v-model="filterAll" label="全部系所" />
+      <br>
       <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" label="查詢">
-        Button
         <template v-slot:getChildboardLoading>
           Loading...
         </template>
