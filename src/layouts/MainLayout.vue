@@ -44,8 +44,7 @@
       </q-toolbar>
     </q-header>
     <!-- ******************************************************** -->
-    <q-drawer v-model='leftDrawerState' side="left" mini-to-overlay persistent bordered show-if-above :breakpoint="767"
-      :width="300">
+    <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above :breakpoint="767" :width="300">
       <h5>{{ title }}</h5>
       <q-select outlined v-model="filterUnique" :options="['110-1', '110-2', '111-1']" label="開課系所" dense options-dense
         :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
@@ -58,12 +57,6 @@
           Loading...
         </template>
       </q-btn>
-      <q-input v-model="boardSearch" filled type="search" hint="Search">
-        <template v-slot:append>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-      <p>{{ filtedBoards }}</p>
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" mini-to-overlay persistent bordered
       show-if-above:breakpoint="1023" :width="300">
@@ -83,7 +76,6 @@
     </q-footer>
     <!--****************** 彈出視窗 ------>
     <!-- 註冊對話框 -->
-
     <q-dialog v-model="registerState" persistent>
       <div>
         <q-form class="q-gutter-md" @submit.prevent="register()">
@@ -150,7 +142,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, shallowReactive, shallowRef, triggerRef, computed } from 'vue'
+import { ref, reactive, shallowReactive, shallowRef, triggerRef, provide, readonly } from 'vue'
 import { useQuasar } from 'quasar'
 import notify from '../utils/notify'
 import { useI18n } from 'vue-i18n'
@@ -296,7 +288,7 @@ const filterAll = ref(false)
 const filterOptions = shallowReactive([])
 const init = async () => {
   try {
-    const { data } = await api.get('/board/' + (route.params.id ? route.params.id : '62f99d0ce385891069fcfee3'))
+    const { data } = await api.get('/board/' + (route.params.id ? route.params.id : '62fb4b352b8867b9562a51db'))
     if (data.result) {
       title.value = data.result.title
       filterOptions.push(...data.result.childBoard.rule.display.filter.dataCol.c0)
@@ -325,21 +317,16 @@ const getChildboard = async () => {
         text: filterUnique.value
       }]
     }))
-    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62f99d0ce385891069fcfee3') + '?' + 'test=' + encodedFilter)
+    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fb4b352b8867b9562a51db') + '?' + 'test=' + encodedFilter)
     boards.value = data.result
-    triggerRef(filtedBoards)
-    console.log(boards)
+    triggerRef(boards)
   } catch (error) {
     console.log(error)
   }
   getChildboardLoading.value = false
 }
-const boardSearch = ref('')
-const filtedBoards = computed(() => {
-  return boards.value.filter((s) => {
-    return s.title.match(RegExp('.*' + boardSearch.value + '.*', 'i'))
-  })
-})
+
+provide('filtedBoards', readonly(boards))
 // 如果即時搜尋太耗效能，可改用這個
 // const filtedBoards = shallowRef([])
 // const search = () => {

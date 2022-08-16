@@ -24,8 +24,6 @@ const text = ref('')
 </script>
 
 <style lang="sass">
-.q-page
-  background: #000
 .editor
   width: 400px
   height: 300px
