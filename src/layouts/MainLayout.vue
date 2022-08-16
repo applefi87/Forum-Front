@@ -42,13 +42,28 @@
         <q-btn v-if="users.token" :label='t("logout")' color="primary c-w" @click="logout" flat />
         <q-btn class="lt-lg" dense flat round icon="menu" @click="toggleRightDrawer" />
       </q-toolbar>
-
     </q-header>
+    <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" mini-to-overlay persistent bordered show-if-above :breakpoint="767"
       :width="300">
-      <q-select outlined v-model="filterList" :options="options" label="Outlined" dense options-dense disable
-        :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-      <h1>{{ title }}</h1>
+      <h5>{{ title }}</h5>
+      <q-select outlined v-model="filterUnique" :options="['110-1', '110-2', '111-1']" label="開課系所" dense options-dense
+        :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+      <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
+        :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+      <q-checkbox v-model="filterAll" label="全部系所" />
+      <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" label="查詢">
+        Button
+        <template v-slot:getChildboardLoading>
+          Loading...
+        </template>
+      </q-btn>
+      <q-input v-model="boardSearch" filled type="search" hint="Search">
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+      <p>{{ filtedBoards }}</p>
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" mini-to-overlay persistent bordered
       show-if-above:breakpoint="1023" :width="300">
@@ -135,7 +150,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, shallowReactive, shallowRef, triggerRef, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import notify from '../utils/notify'
 import { useI18n } from 'vue-i18n'
@@ -144,7 +159,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { api } from 'src/boot/axios'
 const route = useRoute()
 const router = useRouter()
-
 const users = useUserStore()
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
@@ -277,46 +291,66 @@ const logout = async () => {
 // *********************************************************************左側介面
 // #透過網址，取得母版的資訊+過濾功能
 const title = ref('')
-onMounted(async () => {
+const filter = ref('')
+const filterAll = ref(false)
+const filterOptions = shallowReactive([])
+const init = async () => {
   try {
-    if (!route.params.id) return
-    const data = await api.get('/board/' + route.params.id)
+    const { data } = await api.get('/board/' + (route.params.id ? route.params.id : '62f99d0ce385891069fcfee3'))
     if (data.result) {
       title.value = data.result.title
+      filterOptions.push(...data.result.childBoard.rule.display.filter.dataCol.c0)
     }
+    //
   } catch (error) {
     router.push('/404')
   }
-  // const uri = JSON.stringify({
-  //   filterData: [
-  //     {
-  //       col: 'c0',
-  //       text: '生科系（學）',
-  //       all: true
-  //     }
-  //   ],
-  //   filterUnique: [
-  //     {
-  //       col: 'c80',
-  //       text: '111-1'
-  //     }
-  //   ],
-  //   search: [
-  //     {
-  //       col: 'c40',
-  //       text: '生物'
-  //     }
-  //   ]
-  // })
-
-  // const encodedFilter = encodeURI(uri)
-  // const { data } = await api.get('/board/' + +route.params.id + '?' + 'test=' + encodedFilter)
+}
+init()
+const filterC0 = ref('')
+const filterUnique = ref('111-1')
+const getChildboardLoading = ref(false)
+const boards = shallowRef([])
+const getChildboard = async () => {
+  try {
+    getChildboardLoading.value = true
+    const encodedFilter = encodeURI(JSON.stringify({
+      filterData: [{
+        col: 'c0',
+        text: filterC0.value,
+        all: filterAll.value
+      }],
+      filterUnique: [{
+        col: 'c80',
+        text: filterUnique.value
+      }]
+    }))
+    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62f99d0ce385891069fcfee3') + '?' + 'test=' + encodedFilter)
+    boards.value = data.result
+    triggerRef(filtedBoards)
+    console.log(boards)
+  } catch (error) {
+    console.log(error)
+  }
+  getChildboardLoading.value = false
+}
+const boardSearch = ref('')
+const filtedBoards = computed(() => {
+  return boards.value.filter((s) => {
+    return s.title.match(RegExp('.*' + boardSearch.value + '.*', 'i'))
+  })
 })
-// 不用ref節省效能
-// https://quasar.dev/vue-components/select#render-performance
-const filterList = []
-// 等著丟到前端用
-//
+// 如果即時搜尋太耗效能，可改用這個
+// const filtedBoards = shallowRef([])
+// const search = () => {
+//   filtedBoards.value = boards.filter((s) => {
+//     console.log(s.title)
+//     console.log(RegExp('.*' + boardSearch.value + '.*', 'i'))
+//     return s.title.match(RegExp('.*' + boardSearch.value + '.*', 'i'))
+//   })
+//   triggerRef(filtedBoards)
+// }
+
 </script>
 
 <style lang="sass" scoped >
