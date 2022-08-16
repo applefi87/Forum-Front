@@ -9,11 +9,21 @@ const routes = [
       { path: ':id', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }
     ]
   },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('src/pages/ErrorNotFound.vue'),
+    meta: {
+      title: '購物網 | 404',
+      login: false,
+      admin: false
+    }
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('src/pages/ErrorNotFound.vue')
+    redirect: '/404'
   }
 ]
 

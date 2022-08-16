@@ -278,9 +278,14 @@ const logout = async () => {
 // #透過網址，取得母版的資訊+過濾功能
 const title = ref('')
 onMounted(async () => {
-  const { data } = await api.get('/board/' + route.params.id)
-  if (data.result) {
-    title.value = data.result.title
+  try {
+    if (!route.params.id) return
+    const data = await api.get('/board/' + route.params.id)
+    if (data.result) {
+      title.value = data.result.title
+    }
+  } catch (error) {
+    router.push('/404')
   }
   // const uri = JSON.stringify({
   //   filterData: [
