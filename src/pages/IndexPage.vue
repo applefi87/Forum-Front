@@ -42,9 +42,11 @@ const { t } = useI18n()
 //   console.log(boards.filter((b) => b.colData.c0 === '通識'))
 // }
 const boards = inject('boards')
+console.log(boards)
 const filter = ref('')
+
 const filtedBoards = computed(() => {
-  return boards.value.filter((s) => {
+  return boards.filter((s) => {
     return s.title.match(RegExp('.*' + filter.value + '.*', 'i'))
   })
 })

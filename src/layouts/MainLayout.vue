@@ -302,7 +302,7 @@ init()
 const filterC0 = ref('')
 const filterUnique = ref('111-1')
 const getChildboardLoading = ref(false)
-const boards = shallowRef([])
+const boards = reactive([])
 const getChildboard = async () => {
   try {
     getChildboardLoading.value = true
@@ -318,15 +318,15 @@ const getChildboard = async () => {
       }]
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fb4b352b8867b9562a51db') + '?' + 'test=' + encodedFilter)
-    boards.value = data.result
-    triggerRef(boards)
+    boards.length = 0
+    boards.push(...data.result)
   } catch (error) {
     console.log(error)
   }
   getChildboardLoading.value = false
 }
 
-provide('filtedBoards', readonly(boards))
+provide('boards', readonly(boards))
 // 如果即時搜尋太耗效能，可改用這個
 // const filtedBoards = shallowRef([])
 // const search = () => {
