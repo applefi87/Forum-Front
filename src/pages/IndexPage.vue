@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <q-table title="Treats" :rows="filtedBoards" :columns="columns" row-key="_id"
-      :virtual-scroll="pagination.rowsPerPage === 0" :filter="filter" v-model:pagination="pagination"
+      :virtual-scroll="pagination.rowsPerPage === 0" :filter="filter" v-model:pagination="pagination" auto-width
       :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" style="height: 700px ;width:900px">
       <template v-slot:top-right>
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search" outlined label="搜尋">
@@ -42,7 +42,6 @@ const { t } = useI18n()
 //   console.log(boards.filter((b) => b.colData.c0 === '通識'))
 // }
 const boards = inject('boards')
-console.log(boards)
 const filter = ref('')
 
 const filtedBoards = computed(() => {

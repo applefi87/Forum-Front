@@ -283,23 +283,24 @@ const logout = async () => {
 // *********************************************************************左側介面
 // #透過網址，取得母版的資訊+過濾功能
 const title = ref('')
-const filter = ref('')
+const filterC0 = ref('')
 const filterAll = ref(false)
-const filterOptions = shallowReactive([])
+const filterOptions = shallowRef([])
 const init = async () => {
   try {
     const { data } = await api.get('/board/' + (route.params.id ? route.params.id : '62fb4b352b8867b9562a51db'))
     if (data.result) {
       title.value = data.result.title
-      filterOptions.push(...data.result.childBoard.rule.display.filter.dataCol.c0)
+      filterOptions.value = data.result.childBoard.rule.display.filter.dataCol.c0
     }
+    filterC0.value = filterOptions.value[0]
     //
   } catch (error) {
     router.push('/404')
   }
 }
 init()
-const filterC0 = ref('')
+
 const filterUnique = ref('111-1')
 const getChildboardLoading = ref(false)
 const boards = reactive([])
