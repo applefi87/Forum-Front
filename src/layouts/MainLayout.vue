@@ -48,7 +48,7 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above :breakpoint="767" :width="300">
       <h5>{{ title }}</h5>
-      <div v-if="hasChildBoard">
+      <div v-if="hasChild">
         <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
           :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
@@ -284,10 +284,12 @@ const logout = async () => {
   notify(rep)
 }
 
-// *********************************************************************左側介面
-// #透過網址，取得母版的資訊+過濾功能
+// *********************************************左側介面+子版清單************************
+// #透過網址，取得版的資訊+過濾功能
 const title = ref('')
-const hasChildBoard = ref(false)
+const hasChild = ref(false)
+const hasArticle = ref(false)
+const parentArticle = ref({})
 const filterC0 = ref('')
 const filterAll = ref(false)
 const filterOptions = shallowRef([])
@@ -300,10 +302,27 @@ const init = async (id) => {
     if (data.result) {
       title.value = data.result.title
       if (data.result.childBoard.active) {
-        hasChildBoard.value = true
+        hasChild.value = true
         filterOptions.value = data.result.childBoard.rule.display.filter.dataCol.c0
         filterUniqueOptions.value = ['110-1', '110-2', '111-1']
+      } else {
+        hasChild.value = false
       }
+      // 處理他的文章(規則去他母版抓)
+      const getArticle = async () => {
+        if (data.result.parent) {
+          const parent = await api.get('/board/' + data.result.parent)
+          parentArticle.value = parent.data.result.childBoard?.article
+          console.log('母版是' + parent.data.result.title)
+          if (parentArticle.value.active) {
+            console.log('有文章')
+            hasArticle.value = true
+            return
+          }
+        }
+        hasArticle.value = false; parentArticle.value = undefined
+      }
+      getArticle()
     }
     filterC0.value = filterOptions.value[0]
     //
@@ -312,7 +331,7 @@ const init = async (id) => {
   }
 }
 init()
-
+// *********************************************取得子版************************
 const getChildboardLoading = ref(false)
 const boards = reactive([])
 const getChildboard = async () => {
@@ -340,20 +359,16 @@ const getChildboard = async () => {
 
 provide('boards', readonly(boards))
 provide('init', readonly(init))
-// 如果即時搜尋太耗效能，可改用這個
-// const filtedBoards = shallowRef([])
-// const search = () => {
-//   filtedBoards.value = boards.filter((s) => {
-//     console.log(s.title)
-//     console.log(RegExp('.*' + boardSearch.value + '.*', 'i'))
-//     return s.title.match(RegExp('.*' + boardSearch.value + '.*', 'i'))
-//   })
-//   triggerRef(filtedBoards)
-// }
+provide('hasChild', readonly(hasChild))
+provide('hasArticle', readonly(hasArticle))
+provide('parentArticle', readonly(parentArticle))
+// 用來避免router hash不更新頁面
 const changePage = (url) => {
   router.push(url)
   init(url)
 }
+// *********************************************子文章************************
+
 </script>
 
 <style lang="sass" scoped >
