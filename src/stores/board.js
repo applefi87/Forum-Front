@@ -5,11 +5,11 @@ const reply = (d, result) => {
   const ob = result ? { success: d.success, ...d.message, result } : { success: d.success, ...d.message }
   return ob
 }
-export const useUserStore = defineStore('user', {
-  id: 'user',
+export const useUserStore = defineStore('board', {
+  id: 'board',
   state () {
     return {
-      token: null,
+      board: null,
       account: null,
       role: 0,
       score: 0

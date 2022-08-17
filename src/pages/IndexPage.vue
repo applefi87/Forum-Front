@@ -121,7 +121,7 @@ const boards = inject('boards')
 const init = inject('init')
 const hasChild = inject('hasChild')
 const hasArticle = inject('hasArticle')
-const parentArticle = inject('parentArticle')
+const articleRule = inject('articleRule')
 // ----------
 const filter = ref('')
 const filtedBoards = computed(() => {

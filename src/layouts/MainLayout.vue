@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <q-btn flat @click="changePage('62fb4b352b8867b9562a51db')">
+          <q-btn flat @click="changePage('62fc99277f3adbe07e542a58')">
             <q-avatar>
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
@@ -61,6 +61,17 @@
           </template>
         </q-btn>
       </div>
+      <div v-if="hasArticle">
+        <!-- 先不過濾全抓  要評價再顯示table供選-->
+        <!-- <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
+          :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+        <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
+          :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+        <q-checkbox v-model="filterAll" label="全部系所" /> -->
+        <br>
+        <q-btn @click="publishArticle" color="orange" label="給評價" />
+      </div>
+
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" mini-to-overlay persistent bordered
       show-if-above:breakpoint="1023" :width="300">
@@ -151,6 +162,7 @@ import { useQuasar } from 'quasar'
 import notify from '../utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
+// import { useBoardStore } from 'src/stores/board'
 import { useRoute, useRouter } from 'vue-router'
 import { api } from 'src/boot/axios'
 const route = useRoute()
@@ -289,7 +301,8 @@ const logout = async () => {
 const title = ref('')
 const hasChild = ref(false)
 const hasArticle = ref(false)
-const parentArticle = ref({})
+const articleRule = ref({})
+const articles = reactive([])
 const filterC0 = ref('')
 const filterAll = ref(false)
 const filterOptions = shallowRef([])
@@ -298,7 +311,7 @@ const filterUnique = ref('111-1')
 const filterUniqueOptions = shallowRef([])
 const init = async (id) => {
   try {
-    const { data } = await api.get('/board/' + (id || route.params.id || '62fb4b352b8867b9562a51db'))
+    const { data } = await api.get('/board/' + (id || route.params.id || '62fc99277f3adbe07e542a58'))
     if (data.result) {
       title.value = data.result.title
       if (data.result.childBoard.active) {
@@ -308,19 +321,30 @@ const init = async (id) => {
       } else {
         hasChild.value = false
       }
-      // 處理他的文章(規則去他母版抓)
+      // 處理文章(規則去他母版抓)
+      // 有成功才顯示不然清除
       const getArticle = async () => {
         if (data.result.parent) {
           const parent = await api.get('/board/' + data.result.parent)
-          parentArticle.value = parent.data.result.childBoard?.article
+          articleRule.value = parent.data.result.childBoard?.article
           console.log('母版是' + parent.data.result.title)
-          if (parentArticle.value.active) {
+          if (articleRule.value.active) {
             console.log('有文章')
             hasArticle.value = true
+            // *********************************************取得文章************************
+            // const getArticle = async () => {
+            //   try {
+            //     const { data } = await api.get('/article/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
+            //     boards.length = 0
+            //     boards.push(...data.result)
+            //   } catch (error) {
+            //     console.log(error)
+            //   }
+            // }
             return
           }
         }
-        hasArticle.value = false; parentArticle.value = undefined
+        hasArticle.value = false; articleRule.value = undefined
       }
       getArticle()
     }
@@ -348,7 +372,7 @@ const getChildboard = async () => {
         text: filterUnique.value
       }]
     }))
-    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fb4b352b8867b9562a51db') + '?' + 'test=' + encodedFilter)
+    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
     boards.length = 0
     boards.push(...data.result)
   } catch (error) {
@@ -357,11 +381,15 @@ const getChildboard = async () => {
   getChildboardLoading.value = false
 }
 
+const publishArticle = () => {
+
+}
+
 provide('boards', readonly(boards))
 provide('init', readonly(init))
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
-provide('parentArticle', readonly(parentArticle))
+provide('articleRule', readonly(articleRule))
 // 用來避免router hash不更新頁面
 const changePage = (url) => {
   router.push(url)
