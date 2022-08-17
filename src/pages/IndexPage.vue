@@ -2,7 +2,8 @@
   <q-page class="flex flex-center">
     <q-table title="Treats" :rows="filtedBoards" :columns="columns" row-key="_id"
       :virtual-scroll="pagination.rowsPerPage === 0" v-model:pagination="pagination" auto-width separator="none"
-      grid-header :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" style="height: 700px ;width:900px">
+      no-data-label="無資料" grid-header :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]"
+      style="height: 700px ;width:900px">
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !(['title', 'tag', 'review'].find((n) => n === c.name)))"
@@ -22,26 +23,32 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="colTR">
+        <q-tr :props="props" class="colTR q-tr--no-hover">
           <q-td v-for="col in props.cols.filter((c) => !(['title', 'review', 'tag'].find((n) => n === c.name)))"
             :key="col.name" :props="props">
-            {{ col.value }}
+            <q-btn class="cellBTN" flat align="left" @click="changePage('/' + props.row._id)">
+              {{ col.value }}</q-btn>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props" rowspan="2">
-            <div style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
-              <div>
-                <div class="tag" v-for="t in (props.row.tag ? props.row.tag : ['涼', '甜', '閒'])" :tag="t" :key="t">
-                  {{ t }}
+            <q-btn class="cellBTN" flat align="left" @click="changePage('/' + props.row._id)">
+              <div style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
+                <div>
+                  <div class="tag" v-for="t in (props.row.beScored?.tag ? props.row.beScored?.tag : ['涼', '甜', '閒'])"
+                    :tag="t" :key="t">
+                    {{ t }}
+                  </div>
                 </div>
+                評分 {{ col.value }}&nbsp; 評價{{ props.row.beScored?.amount ? props.row.beScored?.amount : 0 }}則
               </div>
-              <div>{{ col.value }}</div>
-            </div>
+            </q-btn>
           </q-td>
         </q-tr>
-        <q-tr :props="props">
+        <q-tr :props="props" class="q-tr--no-hover">
           <q-td colspan="3">
-            <div class="text-left"> {{ props.row.title }}</div>
+            <q-btn class="cellBTN" flat align="left" @click="changePage('/' + props.row._id)">
+              {{ props.row.title }}
+            </q-btn>
           </q-td>
         </q-tr>
       </template>
@@ -51,8 +58,10 @@
 
 <script setup>
 import { api } from 'src/boot/axios'
+import { useRouter } from 'vue-router'
 import { ref, reactive, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+const router = useRouter()
 const { t } = useI18n()
 const tt = {
   key: '62fb4b72d0b2f85be87f44cb',
@@ -87,6 +96,7 @@ const tt = {
 //   console.log(boards.filter((b) => b.colData.c0 === '通識'))
 // }
 const boards = inject('boards')
+const init = inject('init')
 const filter = ref('')
 
 const filtedBoards = computed(() => {
@@ -109,12 +119,16 @@ const columns = reactive([
   },
   { name: 'score', align: 'left', label: '學分', field: row => (row.colData.c50 ? row.colData.c50 : 0), sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'required', align: 'left', label: '必/選', field: row => row.colData.c55, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'tag', align: 'left', label: '標籤', field: row => (row.tag ? row.tag : ['涼', '甜', '閒']) },
-  { name: 'review', align: 'left', label: '評分', field: row => (row.review ? row.review : 6), sortable: true, sortOrder: 'da' },
+  { name: 'tag', align: 'left', label: '標籤', field: row => (row.beScored?.tag ? row.beScored?.tag : ['涼', '甜', '閒']) },
+  { name: 'review', align: 'left', label: '評分', field: row => (row.beScored?.score ? row.beScored?.score : 6), sortable: true, sortOrder: 'da' },
   { name: 'title', label: '課程名', field: 'title' }
 ]
 )
-
+const changePage = (url) => {
+  console.log(url)
+  router.push(url)
+  init(url)
+}
 </script>
 <style lang="sass">
 .q-table
@@ -132,6 +146,8 @@ const columns = reactive([
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
+.q-td
+  padding: 0 !important
 .tag
   display: inline-block
   width: 30px
@@ -145,8 +161,29 @@ const columns = reactive([
   .q-td
     height: 10px
 .q-tr td:nth-child(4)
-  background: #cccccc
+  background: #f9f9f9
   border-bottom: solid #999 1px
 .q-tr:nth-child(even) td
   border-bottom: solid #999 1px
+  // 之後再處理
+.colTR .q-tr:hover .q-td
+  background: red !important
+.cellBTN
+  height: 100%
+  width: 100%
+  //統一移除hover的方法
+  //
+body.desktop .q-focusable:focus .q-focus-helper,
+body.desktop .q-hoverable:hover .q-focus-helper
+  background: inherit
+  opacity: 0
+
+body.ios .q-hoverable:active .q-focus-helper
+  background: inherit
+  opacity: 0
+
+.q-focus-helper
+  opacity: 0
+  transition: unset
+
 </style>
