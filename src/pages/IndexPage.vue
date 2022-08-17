@@ -26,12 +26,12 @@
         <q-tr :props="props" class="colTR q-tr--no-hover">
           <q-td v-for="col in props.cols.filter((c) => !(['title', 'review', 'tag'].find((n) => n === c.name)))"
             :key="col.name" :props="props">
-            <q-btn class="cellBTN" flat align="left" @click="changePage('/' + props.row._id)">
+            <q-btn class="cellBTN" flat align="left" @click="changePage(props.row._id)">
               {{ col.value }}</q-btn>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props" rowspan="2">
-            <q-btn class="cellBTN" flat align="left" @click="changePage('/' + props.row._id)">
+            <q-btn class="cellBTN" flat align="left" @click="changePage(props.row._id)">
               <div style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
                 <div>
                   <div class="tag" v-for="t in (props.row.beScored?.tag ? props.row.beScored?.tag : ['涼', '甜', '閒'])"
@@ -46,7 +46,7 @@
         </q-tr>
         <q-tr :props="props" class="q-tr--no-hover">
           <q-td colspan="3">
-            <q-btn class="cellBTN" flat align="left" @click="changePage('/' + props.row._id)">
+            <q-btn class="cellBTN" flat align="left" @click="changePage(props.row._id)">
               {{ props.row.title }}
             </q-btn>
           </q-td>
@@ -125,7 +125,6 @@ const columns = reactive([
 ]
 )
 const changePage = (url) => {
-  console.log(url)
   router.push(url)
   init(url)
 }

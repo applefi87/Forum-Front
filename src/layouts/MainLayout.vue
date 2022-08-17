@@ -4,10 +4,12 @@
       <q-toolbar>
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
-          Leasure
+          <q-btn flat @click="changePage('62fb4b352b8867b9562a51db')">
+            <q-avatar>
+              <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+            </q-avatar>
+            師大課程版首頁
+          </q-btn>
         </q-toolbar-title>
         <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
           map-options />
@@ -294,7 +296,7 @@ const filterUnique = ref('111-1')
 const filterUniqueOptions = shallowRef([])
 const init = async (id) => {
   try {
-    const { data } = await api.get('/board/' + (id || route.params.id))
+    const { data } = await api.get('/board/' + (id || route.params.id || '62fb4b352b8867b9562a51db'))
     if (data.result) {
       title.value = data.result.title
       if (data.result.childBoard.active) {
@@ -348,7 +350,10 @@ provide('init', readonly(init))
 //   })
 //   triggerRef(filtedBoards)
 // }
-
+const changePage = (url) => {
+  router.push(url)
+  init(url)
+}
 </script>
 
 <style lang="sass" scoped >
