@@ -13,7 +13,7 @@
       <template v-slot:body="props">
         <q-tr :props="props" class="">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <button class="cellBTN" flat align="left" @click="props.expand = !props.expand">
+            <button class="cellBTN" @click="props.expand = !props.expand">
               <div v-if="col.name === 'userScore'"
                 style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
                 {{ props.row.user.nickName }}
@@ -28,7 +28,7 @@
                   {{ t }}
                 </div>
               </div>
-              <div v-else-if="col.name === 'semester'">
+              <div v-else-if="col.name === 'semester'" style="text-align: left;">
                 {{ col.value }}
               </div>
             </button>
@@ -36,7 +36,7 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%">
-            <div class="text-left">{{ props.row.content }}.</div>
+            <div class="text-left">{{ props.row.content }}</div>
           </q-td>
         </q-tr>
       </template>
@@ -103,8 +103,8 @@ const open = (url) => {
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
-.q-table .q-td
-  padding: none !important
+.q-td
+  padding: 0
 .q-tr:nth-child(4n+1) td:nth-child(n+2)
   background: #f8f8f8
 // 奇偶行不同顏色
@@ -125,7 +125,7 @@ const open = (url) => {
 .cellBTN
   width: 100%
   height: 100%
-  // background: transparent
+  background: transparent
   border: none
   cursor: pointer
 

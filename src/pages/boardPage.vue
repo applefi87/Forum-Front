@@ -26,13 +26,14 @@
         <q-tr :props="props" class="colTR" no-hover>
           <q-td v-for="col in props.cols.filter((c) => !(['title', 'review', 'tag'].find((n) => n === c.name)))"
             :key="col.name" :props="props">
-            <button class="cellBTN" flat align="left" @click="changePage(props.row._id)">
+            <button class="cellBTN" @click="changePage(props.row._id)">
               {{ col.value }}</button>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props" rowspan="2">
-            <button class="cellBTN" flat align="left" @click="changePage(props.row._id)">
-              <div style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
+            <button class="cellBTN" @click="changePage(props.row._id)">
+              <div
+                style="display:flex;flex-direction: column;justify-content: space-between ;align-items: flex-start; height: 100% ">
                 <div>
                   <div class="tag" v-for="t in (props.row.beScored?.tag ? props.row.beScored?.tag : ['涼', '甜', '閒'])"
                     :tag="t" :key="t">
@@ -46,7 +47,7 @@
         </q-tr>
         <q-tr :props="props" no-hover>
           <q-td colspan="3">
-            <button class="cellBTN" flat align="left" @click="changePage(props.row._id)">
+            <button class="cellBTN" @click="changePage(props.row._id)">
               {{ props.row.title }}
             </button>
           </q-td>
@@ -128,6 +129,8 @@ const changePage = (url) => {
   color: white
   background: green
   border-radius: 50px
+.q-td
+  padding: 0
 .colTR
   height: 10px
   .q-td
@@ -151,19 +154,5 @@ const changePage = (url) => {
   background: transparent
   border: none
   cursor: pointer
-  //統一移除hover的方法
-  //
-// body.desktop .q-focusable:focus .q-focus-helper,
-// body.desktop .q-hoverable:hover .q-focus-helper
-//   background: inherit
-//   opacity: 0
-
-// body.ios .q-hoverable:active .q-focus-helper
-//   background: inherit
-//   opacity: 0
-
-// .q-focus-helper
-//   opacity: 0
-//   transition: unset
 
 </style>
