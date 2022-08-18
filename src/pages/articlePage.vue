@@ -11,35 +11,32 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="colTR q-tr--no-hover">
-          <q-td v-for="col in props.cols.filter((c) => (['userScore'].find((n) => n === c.name)))" :key="col.name"
-            :props="props">
-            <q-btn class="cellBTN" flat align="left" @click="open(props.row._id)">
-              <div style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
+        <q-tr :props="props" class="">
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+            <button class="cellBTN" flat align="left" @click="props.expand = !props.expand">
+              <div v-if="col.name === 'userScore'"
+                style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
                 {{ props.row.user.nickName }}
                 <br>
                 &nbsp; {{ props.row.user.score || '白紙用戶' }}
               </div>
-            </q-btn>
-          </q-td>
-          <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
-            :props="props">
-            <q-btn class="cellBTN" flat align="left" @click="open(props.row._id)">
-              <div style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
-                {{ props.row.title }}
+              <div v-else-if="col.name === 'review'">
+                <p class="tableTitle">{{ props.row.title }}</p>
                 <br>
                 {{ col.value }}
-                <div class="tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
+                <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
                   {{ t }}
                 </div>
               </div>
-            </q-btn>
+              <div v-else-if="col.name === 'semester'">
+                {{ col.value }}
+              </div>
+            </button>
           </q-td>
-          <q-td v-for="col in props.cols.filter((c) => (['semester'].find((n) => n === c.name)))" :key="col.name"
-            :props="props">
-            <q-btn class="cellBTN" flat align="left" @click="open(props.row._id)">
-              {{ col.value }}
-            </q-btn>
+        </q-tr>
+        <q-tr v-show="props.expand" :props="props">
+          <q-td colspan="100%">
+            <div class="text-left">{{ props.row.content }}.</div>
           </q-td>
         </q-tr>
       </template>
@@ -55,6 +52,7 @@ import { useI18n } from 'vue-i18n'
 const router = useRouter()
 const { t } = useI18n()
 // **********************************************子版清單***
+const board = inject('board')
 const articles = inject('articles')
 const init = inject('init')
 const hasArticle = inject('hasArticle')
@@ -74,9 +72,11 @@ const columns = reactive([
     headerClasses: 'q-table--col-auto-width'
   },
   { name: 'review', align: 'left', label: '評分', field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'semester', align: 'left', label: '學期', field: row => row.uniqueId, sortable: true, sortOrder: 'da' }
+  // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
+  { name: 'semester', align: 'left', label: '學期', field: row => board.value.uniqueData.find(i => i._id === row.uniqueId).c80, sortable: true, sortOrder: 'da' }
 ]
 )
+
 const open = (url) => {
   router.push(url)
   init(url)
@@ -85,7 +85,7 @@ const open = (url) => {
 // 要去母版看規則
 
 </script>
-<style lang="sass">
+<style lang="sass" scoped>
 .q-page
   min-height: 0 !important
 .q-table
@@ -103,8 +103,17 @@ const open = (url) => {
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
-.q-td
-  padding: 0 !important
+.q-table .q-td
+  padding: none !important
+.q-tr:nth-child(4n+1) td:nth-child(n+2)
+  background: #f8f8f8
+// 奇偶行不同顏色
+.q-tr:nth-child(4n+3) td
+  background: #FFF8F3
+.q-tr:nth-child(4n+3) td:nth-child(n+2)
+  background: #FAF3EF
+.q-tr:nth-child(4n) td
+  background: #FFF8F3
 .tag
   display: inline-block
   width: 30px
@@ -113,34 +122,11 @@ const open = (url) => {
   color: white
   background: green
   border-radius: 50px
-.colTR
-  height: 10px
-  .q-td
-    height: 10px
-.q-tr td:nth-child(4)
-  background: #f9f9f9
-  border-bottom: solid #999 1px
-.q-tr:nth-child(even) td
-  border-bottom: solid #999 1px
-  // 之後再處理
-.colTR .q-tr:hover .q-td
-  background: red !important
 .cellBTN
-  height: 100%
   width: 100%
-  //統一移除hover的方法
-  //
-body.desktop .q-focusable:focus .q-focus-helper,
-body.desktop .q-hoverable:hover .q-focus-helper
-  background: inherit
-  opacity: 0
-
-body.ios .q-hoverable:active .q-focus-helper
-  background: inherit
-  opacity: 0
-
-.q-focus-helper
-  opacity: 0
-  transition: unset
+  height: 100%
+  // background: transparent
+  border: none
+  cursor: pointer
 
 </style>

@@ -23,15 +23,15 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="colTR q-tr--no-hover">
+        <q-tr :props="props" class="colTR" no-hover>
           <q-td v-for="col in props.cols.filter((c) => !(['title', 'review', 'tag'].find((n) => n === c.name)))"
             :key="col.name" :props="props">
-            <q-btn class="cellBTN" flat align="left" @click="changePage(props.row._id)">
-              {{ col.value }}</q-btn>
+            <button class="cellBTN" flat align="left" @click="changePage(props.row._id)">
+              {{ col.value }}</button>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props" rowspan="2">
-            <q-btn class="cellBTN" flat align="left" @click="changePage(props.row._id)">
+            <button class="cellBTN" flat align="left" @click="changePage(props.row._id)">
               <div style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
                 <div>
                   <div class="tag" v-for="t in (props.row.beScored?.tag ? props.row.beScored?.tag : ['涼', '甜', '閒'])"
@@ -41,14 +41,14 @@
                 </div>
                 評分 {{ col.value }}&nbsp; 評價{{ props.row.beScored?.amount ? props.row.beScored?.amount : 0 }}則
               </div>
-            </q-btn>
+            </button>
           </q-td>
         </q-tr>
-        <q-tr :props="props" class="q-tr--no-hover">
+        <q-tr :props="props" no-hover>
           <q-td colspan="3">
-            <q-btn class="cellBTN" flat align="left" @click="changePage(props.row._id)">
+            <button class="cellBTN" flat align="left" @click="changePage(props.row._id)">
               {{ props.row.title }}
-            </q-btn>
+            </button>
           </q-td>
         </q-tr>
       </template>
@@ -100,7 +100,7 @@ const changePage = (url) => {
 // 要去母版看規則
 
 </script>
-<style lang="sass">
+<style lang="sass" scoped>
 .q-page
   min-height: 0 !important
 .q-table
@@ -138,24 +138,32 @@ const changePage = (url) => {
 .q-tr:nth-child(even) td
   border-bottom: solid #999 1px
   // 之後再處理
-.colTR .q-tr:hover .q-td
-  background: red !important
+// 奇偶行不同顏色
+.q-tr:nth-child(4n+3) td
+  background: #fffaf4
+.q-tr:nth-child(4n+3) td:nth-child(4)
+  background: #fff5e4
+.q-tr:nth-child(4n) td
+  background: #fffaf4
 .cellBTN
-  height: 100%
   width: 100%
+  height: 100%
+  background: transparent
+  border: none
+  cursor: pointer
   //統一移除hover的方法
   //
-body.desktop .q-focusable:focus .q-focus-helper,
-body.desktop .q-hoverable:hover .q-focus-helper
-  background: inherit
-  opacity: 0
+// body.desktop .q-focusable:focus .q-focus-helper,
+// body.desktop .q-hoverable:hover .q-focus-helper
+//   background: inherit
+//   opacity: 0
 
-body.ios .q-hoverable:active .q-focus-helper
-  background: inherit
-  opacity: 0
+// body.ios .q-hoverable:active .q-focus-helper
+//   background: inherit
+//   opacity: 0
 
-.q-focus-helper
-  opacity: 0
-  transition: unset
+// .q-focus-helper
+//   opacity: 0
+//   transition: unset
 
 </style>

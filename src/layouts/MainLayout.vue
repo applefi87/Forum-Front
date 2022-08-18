@@ -301,6 +301,7 @@ const logout = async () => {
 const title = ref('')
 const hasChild = ref(false)
 const hasArticle = ref(false)
+const board = ref({})
 const articleRule = ref({})
 const articles = reactive([])
 const filterC0 = ref('')
@@ -314,6 +315,7 @@ const init = async (id) => {
   try {
     const { data } = await api.get('/board/' + (id || route.params.id || '62fc99277f3adbe07e542a58'))
     if (data.result) {
+      board.value = data.result
       title.value = data.result.title
       if (data.result.childBoard.active) {
         hasChild.value = true
@@ -380,7 +382,7 @@ const getChildboard = async () => {
 const publishArticle = () => {
 
 }
-
+provide('board', readonly(board))
 provide('boards', readonly(boards))
 provide('articles', readonly(articles))
 provide('init', readonly(init))
