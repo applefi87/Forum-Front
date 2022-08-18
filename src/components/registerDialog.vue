@@ -69,6 +69,8 @@ import { useUserStore } from 'src/stores/user'
 import notify from '../utils/notify'
 const { t } = useI18n()
 const users = useUserStore()
+// 初始變數
+const registerState = inject('registerState')
 // ****************註冊****
 const accountValid = ref(null)
 const nickNameValid = ref(null)
@@ -120,8 +122,7 @@ const nextPage = async () => {
 // ********************
 
 const registerForm = reactive({ schoolEmail: 'wdada5d@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdssfsfs', password: 'wdsadawd66A', nickName: 'WDAWDAD', gender: '0' })
-// 初始變數
-const registerState = inject('registerState')
+
 // ***********rule val區******************************
 const accountVal = [
   val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',

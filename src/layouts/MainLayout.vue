@@ -69,7 +69,7 @@
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
         <br>
-        <q-btn @click="publishArticle" color="orange" label="給評價" />
+        <q-btn @click="publishArticleState = true" color="orange" label="給評價" />
       </div>
 
     </q-drawer>
@@ -92,12 +92,15 @@
     <!--****************** 彈出視窗 ------>
     <!-- 註冊對話框 -->
     <registerDialog></registerDialog>
+    <!-- 發布文章框 -->
+    <publishArticle></publishArticle>
   </q-layout>
 </template>
 
 <script setup>
 import { ref, reactive, shallowRef, provide, readonly } from 'vue'
 import registerDialog from 'src/components/registerDialog.vue'
+import publishArticle from 'src/components/publishArticle.vue'
 import { useQuasar } from 'quasar'
 import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
@@ -111,6 +114,7 @@ const users = useUserStore()
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
 const registerState = ref(false)
+const publishArticleState = ref(false)
 const localeOptions = [
   { value: 'en-US', label: 'English' },
   { value: 'zh-TW', label: '繁體中文' }
@@ -138,7 +142,7 @@ const login = async () => {
   if (rep.success) {
     loginForm.account = ''
     loginForm.password = ''
-    loginForm.keepLogi = false
+    loginForm.keepLogin = false
   }
   router.push('/')
 }
@@ -232,10 +236,8 @@ const getChildboard = async () => {
   }
   getChildboardLoading.value = false
 }
-const publishArticle = () => {
-  console.log('in')
-}
 provide('registerState', registerState)
+provide('publishArticleState', publishArticleState)
 provide('board', readonly(board))
 provide('boards', readonly(boards))
 provide('articles', readonly(articles))
