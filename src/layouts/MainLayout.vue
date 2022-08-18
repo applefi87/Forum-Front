@@ -310,6 +310,7 @@ const filterOptions = shallowRef([])
 const filterUnique = ref('111-1')
 const filterUniqueOptions = shallowRef([])
 const init = async (id) => {
+  // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
     const { data } = await api.get('/board/' + (id || route.params.id || '62fc99277f3adbe07e542a58'))
     if (data.result) {
@@ -323,30 +324,26 @@ const init = async (id) => {
       }
       // 處理文章(規則去他母版抓)
       // 有成功才顯示不然清除
-      const getArticle = async () => {
+      const getArticles = async () => {
+        // 要有母版
         if (data.result.parent) {
           const parent = await api.get('/board/' + data.result.parent)
           articleRule.value = parent.data.result.childBoard?.article
           console.log('母版是' + parent.data.result.title)
+          // 母版要開放文章
           if (articleRule.value.active) {
-            console.log('有文章')
+            console.log('有文章區')
             hasArticle.value = true
-            // *********************************************取得文章************************
-            // const getArticle = async () => {
-            //   try {
-            //     const { data } = await api.get('/article/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
-            //     boards.length = 0
-            //     boards.push(...data.result)
-            //   } catch (error) {
-            //     console.log(error)
-            //   }
-            // }
-            return
+            // ********************************************* 取得文章 ************************
+            const { data } = await api.get('/article/' + (id || route.params.id))
+            articles.length = 0
+            articles.push(...data.result)
           }
+          return
         }
         hasArticle.value = false; articleRule.value = undefined
       }
-      getArticle()
+      getArticles()
     }
     filterC0.value = filterOptions.value[0]
     //
@@ -380,12 +377,12 @@ const getChildboard = async () => {
   }
   getChildboardLoading.value = false
 }
-
 const publishArticle = () => {
 
 }
 
 provide('boards', readonly(boards))
+provide('articles', readonly(articles))
 provide('init', readonly(init))
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
