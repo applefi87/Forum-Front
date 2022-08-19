@@ -20,5 +20,9 @@
   "Others": "Others",
   "logout": "Logout",
   "email": "E-mail",
-  "submit": "Submit"
+  "submit": "Submit",
+  "homework": "homework",
+  "cost": "cost",
+  "exam": "exam",
+  "roll_call": "roll call"
 }
