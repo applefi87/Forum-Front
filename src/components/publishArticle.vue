@@ -74,7 +74,6 @@
             </td>
           </tr>
         </table>
-
       </q-form>
     </div>
   </q-dialog>
@@ -178,7 +177,9 @@ const publish = async () => {
       submit.uniqueId = unique.value.value
       const { data } = await apiAuth.post('/article/create/' + route.params.id, submit)
       publishArticleState.value = false
-      //
+      // 讓板塊更新評分
+
+      // 重整才能看到評分的
       router.push(route.params.id)
       init(route.params.id)
     } catch (error) {
