@@ -86,7 +86,3 @@ const verifyPWDMail = async () => {
   mailVerifying.value = false
 }
 </script>
-
-<style lang="sass">
-
-</style>

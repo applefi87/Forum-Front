@@ -44,7 +44,7 @@
   </q-page>
 </template>
 
-<script setup>
+<script setup scoped>
 import { api } from 'src/boot/axios'
 import { useRouter } from 'vue-router'
 import { ref, reactive, inject, computed } from 'vue'
@@ -56,7 +56,6 @@ const board = inject('board')
 const articles = inject('articles')
 const init = inject('init')
 const hasArticle = inject('hasArticle')
-const articleRule = inject('articleRule')
 // ----------
 const filter = ref('')
 const pagination = ref({ rowsPerPage: 20 })
@@ -73,7 +72,7 @@ const columns = reactive([
   },
   { name: 'review', align: 'left', label: '評分', field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
-  { name: 'semester', align: 'left', label: '學期', field: row => board.value.uniqueData.find(i => i._id === row.uniqueId).c80, sortable: true, sortOrder: 'da' }
+  { name: 'semester', align: 'left', label: '學期', field: row => board.uniqueData.find(i => i._id === row.uniqueId).c80, sortable: true, sortOrder: 'da' }
 ]
 )
 

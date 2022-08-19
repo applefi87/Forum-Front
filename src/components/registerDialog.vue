@@ -62,7 +62,7 @@
   </q-dialog>
 </template>
 
-<script setup>
+<script setup scoped>
 import { ref, reactive, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'

@@ -158,8 +158,8 @@ const logout = async () => {
 const title = ref('')
 const hasChild = ref(false)
 const hasArticle = ref(false)
-const board = ref({})
-const articleRule = ref({})
+const board = reactive({})
+const article = reactive({})
 const articles = reactive([])
 const filterC0 = ref('')
 const filterAll = ref(false)
@@ -172,13 +172,18 @@ const init = async (id) => {
   try {
     const { data } = await api.get('/board/' + (id || route.params.id || '62fc99277f3adbe07e542a58'))
     if (data.result) {
-      board.value = data.result
+      // 清空物件與加入物件的美妙
+      for (const k in board) delete board[k]
+      Object.assign(board, data.result)
+      //
       title.value = data.result.title
       if (data.result.childBoard.active) {
         hasChild.value = true
         filterOptions.value = data.result.childBoard.rule.display.filter.dataCol.c0
         filterUniqueOptions.value = ['110-1', '110-2', '111-1']
       } else {
+        filterOptions.value = []
+        filterUniqueOptions.value = []
         hasChild.value = false
       }
       // 處理文章(規則去他母版抓)
@@ -187,10 +192,12 @@ const init = async (id) => {
         // 要有母版
         if (data.result.parent) {
           const parent = await api.get('/board/' + data.result.parent)
-          articleRule.value = parent.data.result.childBoard?.article
+          for (const k in article) delete article[k]
+          Object.assign(article, parent.data.result.childBoard?.article)
+          // article = parent.data.result.childBoard?.article
           console.log('母版是' + parent.data.result.title)
           // 母版要開放文章
-          if (articleRule.value.active) {
+          if (article.active) {
             console.log('有文章區')
             hasArticle.value = true
             // ********************************************* 取得文章 ************************
@@ -200,7 +207,10 @@ const init = async (id) => {
           }
           return
         }
-        hasArticle.value = false; articleRule.value = undefined
+        hasArticle.value = false
+        for (const k in article) {
+          delete article[k]
+        }
       }
       getArticles()
     }
@@ -244,7 +254,7 @@ provide('articles', readonly(articles))
 provide('init', readonly(init))
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
-provide('articleRule', readonly(articleRule))
+provide('article', readonly(article))
 // 用來避免router hash不更新頁面
 const changePage = (url) => {
   router.push(url)

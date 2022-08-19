@@ -61,7 +61,3 @@ const changePWD = async () => {
   }
 }
 </script>
-
-<style lang="sass">
-
-</style>

@@ -28,7 +28,7 @@
   </q-layout>
 </template>
 
-<script setup>
+<script setup scoped>
 import { ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
 // 這為了可調整語言+預設語言
