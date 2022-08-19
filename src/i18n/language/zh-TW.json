@@ -20,9 +20,17 @@
   "Others": "其他",
   "logout": "登出",
   "email": "信箱",
+  "null": "",
+  "privacy": "隱私",
+  "showAll": "顯示暱稱",
+  "anonymous": "全匿名",
   "submit": "送出",
   "homework": "作業/報告",
   "cost": "花費",
   "exam": "考試",
-  "roll_call": "點名"
+  "roll_call": "點名",
+  "semester": "學期",
+  "location": "地點",
+  "time": "時間",
+  "none": "無"
 }

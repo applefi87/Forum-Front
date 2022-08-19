@@ -20,9 +20,17 @@
   "Others": "Others",
   "logout": "Logout",
   "email": "E-mail",
+  "null": "",
+  "privacy": "Privacy",
+  "showAll": "show Nickname",
+  "anonymous": "anonymous",
   "submit": "Submit",
   "homework": "homework",
   "cost": "cost",
   "exam": "exam",
-  "roll_call": "roll call"
+  "roll_call": "roll call",
+  "semester": "semester",
+  "location": "location",
+  "time": "time",
+  "none": "none"
 }
