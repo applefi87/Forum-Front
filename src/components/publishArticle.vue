@@ -84,8 +84,9 @@
 import { ref, reactive, inject, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
+const router = useRouter()
 // import { useArticleStore } from 'src/stores/article'
 const { t } = useI18n()
 // const articles = useArticleStore()
@@ -95,6 +96,7 @@ const publishArticleState = inject('publishArticleState')
 const board = inject('board')
 // 母版有能留言的規則
 const article = inject('article')
+const init = inject('init')
 // ************************************************************
 // 有3個板，就產生3個表單 totalForm.f1 2 3
 // 用for 建置 加上讀取規則自動產生
@@ -174,8 +176,11 @@ const publish = async () => {
       submit.privacy = privacy.value.value
       submit.category = selectCat.value.value
       submit.uniqueId = unique.value.value
-      const { data } = await apiAuth.post('/article/create/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58'), submit)
+      const { data } = await apiAuth.post('/article/create/' + route.params.id, submit)
       publishArticleState.value = false
+      //
+      router.push(route.params.id)
+      init(route.params.id)
     } catch (error) {
       console.log(error.response.data)
     }
