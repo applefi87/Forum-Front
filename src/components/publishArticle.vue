@@ -31,7 +31,7 @@
           <tr v-if="category && category.c === 1">
             <td>評分</td>
             <td>
-              <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" />
+              <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" :max="10" />
             </td>
           </tr>
           <!-- tag -->
