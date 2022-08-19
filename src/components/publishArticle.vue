@@ -2,13 +2,31 @@
   <q-dialog v-model="publishArticleState" persistent v-if="categoryList.length > 0">
     <div>
       <q-form class="q-gutter-md" @submit.prevent="publish()">
-        <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" label="學期/班" dense
-          options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-        <q-select outlined v-model="selectCat" :options="categoryCodeList" label="文章分類" dense options-dense
-          :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-        <q-select outlined v-model="privacy" :options="privacyList" :label="t('privacy')" dense options-dense
-          :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <table v-if="category">
+          <!--  -->
+          <tr>
+            <td>文章分類</td>
+            <td>
+              <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+            </td>
+          </tr>
+          <!--  -->
+          <tr>
+            <td>學期/班</td>
+            <td>
+              <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
+                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
+            </td>
+          </tr>
+          <!--  -->
+          <tr>
+            <td>{{ t('privacy') }}</td>
+            <td>
+              <q-select outlined v-model="privacy" :options="privacyList" dense options-dense
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+            </td>
+          </tr>
           <!-- 評分 -->
           <tr v-if="category && category.c === 1">
             <td>評分</td>
@@ -48,8 +66,15 @@
               </q-input>
             </td>
           </tr>
+          <tr>
+            <td></td>
+            <td>
+              <q-btn :label="t('submit')" type="submit" color="primary" :loading="publishing"></q-btn>
+              <q-btn label='關閉' flat class="q-ml-sm close-register" @click="publishArticleState = false" />
+            </td>
+          </tr>
         </table>
-        <q-btn :label="t('submit')" type="submit"></q-btn>
+
       </q-form>
     </div>
   </q-dialog>
@@ -91,8 +116,6 @@ const category = computed(() => categoryList.find(c => {
 }))
 // 獨立選單建立
 const uniqueList = computed(() => {
-  console.log(board.uniqueData)
-  console.log(board?.uniqueData?.length)
   if (board?.uniqueData?.length > 0) {
     return board.uniqueData.map(u => {
       return {
@@ -107,13 +130,14 @@ const uniqueList = computed(() => {
 
 // form 基礎object建立(依照article) 剩下vue會自動form.xxx 建立
 watch(article, () => {
+  publishArticleState.value = false
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
   if (article?.category?.length > 0) {
     categoryList.length = 0
     categoryList.push(...article.category)
     // 對應加上form.fx
     categoryList?.forEach(f => {
-      form['f' + f.c] = { title: 'wdaaaaaaaaaaaaa', content: 'wwwwwwwwwwwwwwww' }
+      form['f' + f.c] = { title: 'wdaaaaaaaaaaaaa', content: 'wwwwww5555555555555555wwwwwwwwww' }
       const formIn = form['f' + f.c]
       if (f.c === 1) formIn.score = 5
       if (f.tagActive) {
@@ -136,20 +160,26 @@ const titleVal = [
   val => (val && val.length >= 5 && val.length <= 30) || '需5~30字之間'
 ]
 const contentVal = [
-  val => (val && val.length >= 10 && val.length <= 500) || '需10~500字之間'
+  val => (val && val.length >= 20 && val.length <= 500) || '需20~500字之間'
 ]
+const uniqueVal = [val => (val) || '必須選學期,上課時間']
+
 // ****************發布****
+const publishing = ref(false)
 const publish = async () => {
   if (route.params.id) {
+    publishing.value = true
     try {
       const submit = JSON.parse(JSON.stringify(form['f' + selectCat.value.value]))
-      submit.privacy = privacy.value
+      submit.privacy = privacy.value.value
       submit.category = selectCat.value.value
       submit.uniqueId = unique.value.value
-      const { data } = await apiAuth.post('/article/create/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58'), form)
+      const { data } = await apiAuth.post('/article/create/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58'), submit)
+      publishArticleState.value = false
     } catch (error) {
       console.log(error.response.data)
     }
+    publishing.value = false
   }
 }
 
