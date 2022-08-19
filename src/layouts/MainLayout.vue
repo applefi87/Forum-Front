@@ -69,7 +69,8 @@
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
         <br>
-        <q-btn @click="publishArticleState = true" color="orange" label="給評價" />
+        <q-btn v-if="users.token" @click="publishArticleState = true" color="orange" label="給評價" />
+        <q-btn v-else @click="registerState = true" color="orange" label="給評價" />
       </div>
 
     </q-drawer>
