@@ -49,6 +49,7 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above :breakpoint="767" :width="300">
       <h5>{{ title }}</h5>
+      <h6>{{ time }}</h6>
       <div v-if="hasChild">
         <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
           :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
@@ -171,7 +172,9 @@ const filterOptions = shallowRef([])
 // 之後再自動抓
 const filterUnique = ref('111-1')
 const filterUniqueOptions = shallowRef([])
+const time = ref(0)
 const init = async (id) => {
+  time.value = Date.now()
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
     boards.length = 0
@@ -220,11 +223,72 @@ const init = async (id) => {
       getArticles()
     }
     filterC0.value = filterOptions.value[0]
+    time.value = Date.now() - time.value
     //
   } catch (error) {
     router.push('/404')
   }
 }
+// 考量掉包機率大 增加風險 先暫停(目前已經可回傳全部資料)
+// **************************************************************
+// 原本137左右
+// const init = async (id) => {
+//   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
+//   try {
+//     time.value = Date.now()
+//     boards.length = 0
+//     const { data } = await api.get('/board/test/' + (id || route.params.id || '62fc99277f3adbe07e542a58'))
+//     console.log(data.result)
+//     // if (data.result) {
+//     //   // 清空物件與加入物件的美妙
+//     //   for (const k in board) delete board[k]
+//     //   Object.assign(board, data.result)
+//     //   //
+//     //   title.value = data.result.title
+//     //   if (data.result.childBoard.active) {
+//     //     hasChild.value = true
+//     //     filterOptions.value = data.result.childBoard.rule.display.filter.dataCol.c0
+//     //     filterUniqueOptions.value = ['110-1', '110-2', '111-1']
+//     //   } else {
+//     //     filterOptions.value = []
+//     //     filterUniqueOptions.value = []
+//     //     hasChild.value = false
+//     //   }
+//     //   // 處理文章(規則去他母版抓)
+//     //   // 有成功才顯示不然清除
+//     //   const getArticles = async () => {
+//     //     // 要有母版
+//     //     if (data.result.parent) {
+//     //       const parent = await api.get('/board/' + data.result.parent)
+//     //       for (const k in article) delete article[k]
+//     //       Object.assign(article, parent.data.result.childBoard?.article)
+//     //       // article = parent.data.result.childBoard?.article
+//     //       console.log('母版是' + parent.data.result.title)
+//     //       // 母版要開放文章
+//     //       if (article.active) {
+//     //         console.log('有文章區')
+//     //         hasArticle.value = true
+//     //         // ********************************************* 取得文章 ************************
+//     //         const { data } = await api.get('/article/' + (id || route.params.id))
+//     //         articles.length = 0
+//     //         articles.push(...data.result)
+//     //       }
+//     //       return
+//     //     }
+//     //     hasArticle.value = false
+//     //     for (const k in article) {
+//     //       delete article[k]
+//     //     }
+//     //   }
+//     //   getArticles()
+//     // }
+//     // filterC0.value = filterOptions.value[0]
+//     time.value = Date.now() - time.value
+//     //
+//   } catch (error) {
+//     router.push('/404')
+//   }
+// }
 init()
 // *********************************************取得子版************************
 const getChildboardLoading = ref(false)
@@ -246,7 +310,6 @@ const getChildboard = async () => {
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
     boards.length = 0
     boards.push(...data.result)
-    console.log(boards)
   } catch (error) {
     console.log(error)
   }
