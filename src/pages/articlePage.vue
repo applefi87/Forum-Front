@@ -18,7 +18,7 @@
                 style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
                 {{ props.row.user.nickName }}
                 <br>
-                &nbsp; {{ props.row.user.score || '白紙用戶' }}
+                &nbsp; {{ col.value || '白紙用戶' }}
               </div>
               <div v-else-if="col.name === 'review'">
                 <p class="tableTitle">{{ props.row.title }}</p>
@@ -64,7 +64,7 @@ const columns = reactive([
     required: true,
     label: '作者分數',
     align: 'left',
-    field: row => (row.user.score ? row.user.score : ''),
+    field: row => row.user.record.toBoard.score || '',
     // 似乎在header設就好
     // classes: 'q-table--col-auto-width',
     headerClasses: 'q-table--col-auto-width'
