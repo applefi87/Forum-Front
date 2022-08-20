@@ -54,7 +54,6 @@ const { t } = useI18n()
 // **********************************************子版清單***
 const board = inject('board')
 const articles = inject('articles')
-const init = inject('init')
 const hasArticle = inject('hasArticle')
 // ----------
 const filter = ref('')
@@ -72,14 +71,20 @@ const columns = reactive([
   },
   { name: 'review', align: 'left', label: '評分', field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
-  { name: 'semester', align: 'left', label: '學期', field: row => board.uniqueData.find(i => i._id === row.uniqueId).c80, sortable: true, sortOrder: 'da' }
-]
-)
-
-const open = (url) => {
-  router.push(url)
-  init(url)
-}
+  {
+    name: 'semester',
+    align: 'left',
+    label: '學期',
+    field: row => {
+      const unique = board.uniqueData.find(i => i._id === row.uniqueId)
+      // console.log(row.uniqueId)
+      // console.log(board.uniqueData)
+      // console.log(unique)
+      return unique.c80
+    },
+    sortable: true,
+    sortOrder: 'da'
+  }])
 // **********************************************子文章清單***
 // 要去母版看規則
 

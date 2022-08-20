@@ -162,6 +162,7 @@ const title = ref('')
 const hasChild = ref(false)
 const hasArticle = ref(false)
 const board = reactive({})
+const boards = reactive([])
 const article = reactive({})
 const articles = reactive([])
 const filterC0 = ref('')
@@ -173,6 +174,7 @@ const filterUniqueOptions = shallowRef([])
 const init = async (id) => {
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
+    boards.length = 0
     const { data } = await api.get('/board/' + (id || route.params.id || '62fc99277f3adbe07e542a58'))
     if (data.result) {
       // 清空物件與加入物件的美妙
@@ -226,7 +228,7 @@ const init = async (id) => {
 init()
 // *********************************************取得子版************************
 const getChildboardLoading = ref(false)
-const boards = reactive([])
+
 const getChildboard = async () => {
   try {
     getChildboardLoading.value = true
@@ -244,6 +246,7 @@ const getChildboard = async () => {
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
     boards.length = 0
     boards.push(...data.result)
+    console.log(boards)
   } catch (error) {
     console.log(error)
   }
