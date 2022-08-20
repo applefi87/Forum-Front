@@ -21,7 +21,8 @@
             </div>
           </div>
         </q-btn-dropdown>
-        <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none">
+        <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none"
+          v-model="loginState">
           <div class="row no-wrap q-pa-md">
             <div class="column">
               <q-form @submit.prevent="login" class="q-gutter-xs">
@@ -70,7 +71,7 @@
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
         <br>
         <q-btn v-if="users.token" @click="publishArticleState = true" color="orange" label="給評價" />
-        <q-btn v-else @click="registerState = true" color="orange" label="給評價" />
+        <q-btn v-else @click="loginState = true" color="orange" label="給評價" />
       </div>
 
     </q-drawer>
@@ -115,6 +116,7 @@ const users = useUserStore()
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
 const registerState = ref(false)
+const loginState = ref(false)
 const publishArticleState = ref(false)
 const localeOptions = [
   { value: 'en-US', label: 'English' },
