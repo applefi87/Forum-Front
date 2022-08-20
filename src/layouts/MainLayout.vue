@@ -19,6 +19,9 @@
             <div class="column">
               <q-btn label='變更密碼' color="primary" flat class="q-ml-sm" to="/changePWD" />
             </div>
+            <div class="column">
+              <q-btn v-if="users.role === 0" label='新增板塊' color="primary" flat class="q-ml-sm" to="/changePWD" />
+            </div>
           </div>
         </q-btn-dropdown>
         <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none"

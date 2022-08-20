@@ -6,6 +6,7 @@ const routes = [
     children: [
       { path: 'forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
       { path: 'changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') },
+      { path: 'uploadBoard', displayName: 'uploadBoard', component: () => import('pages/uploadBoardPage.vue') },
       { path: ':id', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }
     ]
   },
