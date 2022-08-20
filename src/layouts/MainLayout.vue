@@ -29,7 +29,12 @@
                 <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
                   :rules="[val => val && val.length > 0 || t('cantNull')]" />
                 <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
-                  :rules="[val => val && val.length > 0 || t('cantNull')]" />
+                  :rules="[val => val && val.length > 0 || t('cantNull')]" :type="isPwd ? 'password' : 'text'">
+                  <template v-slot:append>
+                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                      @click="isPwd = !isPwd" />
+                  </template>
+                </q-input>
                 <div>
                   <div style="height:50px">
                     <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
@@ -116,6 +121,7 @@ const router = useRouter()
 const users = useUserStore()
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
+const isPwd = ref(true)
 const registerState = ref(false)
 const loginState = ref(false)
 const publishArticleState = ref(false)
@@ -126,7 +132,6 @@ const localeOptions = [
 const { locale, t } = useI18n({ useScope: 'global' })
 locale.value = useQuasar().lang.getLocale()
 
-const isPwd = ref(true)
 // 切換左右選單顯示
 const leftDrawerState = ref(false)
 const rightDrawerState = ref(false)
@@ -147,8 +152,8 @@ const login = async () => {
     loginForm.account = ''
     loginForm.password = ''
     loginForm.keepLogin = false
+    router.push('/')
   }
-  router.push('/')
 }
 
 //* ***************登出****

@@ -10,6 +10,11 @@ const routes = [
     ]
   },
   {
+    path: '/admin',
+    displayName: 'admin',
+    component: () => import('layouts/adminLogin.vue')
+  },
+  {
     path: '/404',
     name: '404',
     component: () => import('src/pages/ErrorNotFound.vue'),
