@@ -49,7 +49,7 @@ const transform = () => {
         console.log(json[2])
         out.value = json
       },
-      { delimiter: { wrap: '"' } }
+      { delimiter: { wrap: '"', eol: '\r' } }
     )
   }
 }
