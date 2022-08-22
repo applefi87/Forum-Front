@@ -11,21 +11,18 @@
       </template>
     </q-file>
     <button v-if="fileUploaded" @click="transform">transform</button>
-    <hr>
-    {{ out }}
   </q-page>
 </template>
 
 <script setup>
 import converter from 'json-2-csv'
 import { apiAuth } from 'src/boot/axios'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ref, watch } from 'vue'
 import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
 
 const file = ref(null)
 const onRejected = (file) => {
@@ -54,16 +51,14 @@ const transform = async () => {
     console.log('in')
     converter.csv2json(
       input.value,
-      (err, json) => {
+      async (err, json) => {
         if (err) throw err
         console.log(json[2])
-        out.value = json
-        console.log(1)
-        // const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: out.value, uniqueCol: uniqueCol.value })
+        const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: json, uniqueCol: uniqueCol.value })
+        console.log('ok')
       },
       { delimiter: { wrap: '"', eol: '\r' } }
     )
-    console.log(2)
   }
 }
 const uniqueColVal = [

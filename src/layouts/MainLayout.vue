@@ -177,7 +177,7 @@ const filterC0 = ref('')
 const filterAll = ref(false)
 const filterOptions = shallowRef([])
 // 之後再自動抓
-const filterUnique = ref('111-1')
+const filterUnique = ref('')
 const filterUniqueOptions = shallowRef([])
 const time = ref(0)
 const init = async (id) => {
@@ -196,6 +196,7 @@ const init = async (id) => {
         hasChild.value = true
         filterOptions.value = data.result.childBoard.rule.display.filter.dataCol.c0
         filterUniqueOptions.value = data.result.childBoard.rule.display.filter.uniqueCol.c80
+        filterUnique.value = filterUniqueOptions.value[0]
       } else {
         filterOptions.value = []
         filterUniqueOptions.value = []
