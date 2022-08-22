@@ -77,9 +77,9 @@ const columns = reactive([
     label: '學期',
     field: row => {
       const unique = board.uniqueData.find(i => i._id === row.uniqueId)
-      console.log(row.uniqueId)
-      console.log(board.uniqueData)
-      console.log(unique)
+      // console.log(row.uniqueId)
+      // console.log(board.uniqueData)
+      // console.log(unique)
       return unique.c80
     },
     sortable: true,

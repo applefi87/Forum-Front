@@ -178,6 +178,10 @@ const publish = async () => {
       publishArticleState.value = false
       // 重整才能看到評分的
       router.push(route.params.id)
+      watch(route, function (to, from) {
+        router.go(0)
+      }
+      )
     } catch (error) {
       console.log(error.response.data)
     }

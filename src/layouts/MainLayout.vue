@@ -16,12 +16,7 @@
         <!-- https://quasar.dev/vue-components/button-dropdown -->
         <q-btn-dropdown v-if="users.token" class="info" dense flat label='個人資料'>
           <div class="row no-wrap q-pa-md">
-            <div class="column">
-              <q-btn label='變更密碼' color="primary" flat class="q-ml-sm" to="/changePWD" />
-            </div>
-            <div class="column">
-              <q-btn v-if="users.role === 0" label='新增板塊' color="primary" flat class="q-ml-sm" to="/changePWD" />
-            </div>
+            <q-btn label='變更密碼' color="primary" flat class="q-ml-sm" to="/changePWD" />
           </div>
         </q-btn-dropdown>
         <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none"
@@ -70,6 +65,10 @@
             Loading...
           </template>
         </q-btn>
+        <div style="text-align: right">
+          <q-btn v-if="users.role === 0" label='新增板塊' color="orange" class="q-ml-sm"
+            :to="'/uploadBoard/' + route.params.id" />
+        </div>
       </div>
       <div v-if="hasArticle">
         <!-- 先不過濾全抓  要評價再顯示table供選-->
