@@ -10,7 +10,7 @@
         CSV檔，需小於5mb
       </template>
     </q-file>
-    <button @click="transform">transform</button>
+    <button v-if="fileUploaded" @click="transform">transform</button>
     <hr>
     {{ out }}
   </q-page>
@@ -37,26 +37,33 @@ const reader = new FileReader()
 
 const uniqueCol = ref('')
 const input = ref('')
+const fileUploaded = ref(false)
 watch(file, () => {
+  fileUploaded.value = false
   // 代處理utf8/big5
   reader.readAsText(file.value, 'BIG5')
   reader.onload = () => {
-    input.value = reader.result
+    // 去除結尾多/r
+    input.value = reader.result.replace(/[\r\n|\r|\n]$/, '')
+    if (input.value) { fileUploaded.value = true } else { fileUploaded.value = false }
   }
 })
 const out = ref('')
 const transform = async () => {
   if (input.value) {
+    console.log('in')
     converter.csv2json(
       input.value,
       (err, json) => {
         if (err) throw err
         console.log(json[2])
         out.value = json
+        console.log(1)
+        // const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: out.value, uniqueCol: uniqueCol.value })
       },
       { delimiter: { wrap: '"', eol: '\r' } }
     )
-    const { data } = await apiAuth.post('/create/temp/' + route.params.id, { json: out.value, uniqueCol: uniqueCol.value })
+    console.log(2)
   }
 }
 const uniqueColVal = [

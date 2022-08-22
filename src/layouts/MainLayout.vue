@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <q-btn flat @click="router.push('/62fc99277f3adbe07e542a58')">
+          <q-btn flat @click="router.push('/6302f5b4bc2df18161befd63')">
             <q-avatar>
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
@@ -195,7 +195,7 @@ const init = async (id) => {
       if (data.result.childBoard.active) {
         hasChild.value = true
         filterOptions.value = data.result.childBoard.rule.display.filter.dataCol.c0
-        filterUniqueOptions.value = ['110-1', '110-2', '111-1']
+        filterUniqueOptions.value = data.result.childBoard.rule.display.filter.uniqueCol.c80
       } else {
         filterOptions.value = []
         filterUniqueOptions.value = []
