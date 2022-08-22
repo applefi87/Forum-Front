@@ -95,7 +95,6 @@ const publishArticleState = inject('publishArticleState')
 const board = inject('board')
 // 母版有能留言的規則
 const article = inject('article')
-const init = inject('init')
 // ************************************************************
 // 有3個板，就產生3個表單 totalForm.f1 2 3
 // 用for 建置 加上讀取規則自動產生
@@ -179,7 +178,6 @@ const publish = async () => {
       publishArticleState.value = false
       // 重整才能看到評分的
       router.push(route.params.id)
-      init(route.params.id)
     } catch (error) {
       console.log(error.response.data)
     }

@@ -26,12 +26,12 @@
         <q-tr :props="props" class="colTR" no-hover>
           <q-td v-for="col in props.cols.filter((c) => !(['title', 'review', 'tag'].find((n) => n === c.name)))"
             :key="col.name" :props="props">
-            <button class="cellBTN" @click="changePage(props.row._id)">
+            <button class="cellBTN" @click="router.push('/' + props.row._id)">
               {{ col.value }}</button>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props" rowspan="2">
-            <button class="cellBTN" @click="changePage(props.row._id)">
+            <button class="cellBTN" @click="router.push('/' + props.row._id)">
               <div
                 style="display:flex;flex-direction: column;justify-content: space-between ;align-items: flex-start; height: 100% ">
                 <div>
@@ -47,7 +47,7 @@
         </q-tr>
         <q-tr :props="props" no-hover>
           <q-td colspan="3">
-            <button class="cellBTN" @click="changePage(props.row._id)">
+            <button class="cellBTN" @click="router.push('/' + props.row._id)">
               {{ props.row.title }}
             </button>
           </q-td>
@@ -65,7 +65,6 @@ const router = useRouter()
 const { t } = useI18n()
 // **********************************************子版清單***
 const boards = inject('boards')
-const init = inject('init')
 const hasChild = inject('hasChild')
 // ----------
 const filter = ref('')
@@ -93,10 +92,6 @@ const columns = reactive([
   { name: 'title', label: '課程名', field: 'title' }
 ]
 )
-const changePage = (url) => {
-  router.push(url)
-  init(url)
-}
 // **********************************************子文章清單***
 // 要去母版看規則
 

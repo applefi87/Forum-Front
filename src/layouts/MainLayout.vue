@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <q-btn flat @click="changePage('62fc99277f3adbe07e542a58')">
+          <q-btn flat @click="router.push('/62fc99277f3adbe07e542a58')">
             <q-avatar>
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
@@ -234,6 +234,7 @@ const init = async (id) => {
     time.value = Date.now() - time.value
     //
   } catch (error) {
+    console.log(error)
     router.push('/404')
   }
 }
@@ -328,15 +329,9 @@ provide('publishArticleState', publishArticleState)
 provide('board', readonly(board))
 provide('boards', readonly(boards))
 provide('articles', readonly(articles))
-provide('init', readonly(init))
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
 provide('article', readonly(article))
-// 用來避免router hash不更新頁面
-const changePage = (url) => {
-  router.push(url)
-  init(url)
-}
 // *********************************************子文章************************
 
 </script>
