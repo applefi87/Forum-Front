@@ -60,4 +60,8 @@ const changePWD = async () => {
     router.push('/')
   }
 }
+const init = () => {
+  if (!users.token) router.push('/')
+}
+init()
 </script>

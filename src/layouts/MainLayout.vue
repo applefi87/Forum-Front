@@ -87,8 +87,7 @@
       </div>
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>
-      <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
-        map-options />
+      <q-select v-model="locale" :options="localeOptions" label="Language:" borderless emit-value map-options />
     </q-drawer>
     <q-page-container>
       <router-view />
