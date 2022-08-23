@@ -1,6 +1,6 @@
 const routes = [
   {
-    path: '/',
+    path: '/board',
     displayName: 'main',
     component: () => import('layouts/MainLayout.vue'),
     children: [
@@ -8,8 +8,9 @@ const routes = [
       { path: ':id', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }
     ]
   },
-  { path: '/forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
   { path: '/changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') },
+  { path: '/forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
+
   {
     path: '/admin',
     displayName: 'admin',
