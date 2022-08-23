@@ -1,4 +1,3 @@
-https://applefi87.github.io/Quasar-Project/
 # Quasar App (quasar-project)
 
 A Quasar Project
