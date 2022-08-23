@@ -170,3 +170,20 @@ const register = async () => {
 }
 
 </script>
+
+<style lang="sass" scoped>
+.gender
+  margin-bottom: 0
+  font-size: 0.8rem
+.q-stepper
+  width: 500px
+  height: 600px
+  position: relative
+  &:deep(.q-stepper__nav)
+    position: absolute
+    bottom: 0
+  &:deep(.q-field)
+    margin-top: 0.6rem
+.q-stepper__nav
+  width: 100%
+</style>

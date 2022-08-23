@@ -1,22 +1,25 @@
 <template >
-  <q-layout view="hHh LpR fff" id="m">
+  <q-layout view="hHh lpR fff" id="m">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
           <q-btn flat @click="router.push('/630485bbbead5775ea3bc4aa')">
-            <q-avatar>
+            <q-avatar class="gt-sm">
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
             師大課程版首頁
           </q-btn>
         </q-toolbar-title>
-        <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
-          map-options />
+        <q-select class="langSelect gt-md" v-model="locale" :options="localeOptions" label="Language:" borderless
+          emit-value map-options />
         <!-- https://quasar.dev/vue-components/button-dropdown -->
-        <q-btn-dropdown v-if="users.token" class="info" dense flat label='個人資料'>
+        <q-btn-dropdown v-if="users.token" class="info " dense flat label='個人資料'>
           <div class="row no-wrap q-pa-md">
             <q-btn label='變更密碼' color="primary" flat class="q-ml-sm" to="/changePWD" />
+          </div>
+          <div class="row no-wrap q-pa-md">
+            <q-btn :label='t("logout")' color="primary c-w" @click="logout" flat class="q-ml-sm" />
           </div>
         </q-btn-dropdown>
         <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none"
@@ -45,12 +48,13 @@
             </div>
           </div>
         </q-btn-dropdown>
-        <q-btn v-if="users.token" :label='t("logout")' color="primary c-w" @click="logout" flat />
-        <q-btn class="lt-lg" dense flat round icon="menu" @click="toggleRightDrawer" />
+
+        <q-btn class="lt-lg" dense flat round icon="settings" @click="toggleRightDrawer" />
       </q-toolbar>
     </q-header>
     <!-- ******************************************************** -->
-    <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above :breakpoint="767" :width="300">
+    <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above no-swipe-open no-swipe-close
+      :breakpoint="767" :width="300">
       <h5>{{ title }}</h5>
       <h6>{{ time }}</h6>
       <div v-if="hasChild">
@@ -81,10 +85,10 @@
         <q-btn v-if="users.token" @click="publishArticleState = true" color="orange" label="給評價" />
         <q-btn v-else @click="loginState = true" color="orange" label="給評價" />
       </div>
-
     </q-drawer>
-    <q-drawer v-model='rightDrawerState' side="right" mini-to-overlay persistent bordered
-      show-if-above:breakpoint="1023" :width="300">
+    <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>
+      <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
+        map-options />
     </q-drawer>
     <q-page-container>
       <router-view />
@@ -238,66 +242,6 @@ const init = async (id) => {
     router.push('/404')
   }
 }
-// 考量掉包機率大 增加風險 先暫停(目前已經可回傳全部資料)
-// **************************************************************
-// 原本137左右
-// const init = async (id) => {
-//   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
-//   try {
-//     time.value = Date.now()
-//     boards.length = 0
-//     const { data } = await api.get('/board/test/' + (id || route.params.id || '62fc99277f3adbe07e542a58'))
-//     console.log(data.result)
-//     // if (data.result) {
-//     //   // 清空物件與加入物件的美妙
-//     //   for (const k in board) delete board[k]
-//     //   Object.assign(board, data.result)
-//     //   //
-//     //   title.value = data.result.title
-//     //   if (data.result.childBoard.active) {
-//     //     hasChild.value = true
-//     //     filterOptions.value = data.result.childBoard.rule.display.filter.dataCol.c0
-//     //     filterUniqueOptions.value = ['110-1', '110-2', '111-1']
-//     //   } else {
-//     //     filterOptions.value = []
-//     //     filterUniqueOptions.value = []
-//     //     hasChild.value = false
-//     //   }
-//     //   // 處理文章(規則去他母版抓)
-//     //   // 有成功才顯示不然清除
-//     //   const getArticles = async () => {
-//     //     // 要有母版
-//     //     if (data.result.parent) {
-//     //       const parent = await api.get('/board/' + data.result.parent)
-//     //       for (const k in article) delete article[k]
-//     //       Object.assign(article, parent.data.result.childBoard?.article)
-//     //       // article = parent.data.result.childBoard?.article
-//     //       console.log('母版是' + parent.data.result.title)
-//     //       // 母版要開放文章
-//     //       if (article.active) {
-//     //         console.log('有文章區')
-//     //         hasArticle.value = true
-//     //         // ********************************************* 取得文章 ************************
-//     //         const { data } = await api.get('/article/' + (id || route.params.id))
-//     //         articles.length = 0
-//     //         articles.push(...data.result)
-//     //       }
-//     //       return
-//     //     }
-//     //     hasArticle.value = false
-//     //     for (const k in article) {
-//     //       delete article[k]
-//     //     }
-//     //   }
-//     //   getArticles()
-//     // }
-//     // filterC0.value = filterOptions.value[0]
-//     time.value = Date.now() - time.value
-//     //
-//   } catch (error) {
-//     router.push('/404')
-//   }
-// }
 init()
 // *********************************************取得子版************************
 const getChildboardLoading = ref(false)
@@ -339,28 +283,20 @@ provide('article', readonly(article))
 <style lang="sass" scoped >
 .q-header
   height: 48px
+.q-drawer-container
+  &:deep(.q-drawer)
+    top: 48px
+  &:deep(.q-drawer__backdrop)
+    z-index: 1999 !important
+//
 .langSelect
   width: 100px
-  & *
+  &:deep() *
     color: white
-.gender
-  margin-bottom: 0
-  font-size: 0.8rem
-.q-stepper
-  width: 500px
-  height: 600px
-  position: relative
-  &:deep(.q-stepper__nav)
-    position: absolute
-    bottom: 0
-  &:deep(.q-field)
-    margin-top: 0.6rem
-.q-stepper__nav
-  width: 100%
 .f-r
   float: right
 .c-w
   &:deep(.block)
-    color: white
+    color: black
 </style>
 <!-- login 待處理同IP登陸5次要等15分鐘 (目前可一直試) -->
