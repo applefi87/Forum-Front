@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <q-btn flat @click="router.push('/6302f5b4bc2df18161befd63')">
+          <q-btn flat @click="router.push('/630485bbbead5775ea3bc4aa')">
             <q-avatar>
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
@@ -185,7 +185,7 @@ const init = async (id) => {
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
     boards.length = 0
-    const { data } = await api.get('/board/' + (id || route.params.id || '62fc99277f3adbe07e542a58'))
+    const { data } = await api.get('/board/' + (id || route.params.id || '63044667fad0c0b669bbafdd'))
     if (data.result) {
       // 清空物件與加入物件的美妙
       for (const k in board) delete board[k]
@@ -194,8 +194,8 @@ const init = async (id) => {
       title.value = data.result.title
       if (data.result.childBoard.active) {
         hasChild.value = true
-        filterOptions.value = data.result.childBoard.rule.display.filter.dataCol.c0
-        filterUniqueOptions.value = data.result.childBoard.rule.display.filter.uniqueCol.c80
+        filterOptions.value = data.result.childBoard.rule.display.filter?.dataCol?.c0 || [0]
+        filterUniqueOptions.value = data.result.childBoard.rule.display.filter?.uniqueCol?.c80 || [0]
         filterUnique.value = filterUniqueOptions.value[0]
       } else {
         filterOptions.value = []
