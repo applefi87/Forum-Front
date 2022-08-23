@@ -78,7 +78,8 @@ module.exports = configure(function (/* ctx */) {
       // ignorePublicFolder: true,
       // minify: false,
       // polyfillModulePreload: true,
-      distDir: 'dist',
+      // 這特別改路徑 但目前讓github action處理
+      // distDir: 'dist',
 
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
