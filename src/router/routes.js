@@ -1,15 +1,21 @@
 const routes = [
   {
-    path: '/board',
+    path: '/',
     displayName: 'main',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'uploadBoard/:id', displayName: 'uploadBoard', component: () => import('pages/uploadBoardPage.vue') },
-      { path: ':id', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }
+      { path: 'changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') },
+      { path: 'forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
+      {
+        path: 'board/',
+        displayName: 'board',
+        component: () => import('layouts/BoardLayout.vue'),
+        children: [
+          { path: ':id', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }]
+      },
+      { path: 'uploadBoard/:id', displayName: 'uploadBoard', component: () => import('pages/uploadBoardPage.vue') }
     ]
   },
-  { path: '/changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') },
-  { path: '/forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
 
   {
     path: '/admin',
