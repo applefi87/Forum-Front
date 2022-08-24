@@ -8,7 +8,7 @@
       <div class="text-h2" style="opacity:.4">
         You enter a nothing.
       </div>
-      <q-btn class="q-mt-xl" color="white" text-color="blue" unelevated to="/board/6304cb253e13789077e47578"
+      <q-btn class="q-mt-xl" color="white" text-color="blue" unelevated to="/board/6305e222ea43fe13f3ae3775"
         label="Go Home" no-caps />
     </div>
   </div>

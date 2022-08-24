@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title class="q-pl-none">
-          <q-btn flat @click="router.push('/630485bbbead5775ea3bc4aa')">
+          <q-btn flat @click="router.push('/board/6305df25f302b171b210ad66')">
             <q-avatar class="gt-sm q-mr-sm">
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
