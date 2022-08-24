@@ -3,7 +3,7 @@
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
-        <q-toolbar-title>
+        <q-toolbar-title class="q-pl-none">
           <q-btn flat @click="router.push('/630485bbbead5775ea3bc4aa')">
             <q-avatar class="gt-sm q-mr-sm">
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
@@ -54,8 +54,9 @@
     </q-header>
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
-      :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
-      <h5 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}{{ time }}</h5>
+      :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column" :width="300">
+      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}{{ time
+      }}999999999999999999999999999999999999999999</h6>
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="board" v-if="hasChild" class="searchRows">
@@ -297,8 +298,6 @@ provide('article', readonly(article))
 .q-drawer-container
   &:deep(.q-drawer)
     top: 48px
-    @include xs
-      width: 90% !important
   &:deep(.q-drawer__backdrop)
     z-index: 1999 !important
 </style>
