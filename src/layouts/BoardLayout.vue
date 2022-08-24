@@ -5,7 +5,7 @@
         <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
           <q-btn flat @click="router.push('/630485bbbead5775ea3bc4aa')">
-            <q-avatar class="gt-sm">
+            <q-avatar class="gt-sm q-mr-sm">
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
             師大課程版首頁
@@ -54,11 +54,11 @@
     </q-header>
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
-      :breakpoint="767">
+      :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
+      <h5 class="q-my-lg">{{ title }}{{ time }}</h5>
       <div style="height: 100% ;display:flex;flex-direction: column; justify-content: space-between;">
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="board">
-            <h5 class="q-my-lg">{{ title }}{{ time }}</h5>
             <div v-if="hasChild" class="searchRows">
               <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
                 :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
@@ -99,8 +99,8 @@
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </q-tab-panel>
         </q-tab-panels>
-        <q-tabs v-model="tab" indicator-color="transparent" active-color="white" class="bg-teal text-grey-5 shadow-2"
-          dense>
+        <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="teal-4"
+          class="bg-teal text-grey-5 shadow-2" dense>
           <q-tab name="board" label="board" />
           <q-tab name="article" label="article" />
           <q-tab name="edit" label="edit" />

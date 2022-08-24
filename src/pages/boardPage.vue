@@ -97,6 +97,7 @@ const columns = reactive([
 
 </script>
 <style lang="sass" scoped>
+
 // $
 .q-page
   min-height: 0 !important
