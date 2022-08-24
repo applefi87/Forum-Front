@@ -2,10 +2,10 @@
   <q-layout view="hHh lpR fff" id="m">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn class="lt-md" flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
           <q-btn flat @click="router.push('/board/6304cb253e13789077e47578')">
-            <q-avatar class="gt-sm">
+            <q-avatar class="gt-sm  q-mr-sm">
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
             師大課程版首頁
@@ -59,16 +59,6 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer elevated class="bg-grey-8 text-white">
-      <q-toolbar>
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
-          <div>Title</div>
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
     <!--****************** 彈出視窗 ------>
     <!-- 註冊對話框 -->
     <registerDialog></registerDialog>
@@ -118,7 +108,7 @@ const login = async () => {
     loginForm.account = ''
     loginForm.password = ''
     loginForm.keepLogin = false
-    router.push('/board')
+    router.push('/board/')
   }
 }
 
@@ -139,11 +129,7 @@ provide('loginDropdownState', loginDropdownState)
 <style lang="sass" scoped >
 .q-header
   height: 48px
-.q-drawer-container
-  &:deep(.q-drawer)
-    top: 48px
-  &:deep(.q-drawer__backdrop)
-    z-index: 1999 !important
+
 //
 .langSelect
   width: 100px

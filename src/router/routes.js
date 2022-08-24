@@ -11,9 +11,10 @@ const routes = [
         displayName: 'board',
         component: () => import('layouts/BoardLayout.vue'),
         children: [
+          { path: 'uploadBoard/:id', displayName: 'uploadBoard', component: () => import('pages/uploadBoardPage.vue') },
           { path: ':id', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }]
-      },
-      { path: 'uploadBoard/:id', displayName: 'uploadBoard', component: () => import('pages/uploadBoardPage.vue') }
+      }
+
     ]
   },
 

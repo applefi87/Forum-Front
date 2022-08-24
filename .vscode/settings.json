@@ -14,5 +14,8 @@
   ],
   "[vue]": {
     "editor.defaultFormatter": "Vue.volar"
+  },
+  "[sass]": {
+    "editor.defaultFormatter": "syler.sass-indented"
   }
 }

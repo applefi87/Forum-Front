@@ -1,9 +1,9 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="flex flex-center ">
     <q-table v-if="hasChild" :rows="filtedBoards" :columns="columns" row-key="_id"
       :virtual-scroll="pagination.rowsPerPage === 0" v-model:pagination="pagination" auto-width separator="none"
-      no-data-label="無資料" grid-header :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]"
-      style="height: 700px ;width:900px">
+      no-data-label="無資料" grid-header :rows-per-page-options="[0, 10, 15, 30, 50, 100]"
+      style="height: 100% ;width: 100%">
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !(['title', 'tag', 'review'].find((n) => n === c.name)))"
@@ -14,7 +14,7 @@
             :props="props">
             <div style="line-height:40px ;display:inline-block">{{ col.label }}</div>
             <q-input borderless dense debounce="300" v-model="filter" placeholder="Search" outlined label="搜尋"
-              style="width:500px;display:inline-block;float:right">
+              style="width:300px;display:inline-block;float:right">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -26,12 +26,12 @@
         <q-tr :props="props" class="colTR" no-hover>
           <q-td v-for="col in props.cols.filter((c) => !(['title', 'review', 'tag'].find((n) => n === c.name)))"
             :key="col.name" :props="props">
-            <button class="cellBTN" @click="router.push('/' + props.row._id)">
+            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
               {{ col.value }}</button>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props" rowspan="2">
-            <button class="cellBTN" @click="router.push('/' + props.row._id)">
+            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
               <div
                 style="display:flex;flex-direction: column;justify-content: space-between ;align-items: flex-start; height: 100% ">
                 <div>
@@ -47,7 +47,7 @@
         </q-tr>
         <q-tr :props="props" no-hover>
           <q-td colspan="3">
-            <button class="cellBTN" @click="router.push('/' + props.row._id)">
+            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
               {{ props.row.title }}
             </button>
           </q-td>
@@ -97,6 +97,7 @@ const columns = reactive([
 
 </script>
 <style lang="sass" scoped>
+// $
 .q-page
   min-height: 0 !important
 .q-table

@@ -1,5 +1,5 @@
 <template>
-  <q-page style="width:500px; margin:50px 10px 0 30px">
+  <q-page>
     <q-input filled v-model="uniqueCol" :label='t("semester")' lazy-rules :rules="uniqueColVal" />
     <q-file filled bottom-slots v-model="file" label="板塊清單" counter accept="text/csv" max-file-size="5242880"
       @rejected="onRejected">
@@ -68,9 +68,9 @@ const uniqueColVal = [
 
 </script>
 
-<style lang="sass">
-.editor
-  width: 400px
-  height: 300px
-  border: 1px solid black
+<style lang="sass" scoped>
+.q-page
+  width:500px
+  padding:50px 10px 0 30px
+  box-sizing: border-box
 </style>

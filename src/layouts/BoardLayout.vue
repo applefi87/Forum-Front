@@ -1,56 +1,76 @@
 <template >
-  <q-layout view="hHh lpR fff" id="m">
-    <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above no-swipe-open no-swipe-close
-      :breakpoint="767" :width="300">
-      <h5>{{ title }}</h5>
-      <h6>{{ time }}</h6>
-      <div v-if="hasChild">
-        <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
-          :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-        <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
-          :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-        <q-checkbox v-model="filterAll" label="全部系所" />
-        <br>
-        <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" label="查詢">
-          <template v-slot:getChildboardLoading>
-            Loading...
-          </template>
-        </q-btn>
-        <div style="text-align: right">
-          <q-btn v-if="users.role === 0" label='新增板塊' color="orange" class="q-ml-sm"
-            :to="'/board/uploadBoard/' + route.params.id" />
-        </div>
-      </div>
-      <div v-if="hasArticle">
-        <!-- 先不過濾全抓  要評價再顯示table供選-->
-        <!-- <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
+  <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above no-swipe-open no-swipe-close
+    :breakpoint="767">
+    <div style="height: 100% ;display:flex;flex-direction: column; justify-content: space-between;">
+      <q-tab-panels v-model="tab" animated>
+        <q-tab-panel name="board">
+          <h5 class="q-my-lg">{{ title }}{{ time }}</h5>
+          <div v-if="hasChild" class="searchRows">
+            <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
+              :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+            <div>
+              <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
+                :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+              <q-checkbox v-model="filterAll" label="全部系所" />
+            </div>
+            <br>
+            <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" label="查詢">
+              <template v-slot:getChildboardLoading>
+                Loading...
+              </template>
+            </q-btn>
+            <div style="text-align: right">
+              <q-btn v-if="users.role === 0" label='新增板塊' color="orange" class="q-ml-sm"
+                :to="'/board/uploadBoard/' + route.params.id" />
+            </div>
+          </div>
+          <div v-if="hasArticle">
+            <!-- 先不過濾全抓  要評價再顯示table供選-->
+            <!-- <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
           :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
-        <br>
-        <q-btn v-if="users.token" @click="publishArticleState = true" color="orange" label="給評價" />
-        <q-btn v-else @click="loginDropdownState = true" color="orange" label="給評價" />
-      </div>
-    </q-drawer>
-    <q-page-container>
-      <router-view />
-    </q-page-container>
-    <!--****************** 彈出視窗 ------>
-    <!-- 發布文章框 -->
-    <publishArticle></publishArticle>
-  </q-layout>
+            <br>
+            <q-btn v-if="users.token" @click="publishArticleState = true" color="orange" label="給評價" />
+            <q-btn v-else @click="loginDropdownState = true" color="orange" label="給評價" />
+          </div>
+        </q-tab-panel>
+
+        <q-tab-panel name="article">
+          <div class="text-h6">Alarms</div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </q-tab-panel>
+
+        <q-tab-panel name="edit">
+          <div class="text-h6">Movies</div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </q-tab-panel>
+      </q-tab-panels>
+
+      <q-tabs v-model="tab" indicator-color="transparent" active-color="white" class="bg-teal text-grey-5 shadow-2"
+        dense>
+        <q-tab name="board" label="board" />
+        <q-tab name="article" label="article" />
+        <q-tab name="edit" label="edit" />
+      </q-tabs>
+    </div>
+
+  </q-drawer>
+  <q-page-container>
+    <router-view />
+  </q-page-container>
+  <!--****************** 彈出視窗 ------>
+  <!-- 發布文章框 -->
+  <publishArticle></publishArticle>
 </template>
 
 <script setup>
 import { ref, reactive, shallowRef, provide, readonly, inject } from 'vue'
-import registerDialog from 'src/components/registerDialog.vue'
 import publishArticle from 'src/components/publishArticle.vue'
 import { useQuasar } from 'quasar'
-import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-// import { useBoardStore } from 'src/stores/board'
 import { useRoute, useRouter } from 'vue-router'
 import { api } from 'src/boot/axios'
 const route = useRoute()
@@ -59,7 +79,8 @@ const users = useUserStore()
 // ***
 const leftDrawerState = inject('leftDrawerState')
 const loginDropdownState = inject('loginDropdownState')
-
+const tab = ref('board')
+//
 const publishArticleState = ref(false)
 const localeOptions = [
   { value: 'en-US', label: 'English' },
@@ -84,12 +105,12 @@ const filterOptions = shallowRef([])
 const filterUnique = ref('')
 const filterUniqueOptions = shallowRef([])
 const time = ref(0)
-const init = async (id) => {
+const init = async () => {
   time.value = Date.now()
-  // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
+
   try {
     boards.length = 0
-    const { data } = await api.get('/board/' + (id || route.params.id || '63044667fad0c0b669bbafdd'))
+    const { data } = await api.get('/board/' + route.params.id)
     if (data.result) {
       // 清空物件與加入物件的美妙
       for (const k in board) delete board[k]
@@ -121,7 +142,7 @@ const init = async (id) => {
             console.log('有文章區')
             hasArticle.value = true
             // ********************************************* 取得文章 ************************
-            const { data } = await api.get('/article/' + (id || route.params.id))
+            const { data } = await api.get('/article/' + route.params.id)
             articles.length = 0
             articles.push(...data.result)
           }
@@ -160,9 +181,10 @@ const getChildboard = async () => {
         text: filterUnique.value
       }]
     }))
-    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
+    const { data } = await api.get('/board/childs/' + (route.params.id + '?test=' + encodedFilter))
     boards.length = 0
     boards.push(...data.result)
+    router.push('/board/' + route.params.id)
   } catch (error) {
     console.log(error)
   }
@@ -180,12 +202,13 @@ provide('article', readonly(article))
 </script>
 
 <style lang="sass" scoped >
-.q-header
-  height: 48px
-.q-drawer-container
-  &:deep(.q-drawer__backdrop)
-    z-index: 1999 !important
-//
+// $
+@import 'src/css/mixin.sass'
+
+.q-page-container
+  padding: 0 !important
+.searchRows > .row
+  margin-bottom: 30px
 .langSelect
   width: 100px
   &:deep() *
@@ -195,5 +218,12 @@ provide('article', readonly(article))
 .c-w
   &:deep(.block)
     color: black
+.q-drawer-container
+  &:deep(.q-drawer)
+    top: 48px
+    @include xs
+      width: 90% !important
+  &:deep(.q-drawer__backdrop)
+    z-index: 1999 !important
 </style>
 <!-- login 待處理同IP登陸5次要等15分鐘 (目前可一直試) -->
