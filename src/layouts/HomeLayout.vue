@@ -2,7 +2,6 @@
   <q-layout view="hHh lpR fff" id="m">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn class="lt-md" flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
           <q-btn flat @click="router.push('/board/6304cb253e13789077e47578')">
             <q-avatar class="gt-sm  q-mr-sm">
@@ -66,7 +65,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, shallowRef, provide, readonly } from 'vue'
+import { ref, reactive, provide } from 'vue'
 import registerDialog from 'src/components/registerDialog.vue'
 import { useQuasar } from 'quasar'
 import notify from 'src/utils/notify'
@@ -88,12 +87,8 @@ const localeOptions = [
 const { locale, t } = useI18n({ useScope: 'global' })
 locale.value = useQuasar().lang.getLocale()
 
-// 切換左右選單顯示
-const leftDrawerState = ref(false)
+// 切換右選單顯示
 const rightDrawerState = ref(false)
-const toggleLeftDrawer = () => {
-  leftDrawerState.value = !leftDrawerState.value
-}
 const toggleRightDrawer = () => {
   rightDrawerState.value = !rightDrawerState.value
 }
@@ -118,18 +113,14 @@ const logout = async () => {
   notify(rep)
 }
 
-// *********************************************取得子版************************
 provide('registerState', registerState)
-provide('leftDrawerState', leftDrawerState)
 provide('loginDropdownState', loginDropdownState)
-// *********************************************子文章************************
 
 </script>
 
 <style lang="sass" scoped >
 .q-header
   height: 48px
-
 //
 .langSelect
   width: 100px
