@@ -14,7 +14,7 @@
             :props="props">
             <div style="line-height:40px ;display:inline-block">{{ col.label }}</div>
             <q-input borderless dense debounce="300" v-model="filter" placeholder="Search" outlined label="搜尋"
-              style="width:300px;display:inline-block;float:right">
+              style="width:50%;min-width:100px;display:inline-block;float:right">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -110,6 +110,7 @@ const columns = reactive([
   thead tr th
     position: sticky
     z-index: 1
+    padding: 5px
   thead tr:first-child th
     top: 0
   /* this is when the loading indicator appears */
