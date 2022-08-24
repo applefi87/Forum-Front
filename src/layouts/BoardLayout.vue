@@ -55,55 +55,44 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
       :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
-      <h5 class="q-my-lg">{{ title }}{{ time }}</h5>
-      <div style="height: 100% ;display:flex;flex-direction: column; justify-content: space-between;">
+      <h5 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}{{ time }}</h5>
+      <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
         <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="board">
-            <div v-if="hasChild" class="searchRows">
-              <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-              <div>
-                <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
-                  :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-                <q-checkbox v-model="filterAll" label="全部系所" />
-              </div>
-              <br>
-              <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" label="查詢">
-                <template v-slot:getChildboardLoading>
-                  Loading...
-                </template>
-              </q-btn>
-              <div style="text-align: right">
-                <q-btn v-if="users.role === 0" label='新增板塊' color="orange" class="q-ml-sm"
-                  :to="'/board/uploadBoard/' + route.params.id" />
-              </div>
+          <q-tab-panel name="board" v-if="hasChild" class="searchRows">
+            <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
+              :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+            <div>
+              <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
+                :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+              <q-checkbox v-model="filterAll" label="全部系所" />
             </div>
-            <div v-if="hasArticle">
-              <!-- 先不過濾全抓  要評價再顯示table供選-->
-              <!-- <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
+            <br>
+            <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" label="查詢">
+              <template v-slot:getChildboardLoading>
+                Loading...
+              </template>
+            </q-btn>
+          </q-tab-panel>
+          <q-tab-panel name="article" v-if="hasArticle">
+            <!-- 先不過濾全抓  要評價再顯示table供選-->
+            <!-- <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
           :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
-              <br>
-              <q-btn v-if="users.token" @click="publishArticleState = true" color="orange" label="給評價" />
-              <q-btn v-else @click="loginDropdownState = true" color="orange" label="給評價" />
-            </div>
+            <br>
+            <q-btn v-if="users.token" @click="publishArticleState = true" color="orange" label="給評價" />
+            <q-btn v-else @click="loginDropdownState = true" color="orange" label="給評價" />
           </q-tab-panel>
-          <q-tab-panel name="article">
-            <div class="text-h6">Alarms</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </q-tab-panel>
-          <q-tab-panel name="edit">
-            <div class="text-h6">Movies</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <q-tab-panel name="edit" v-if="users.role === 0">
+            <q-btn label='新增板塊' color="orange" class="q-ml-sm" :to="'/board/uploadBoard/' + route.params.id" />
           </q-tab-panel>
         </q-tab-panels>
         <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="teal-4"
-          class="bg-teal text-grey-5 shadow-2" dense>
-          <q-tab name="board" label="board" />
-          <q-tab name="article" label="article" />
-          <q-tab name="edit" label="edit" />
+          align="justify" :breakpoint="0" class="bg-teal text-grey-5 shadow-2" dense>
+          <q-tab name="board" label="board" v-if="hasChild" />
+          <q-tab name="article" label="article" v-if="hasArticle" />
+          <q-tab name="edit" label="edit" v-if="users.role === 0" />
         </q-tabs>
       </div>
     </q-drawer>
@@ -294,7 +283,7 @@ provide('article', readonly(article))
     color: black
 // $
 @import 'src/css/mixin.sass'
-.searchRows > .row
+.searchRows .row
   margin-bottom: 30px
 .langSelect
   width: 100px
