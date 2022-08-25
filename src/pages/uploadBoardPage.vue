@@ -75,4 +75,8 @@ const uniqueColVal = [
 <style lang="sass" scoped>
 .q-page
   padding:20px 10px 0 10px
+.q-input
+  max-width: 500px
+.q-file
+  max-width: 500px
 </style>

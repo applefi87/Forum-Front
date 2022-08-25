@@ -171,10 +171,9 @@ const mustHaveVal = [val => (val) || '必填']
 // ****************發布****
 const publishing = ref(false)
 const publish = async () => {
-  const val = formRef.value.validate()
-  if (!val.success) {
-    notify({ title: '部分欄位未填寫完成' })
-  } else {
+  formRef.value.validate().then(async success => {
+    if (!success) return notify({ title: '請檢查欄位' })
+    //
     if (route.params.id) {
       publishing.value = true
       try {
@@ -192,7 +191,7 @@ const publish = async () => {
       }
       publishing.value = false
     }
-  }
+  })
 }
 
 </script>
