@@ -48,15 +48,18 @@ const passwordVal = reactive([
 ])
 
 const changePWD = async () => {
-  pwdVerifying.value = true
-  const rep = await users.changePWD(form)
-  notify(rep)
-  pwdVerifying.value = false
-  if (rep.success) {
+  try {
+    pwdVerifying.value = true
+    const rep = await users.changePWD(form)
+    notify(rep)
+    pwdVerifying.value = false
     users.token = ''
     users.account = ''
     users.role = 0
     router.push('/')
+  } catch (error) {
+    notify(error.response.data)
+    console.log(error.response.data)
   }
 }
 const init = () => {

@@ -93,19 +93,28 @@ const toggleRightDrawer = () => {
 const loginForm = reactive({ account: 'testadmin', password: 'testadminA0', keepLogin: false })
 // ****************登陸****
 const login = async () => {
-  const rep = await users.login(loginForm)
-  notify(rep)
-  if (rep.success) {
-    loginForm.account = ''
-    loginForm.password = ''
-    loginForm.keepLogin = false
-    router.push('/')
+  try {
+    const rep = await users.login(loginForm)
+    notify(rep)
+    if (rep.success) {
+      loginForm.account = ''
+      loginForm.password = ''
+      loginForm.keepLogin = false
+      router.push('/')
+    }
+  } catch (error) {
+    console.log(error.response.data)
   }
 }
 //* ***************登出****
 const logout = async () => {
-  const rep = await users.logout()
-  notify(rep)
+  try {
+    const rep = await users.logout()
+    notify(rep)
+  } catch (error) {
+    notify(error.response.data)
+    console.log(error)
+  }
 }
 
 provide('registerState', registerState)

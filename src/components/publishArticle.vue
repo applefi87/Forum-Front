@@ -170,7 +170,7 @@ const uniqueVal = [val => (val) || '必須選學期,上課時間']
 const mustHaveVal = [val => (val) || '必填']
 // ****************發布****
 const publishing = ref(false)
-const publish = async () => {
+const publish = () => {
   formRef.value.validate().then(async success => {
     if (!success) return notify({ title: '請檢查欄位' })
     //

@@ -119,7 +119,7 @@ const init = async () => {
     boards.length = 0
     const { data } = await api.get('/board/' + route.params.id)
     if (data.result) {
-      const getBoards = async () => {
+      const getBoards = () => {
         // 清空物件與加入物件的美妙
         for (const k in board) delete board[k]
         Object.assign(board, data.result)
@@ -136,27 +136,32 @@ const init = async () => {
           hasChild.value = false
         }
       }
-      await getBoards()
+      getBoards()
       // 處理文章(規則去他母版抓)
       // 有成功才顯示不然清除
       const checkArticles = async () => {
-        // 要有母版
-        if (data.result.parent) {
-          const parent = await api.get('/board/' + data.result.parent)
-          for (const k in article) delete article[k]
-          Object.assign(article, parent.data.result.childBoard?.article)
-          console.log('母版是' + parent.data.result.title)
-          // 母版要開放文章
-          if (article.active) {
-            console.log('有文章區')
-            hasArticle.value = true
+        try {
+          if (data.result.parent) {
+            const parent = await api.get('/board/' + data.result.parent)
+            for (const k in article) delete article[k]
+            Object.assign(article, parent.data.result.childBoard?.article)
+            console.log('母版是' + parent.data.result.title)
+            // 母版要開放文章
+            if (article.active) {
+              console.log('有文章區')
+              hasArticle.value = true
+            }
+          } else {
+            hasArticle.value = false
+            for (const k in article) {
+              delete article[k]
+            }
           }
-          return
+        } catch (error) {
+          // notify(error.response.data)
+          console.log(error.response.data)
         }
-        hasArticle.value = false
-        for (const k in article) {
-          delete article[k]
-        }
+        // 要有母版
       }
       await checkArticles()
       // 抓第一個分頁顯示
@@ -185,9 +190,13 @@ const init = async () => {
       }
       // ********* 取得文章 (tab要是articles 不然不浪費資源)*******
       const getArticles = async () => {
-        const { data } = await api.get('/article/' + route.params.id)
-        articles.length = 0
-        articles.push(...data.result)
+        try {
+          const { data } = await api.get('/article/' + route.params.id)
+          articles.length = 0
+          articles.push(...data.result)
+        } catch (error) {
+          console.log(error.response.data)
+        }
       }
       if (tab.value === 'articles') getArticles()
     }
@@ -245,7 +254,7 @@ const getChildboard = async () => {
     }
     boards.push(...data.result)
   } catch (error) {
-    console.log(error)
+    console.log(error.response.data)
   }
   getChildboardLoading.value = false
 }

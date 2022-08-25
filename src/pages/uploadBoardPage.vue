@@ -48,17 +48,22 @@ watch(file, () => {
   }
 })
 const out = ref('')
-const transform = async () => {
+const transform = () => {
   if (input.value) {
-    const load = loading({ title: 'Please wait,building.', delay: 100 })
     console.log('in')
     converter.csv2json(
       input.value,
       async (err, json) => {
-        if (err) throw err
-        console.log(json[2])
-        const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: json, uniqueCol: uniqueCol.value })
-        console.log('ok')
+        let load
+        try {
+          load = loading({ title: 'Please wait,building.', delay: 100 })
+          if (err) throw err
+          const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: json, uniqueCol: uniqueCol.value })
+          notify({ success: data.success, ...data.message })
+        } catch (error) {
+          console.log(error)
+          notify(...error.response.data.message)
+        }
         load.hide()
       },
       { delimiter: { wrap: '"', eol: '\r' } }

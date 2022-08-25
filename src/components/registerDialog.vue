@@ -34,12 +34,13 @@
                   <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                     @click="isPwd = !isPwd" />
                 </template></q-input>
-              <q-input filled v-model="registerForm.nickName" label='nickName' :rules="nickNameVal" ref=nickNameValid />
+              <q-input filled v-model="registerForm.nickName" :label='t("nickname")' :rules="nickNameVal"
+                ref=nickNameValid />
               <p class="gender">Gender:</p>
               <div class="q-gutter-sm">
-                <q-radio v-model="registerForm.gender" val=1 :label='t("Male")' />
-                <q-radio v-model="registerForm.gender" val=2 :label='t("Female")' />
-                <q-radio v-model="registerForm.gender" val=0 :label='t("Others")' />
+                <q-radio v-model="registerForm.gender" val=1 :label='t("male")' />
+                <q-radio v-model="registerForm.gender" val=2 :label='t("female")' />
+                <q-radio v-model="registerForm.gender" val=0 :label='t("others")' />
               </div>
             </q-card-section>
           </q-step>
@@ -79,11 +80,16 @@ const nickNameValid = ref(null)
 const emailFormatValid = ref(null)
 const mailSending = ref(false)
 const sendMail = async (isSchool) => {
-  if (!emailFormatValid.value.validate()) return
-  mailSending.value = true
-  const rep = await users.sendMail(registerForm.schoolEmail, isSchool)
-  notify(rep)
-  mailSending.value = false
+  try {
+    if (!emailFormatValid.value.validate()) return
+    mailSending.value = true
+    const rep = await users.sendMail(registerForm.schoolEmail, isSchool)
+    notify(rep)
+    mailSending.value = false
+  } catch (error) {
+    console.log(error)
+    notify(error.response.data)
+  }
 }
 const step = ref(1)
 const stepper = ref(null)
@@ -110,15 +116,20 @@ const emailVal = (isSchool) => {
   return rule
 }
 const nextPage = async () => {
-  if (step.value === 2) {
-    if (!(mailCodeValid.value.validate() && emailFormatValid.value.validate())) return
-    mailVerifying.value = true
-    const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
-    notify(rep)
-    mailVerifying.value = false
-    if (rep.success) { step.value++ } else { return }
+  try {
+    if (step.value === 2) {
+      if (!(mailCodeValid.value.validate() && emailFormatValid.value.validate())) return
+      mailVerifying.value = true
+      const rep = await users.mailVerify(registerForm.schoolEmail, registerForm.schoolEmailCode)
+      notify(rep)
+      mailVerifying.value = false
+      if (rep.success) { step.value++ } else { return }
+    }
+    stepper.value.next()
+  } catch (error) {
+    console.log(error.response.data)
+    notify(error.response.data)
   }
-  stepper.value.next()
 }
 // ********************
 
@@ -143,31 +154,37 @@ const mailCodeVal = [
   val => true || '預留給有同名使用'
 ]
 const register = async () => {
-  const rep = await users.register(registerForm)
-  notify(rep)
-  if (rep.success) {
+  try {
+    const rep = await users.register(registerForm)
+    notify(rep)
+    if (rep.success) {
+      registerState.value = false
+      registerForm.schoolEmail = ''
+      registerForm.schoolEmailCode = ''
+      registerForm.account = ''
+      registerForm.password = ''
+      registerForm.nickName = ''
+      registerForm.gender = '0'
+      step.value = 1
+      return
+    }
+    if (rep.accountOccupied) {
+      accountVal[2] = val => val !== rep.account || '已經有相同帳號'
+    } else {
+      accountVal[2] = val => true || ''
+    }
+    if (rep.NickNameOccupied) {
+      nickNameVal[1] = val => val !== rep.nickName || '已經有相同名稱'
+    } else {
+      nickNameVal[1] = val => true || ''
+    }
+    accountValid.value.validate()
+    nickNameValid.value.validate()
     registerState.value = false
-    registerForm.schoolEmail = ''
-    registerForm.schoolEmailCode = ''
-    registerForm.account = ''
-    registerForm.password = ''
-    registerForm.nickName = ''
-    registerForm.gender = '0'
-    step.value = 1
-    return
+  } catch (error) {
+    console.log(error.response.data)
+    notify(error.response.data)
   }
-  if (rep.accountOccupied) {
-    accountVal[2] = val => val !== rep.account || '已經有相同帳號'
-  } else {
-    accountVal[2] = val => true || ''
-  }
-  if (rep.NickNameOccupied) {
-    nickNameVal[1] = val => val !== rep.nickName || '已經有相同名稱'
-  } else {
-    nickNameVal[1] = val => true || ''
-  }
-  accountValid.value.validate()
-  nickNameValid.value.validate()
 }
 
 </script>

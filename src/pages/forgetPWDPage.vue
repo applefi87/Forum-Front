@@ -65,10 +65,15 @@ const mailCodeVal = reactive([
 ])
 
 const sendPWDMail = async () => {
-  if (!emailFormatValid.value.validate()) return
-  mailSending.value = true
-  const rep = await users.sendPWDMail(form.email)
-  notify(rep)
+  try {
+    if (!emailFormatValid.value.validate()) return
+    mailSending.value = true
+    const rep = await users.sendPWDMail(form.email)
+    notify(rep)
+  } catch (error) {
+    notify(error.response.data)
+    console.log(error.response.data)
+  }
   mailSending.value = false
 }
 
@@ -76,15 +81,18 @@ const sendPWDMail = async () => {
 const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 const verifyPWDMail = async () => {
-  console.log('in')
-  if (!mailCodeValid.value.validate()) return
-  mailVerifying.value = true
-  const rep = await users.verifyPWDMail(form.email, form.code)
-  notify(rep)
-  if (rep.success) {
+  try {
+    console.log('in')
+    if (!mailCodeValid.value.validate()) return
+    mailVerifying.value = true
+    const rep = await users.verifyPWDMail(form.email, form.code)
+    notify(rep)
     getTempPWD.value = true
     account.value = rep.result.account
     tempPWD.value = rep.result.tempPWD
+  } catch (error) {
+    // notify(error.response.data)
+    console.log(error.response.data)
   }
   mailVerifying.value = false
 }

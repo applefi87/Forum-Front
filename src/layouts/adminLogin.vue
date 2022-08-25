@@ -49,13 +49,18 @@ if (users.token) {
 const loginForm = reactive({ account: 'testadmin', password: 'testadminA0', keepLogin: false, role: 0 })
 // ****************登陸****
 const login = async () => {
-  const rep = await users.login(loginForm)
-  notify(rep)
-  if (rep.success) {
-    loginForm.account = ''
-    loginForm.password = ''
-    loginForm.keepLogin = false
-    router.push('/')
+  try {
+    const rep = await users.login(loginForm)
+    notify(rep)
+    if (rep.success) {
+      loginForm.account = ''
+      loginForm.password = ''
+      loginForm.keepLogin = false
+      router.push('/')
+    }
+  } catch (error) {
+    notify(error.response.data)
+    console.log(error.response.data)
   }
 }
 // *********************************************子文章************************
