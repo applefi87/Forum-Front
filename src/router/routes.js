@@ -2,20 +2,22 @@ const routes = [
   {
     path: '/',
     displayName: 'home',
+    name: 'home',
     component: () => import('layouts/HomeLayout.vue'),
     children: [
-      { path: 'changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') },
-      { path: 'forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
-      { path: 'admin', displayName: 'admin', component: () => import('layouts/adminLogin.vue') }
+      { path: 'changePWD', name: 'changePWD', displayName: 'changePWD', component: () => import('pages/changePWDPage.vue') },
+      { path: 'forgetPWD', name: 'forgetPWD', displayName: 'forgetPWD', component: () => import('pages/forgetPWDPage.vue') },
+      { path: 'admin', name: 'admin', displayName: 'admin', component: () => import('layouts/adminLogin.vue') }
     ]
   },
   {
     path: '/board/',
+    name: 'board',
     displayName: 'board',
     component: () => import('layouts/BoardLayout.vue'),
     children: [
-      { path: 'uploadBoard/:id', displayName: 'uploadBoard', component: () => import('pages/uploadBoardPage.vue') },
-      { path: ':id', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }
+      { path: 'uploadBoard/:id', name: 'uploadBoard', displayName: 'uploadBoard', component: () => import('pages/uploadBoardPage.vue') },
+      { path: ':id', name: 'mainPage', displayName: 'mainPage', component: () => import('pages/IndexPage.vue') }
     ]
   },
 

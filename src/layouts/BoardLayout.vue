@@ -55,8 +55,10 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
       :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column" :width="300">
-      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}{{ time
-      }}999999999999999999999999999999999999999999</h6>
+      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}
+        <hr>
+        {{ time }}
+      </h6>
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="board" v-if="hasChild" class="searchRows">
@@ -112,7 +114,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, shallowRef, provide, readonly } from 'vue'
+import { ref, reactive, watch, shallowRef, provide, readonly } from 'vue'
 import registerDialog from 'src/components/registerDialog.vue'
 import publishArticle from 'src/components/publishArticle.vue'
 import { useQuasar } from 'quasar'
@@ -233,6 +235,16 @@ const init = async (id) => {
     }
     filterC0.value = filterOptions.value[0]
     time.value = Date.now() - time.value
+    switch (route.name) {
+      case 'uploadBoard':
+        tab.value = 'edit'
+        break
+      case 'article':
+        router.push('/article/' + route.params.id)
+        break
+      default:
+        console.log('error')
+    }
     //
   } catch (error) {
     console.log(error)
@@ -240,6 +252,23 @@ const init = async (id) => {
   }
 }
 init()
+// *
+watch(tab, () => {
+  switch (tab.value) {
+    case 'board':
+      router.push('/board/' + route.params.id)
+      break
+    case 'article':
+      router.push('/article/' + route.params.id)
+      break
+    case 'edit':
+      router.push('/board/uploadBoard/' + route.params.id)
+      // expected output: "Mangoes and papayas are $2.79 a pound."
+      break
+    default:
+      console.log('error')
+  }
+})
 // *********************************************取得子版************************
 const getChildboardLoading = ref(false)
 const getChildboard = async () => {
