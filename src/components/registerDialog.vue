@@ -67,6 +67,7 @@ import { ref, reactive, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import notify from '../utils/notify'
+const isPwd = ref(true)
 const { t } = useI18n()
 const users = useUserStore()
 // 初始變數

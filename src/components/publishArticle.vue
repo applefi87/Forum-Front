@@ -5,7 +5,7 @@
         <table v-if="category">
           <!--  -->
           <tr>
-            <td>文章分類</td>
+            <td>{{ t('articleCategory') }}</td>
             <td>
               <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
                 :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
@@ -29,14 +29,14 @@
           </tr>
           <!-- 評分 -->
           <tr v-if="category && category.c === 1">
-            <td>評分</td>
+            <td>{{ t('score') }}</td>
             <td>
               <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" :max="10" />
             </td>
           </tr>
           <!-- tag -->
           <tr v-if="category.tagActive">
-            <td>Tag</td>
+            <td>{{ t('tags') }}</td>
             <td>
               <q-option-group :options="category.tagOption.map(o => { return { label: o, value: o } })" type="checkbox"
                 v-model="form['f' + selectCat.value].tags" />
@@ -70,7 +70,7 @@
             <td></td>
             <td>
               <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing"></q-btn>
-              <q-btn label='關閉' flat class="q-ml-sm close-register" @click="publishArticleState = false" />
+              <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click="publishArticleState = false" />
             </td>
           </tr>
         </table>

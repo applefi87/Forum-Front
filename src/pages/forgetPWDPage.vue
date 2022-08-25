@@ -1,18 +1,21 @@
 <template>
   <q-page class="flex flex-center">
     <q-card-section v-if="!getTempPWD" class="q-pt-none">
-      <q-input ref="emailFormatValid" filled v-model="form.email" :label='t("email")' :rules="emailVal(true)" />
-      <q-btn dense color="secondary" :loading="mailSending" @click="sendPWDMail()" label="寄驗證信">
-        <template v-slot:loading>
-          <q-spinner-radio />
-        </template>
-      </q-btn>
-      <q-input filled v-model="form.code" :label='t("schoolEmailCode")' :rules="mailCodeVal" ref="mailCodeValid" />
-      <q-btn dense color="secondary" :loading="mailVerifying" @click="verifyPWDMail()" label="驗證">
-        <template v-slot:loading>
-          <q-spinner-radio />
-        </template>
-      </q-btn>
+      <q-form>
+        <q-input ref="emailFormatValid" filled v-model="form.email" :label='t("email")' :rules="emailVal(true)"
+          autocomplete="new-password" />
+        <q-btn dense color="secondary" :loading="mailSending" @click="sendPWDMail()" label="寄驗證信">
+          <template v-slot:loading>
+            <q-spinner-radio />
+          </template>
+        </q-btn>
+        <q-input filled v-model="form.code" :label='t("schoolEmailCode")' :rules="mailCodeVal" ref="mailCodeValid" />
+        <q-btn dense color="secondary" :loading="mailVerifying" @click="verifyPWDMail()" label="驗證">
+          <template v-slot:loading>
+            <q-spinner-radio />
+          </template>
+        </q-btn>
+      </q-form>
     </q-card-section>
     <q-card-section v-else class="q-pt-none">
       <p>{{ account }}您好</p>
