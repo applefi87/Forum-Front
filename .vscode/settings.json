@@ -17,5 +17,8 @@
   },
   "[sass]": {
     "editor.defaultFormatter": "syler.sass-indented"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   }
 }

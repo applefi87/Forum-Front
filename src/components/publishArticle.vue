@@ -197,7 +197,7 @@ const publish = async () => {
 
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .q-dialog__inner--minimized > div
   max-width: 800px
 .q-form

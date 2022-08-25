@@ -54,10 +54,10 @@
     </q-header>
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
-      :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column" :width="300">
+      :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
       <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}
-        <hr>
-        {{ time }}
+        <!-- <hr>
+        {{ time }} -->
       </h6>
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
         <q-tab-panels v-model="tab" animated>
@@ -141,7 +141,7 @@ const localeOptions = [
 const { locale, t } = useI18n({ useScope: 'global' })
 locale.value = useQuasar().lang.getLocale()
 // 切換左右選單顯示
-const leftDrawerState = ref(false)
+const leftDrawerState = ref(true)
 const rightDrawerState = ref(false)
 const toggleLeftDrawer = () => {
   leftDrawerState.value = !leftDrawerState.value
@@ -311,6 +311,10 @@ const getChildboard = async () => {
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
     boards.length = 0
+    // 查詢完左側隱藏(若電腦版不能被隱藏，會出問題)
+    if (document.documentElement.scrollWidth < 768) {
+      leftDrawerState.value = false
+    }
     boards.push(...data.result)
   } catch (error) {
     console.log(error)
@@ -351,6 +355,8 @@ provide('article', readonly(article))
 .q-drawer-container
   &:deep(.q-drawer)
     top: 48px
+    width: 85% !important
+    max-width: 300px
   &:deep(.q-drawer__backdrop)
     z-index: 1999 !important
 </style>

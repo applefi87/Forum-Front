@@ -1,5 +1,6 @@
 <template>
   <q-page>
+    <p> 子版csv檔上傳區</p>
     <q-input filled v-model="uniqueCol" :label='t("semester")' lazy-rules :rules="uniqueColVal" />
     <q-file filled bottom-slots v-model="file" label="板塊清單" counter accept="text/csv" max-file-size="5242880"
       @rejected="onRejected">
@@ -18,6 +19,7 @@
 import converter from 'json-2-csv'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute } from 'vue-router'
+import loading from 'src/utils/loading'
 import { ref, watch } from 'vue'
 import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
@@ -48,6 +50,7 @@ watch(file, () => {
 const out = ref('')
 const transform = async () => {
   if (input.value) {
+    const load = loading({ title: 'Please wait,building.', delay: 100 })
     console.log('in')
     converter.csv2json(
       input.value,
@@ -56,6 +59,7 @@ const transform = async () => {
         console.log(json[2])
         const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: json, uniqueCol: uniqueCol.value })
         console.log('ok')
+        load.hide()
       },
       { delimiter: { wrap: '"', eol: '\r' } }
     )
@@ -70,7 +74,5 @@ const uniqueColVal = [
 
 <style lang="sass" scoped>
 .q-page
-  width:500px
-  padding:50px 10px 0 30px
-  box-sizing: border-box
+  padding:20px 10px 0 10px
 </style>
