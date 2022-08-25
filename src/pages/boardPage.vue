@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center ">
     <q-table :rows="filtedBoards" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
-      v-model:pagination="pagination" auto-width separator="none" no-data-label="無資料" grid-header
+      v-model:pagination="pagination" auto-width separator="none" :no-data-label="t('noFound')" grid-header
       :rows-per-page-options="[0, 10, 15, 30, 50, 100]" style="height: 100% ;width: 100%">
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -12,7 +12,7 @@
           <q-th v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <div style="line-height:40px ;display:inline-block">{{ col.label }}</div>
-            <q-input borderless dense debounce="300" v-model="filter" placeholder="Search" outlined label="搜尋"
+            <q-input borderless dense debounce="300" v-model="filter" :placeholder="t('search')" outlined
               style="width:50%;min-width:100px;display:inline-block;float:right">
               <template v-slot:append>
                 <q-icon name="search" />
@@ -39,7 +39,8 @@
                     {{ t }}
                   </div>
                 </div>
-                評分 {{ col.value }}&nbsp; 評價{{ props.row.beScored?.amount ? props.row.beScored?.amount : 0 }}則
+                {{ t('score') + ":" + col.value }}&nbsp; {{ t("review") + ":" + (props.row.beScored?.amount || 0)
+                }}
               </div>
             </button>
           </q-td>
@@ -73,22 +74,22 @@ const filtedBoards = computed(() => {
   })
 })
 const pagination = ref({ rowsPerPage: 20 })
-const columns = reactive([
+const columns = computed(() => [
   {
     name: 'department',
     required: true,
-    label: '系所/通識',
+    label: t('department'),
     align: 'left',
     field: row => row.colData.c0,
     // 似乎在header設就好
     // classes: 'q-table--col-auto-width',
     headerClasses: 'q-table--col-auto-width'
   },
-  { name: 'score', align: 'left', label: '學分', field: row => (row.colData.c50 ? row.colData.c50 : 0), sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'required', align: 'left', label: '必/選', field: row => row.colData.c55, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'tag', align: 'left', label: '標籤', field: row => (row.beScored?.tag ? row.beScored?.tag : ['涼', '甜', '閒']) },
-  { name: 'review', align: 'left', label: '評分', field: row => (row.beScored?.score ? row.beScored?.score : 6), sortable: true, sortOrder: 'da' },
-  { name: 'title', label: '課程名', field: 'title' }
+  { name: 'score', align: 'left', label: t('credits'), field: row => (row.colData.c50 ? row.colData.c50 : 0), sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
+  { name: 'required', align: 'left', label: t('required'), field: row => row.colData.c55, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
+  { name: 'tag', align: 'left', label: t('tags'), field: row => (row.beScored?.tag ? row.beScored?.tag : ['涼', '甜', '閒']) },
+  { name: 'review', align: 'left', label: t('score'), field: row => (row.beScored?.score ? row.beScored?.score : 6), sortable: true, sortOrder: 'da' },
+  { name: 'title', label: t('className'), field: 'title' }
 ]
 )
 // **********************************************子文章清單***

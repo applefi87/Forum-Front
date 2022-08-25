@@ -12,7 +12,7 @@ const routes = [
   },
   {
     path: '/board/',
-    name: 'board',
+    name: 'boardLayout',
     displayName: 'board',
     component: () => import('layouts/BoardLayout.vue'),
     children: [

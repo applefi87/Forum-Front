@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <q-table :rows="articles" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
-      v-model:pagination="pagination" auto-width no-data-label="無資料" grid-header
+      v-model:pagination="pagination" auto-width :no-data-label="t('noFound')" grid-header
       :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" style="height: 700px ;width:900px">
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -58,23 +58,24 @@ const hasArticle = inject('hasArticle')
 // ----------
 const filter = ref('')
 const pagination = ref({ rowsPerPage: 20 })
-const columns = reactive([
+const columns = computed(() => [
+
   {
     name: 'userScore',
     required: true,
-    label: '作者分數',
+    label: t('userScore'),
     align: 'left',
     field: row => row.user.record.toBoard.score || '',
     // 似乎在header設就好
     // classes: 'q-table--col-auto-width',
     headerClasses: 'q-table--col-auto-width'
   },
-  { name: 'review', align: 'left', label: '評分', field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
+  { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
   {
     name: 'semester',
     align: 'left',
-    label: '學期',
+    label: t('semester'),
     field: row => {
       const unique = board.uniqueData.find(i => i._id === row.uniqueId)
       // console.log(row.uniqueId)
@@ -84,7 +85,8 @@ const columns = reactive([
     },
     sortable: true,
     sortOrder: 'da'
-  }])
+  }
+])
 // **********************************************子文章清單***
 // 要去母版看規則
 

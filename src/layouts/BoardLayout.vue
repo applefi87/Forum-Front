@@ -8,18 +8,18 @@
             <q-avatar class="gt-sm q-mr-sm">
               <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
             </q-avatar>
-            師大課程版首頁
+            {{ t('home') }}
           </q-btn>
         </q-toolbar-title>
         <q-select class="langSelect gt-md" v-model="locale" :options="localeOptions" label="Language:" borderless
           emit-value map-options />
         <!-- https://quasar.dev/vue-components/button-dropdown -->
-        <q-btn-dropdown v-if="users.token" class="info " dense flat label='個人資料'>
+        <q-btn-dropdown v-if="users.token" class="info " dense flat :label='t("userInfo")' no-caps>
           <div class="row no-wrap q-pa-md">
-            <q-btn label='變更密碼' color="primary" flat class="q-ml-sm" to="/changePWD" />
+            <q-btn :label='t("changePassword")' color="primary" flat class="q-ml-sm" to="/changePWD" />
           </div>
           <div class="row no-wrap q-pa-md">
-            <q-btn :label='t("logout")' color="primary c-w" @click="logout" flat class="q-ml-sm" />
+            <q-btn :label='t("logout")' color="primary c-w" @click="logout" flat class="q-ml-sm" no-caps />
           </div>
         </q-btn-dropdown>
         <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none"
@@ -67,10 +67,10 @@
             <div>
               <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
                 :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-              <q-checkbox v-model="filterAll" label="全部系所" />
+              <q-checkbox v-model="filterAll" :label="t('all')" />
             </div>
             <br>
-            <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" label="查詢">
+            <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" :label="t('search')">
               <template v-slot:getChildboardLoading>
                 Loading...
               </template>
@@ -88,15 +88,15 @@
             <q-btn v-else @click="loginDropdownState = true" color="orange" label="給評價" />
           </q-tab-panel>
           <q-tab-panel name="edit" v-if="users.role === 0">
-            <q-btn v-if="hasChild" label='新增板塊' color="orange" class="q-ml-sm"
+            <q-btn v-if="hasChild" :label='t("addChildBoards")' color="orange" class="q-ml-sm"
               :to="'/board/uploadBoard/' + route.params.id" />
           </q-tab-panel>
         </q-tab-panels>
         <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="teal-4"
           align="justify" :breakpoint="0" class="bg-teal text-grey-5 shadow-2" dense>
-          <q-tab name="boards" label="boards" v-if="hasChild" />
-          <q-tab name="articles" label="articles" v-if="hasArticle" />
-          <q-tab name="edit" label="edit" v-if="users.role === 0" />
+          <q-tab name="boards" :label="t('boards')" v-if="hasChild" />
+          <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
+          <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
         </q-tabs>
       </div>
     </q-drawer>
@@ -138,8 +138,12 @@ const localeOptions = [
   { value: 'en-US', label: 'English' },
   { value: 'zh-TW', label: '繁體中文' }
 ]
+
 const { locale, t } = useI18n({ useScope: 'global' })
-locale.value = useQuasar().lang.getLocale()
+locale.value = users.local || useQuasar().lang.getLocale()
+watch(locale, () => {
+  users.local = locale.value
+})
 // 切換左右選單顯示
 const leftDrawerState = ref(true)
 const rightDrawerState = ref(false)
@@ -309,8 +313,7 @@ const getChildboard = async () => {
         text: filterUnique.value
       }]
     }))
-    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'c0=' + filterC0.value + '&c80=' + filterUnique.value)
-    // const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
+    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?test=' + encodedFilter)
     boards.length = 0
     // 查詢完左側隱藏(若電腦版不能被隱藏，會出問題)
     if (document.documentElement.scrollWidth < 768) {
@@ -342,7 +345,7 @@ provide('article', readonly(article))
     color: black
 // $
 @import 'src/css/mixin.sass'
-.searchRows .row
+.searchRows > .row
   margin-bottom: 30px
 .langSelect
   width: 100px
@@ -360,4 +363,7 @@ provide('article', readonly(article))
     max-width: 300px
   &:deep(.q-drawer__backdrop)
     z-index: 1999 !important
+// 避免預設btn變全大寫
+.q-btn:deep( >.q-btn__content >.block)
+  text-transform: capitalize
 </style>

@@ -1,14 +1,14 @@
 <template>
   <q-page>
-    <p> 子版csv檔上傳區</p>
+    <p> {{ t('uploadCSVHere') }}</p>
     <q-input filled v-model="uniqueCol" :label='t("semester")' lazy-rules :rules="uniqueColVal" />
-    <q-file filled bottom-slots v-model="file" label="板塊清單" counter accept="text/csv" max-file-size="5242880"
-      @rejected="onRejected">
+    <q-file filled bottom-slots v-model="file" :label="t('boardCSVlist')" counter accept="text/csv"
+      max-file-size="5242880" @rejected="onRejected">
       <template v-slot:prepend>
         <q-icon name="cloud_upload" @click.stop.prevent />
       </template>
       <template v-slot:hint>
-        CSV檔，需小於5mb
+        {{ t('csvMax5MB') }}
       </template>
     </q-file>
     <button v-if="fileUploaded" @click="transform">transform</button>
@@ -29,7 +29,7 @@ const route = useRoute()
 const file = ref(null)
 const onRejected = (file) => {
   console.log(file)
-  notify({ title: '不能超過5MB,且必須為CSV檔' })
+  notify({ title: t('csvMax5MB') })
 }
 
 const reader = new FileReader()

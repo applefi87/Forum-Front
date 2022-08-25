@@ -7,12 +7,13 @@ const reply = (d, result) => {
 }
 export const useUserStore = defineStore('user', {
   id: 'user',
-  state () {
+  state() {
     return {
       token: null,
       account: null,
       role: 0,
-      score: 0
+      score: 0,
+      local: null
     }
   },
   // getters: {
@@ -27,7 +28,7 @@ export const useUserStore = defineStore('user', {
   //   }
   // },
   actions: {
-    async register (form) {
+    async register(form) {
       try {
         const { data } = await api.post('/user/', form)
         return reply(data)
@@ -35,7 +36,7 @@ export const useUserStore = defineStore('user', {
         return reply(error.response.data)
       }
     },
-    async login (form) {
+    async login(form) {
       try {
         const { data } = await api.post('/user/login', form)
         // 使用者資訊存起來
@@ -48,7 +49,7 @@ export const useUserStore = defineStore('user', {
         return reply(error.response.data)
       }
     },
-    async logout () {
+    async logout() {
       try {
         // apiAuth預帶抓users.token (boot裡)
         const { data } = await apiAuth.delete('/user/logout')
@@ -63,7 +64,7 @@ export const useUserStore = defineStore('user', {
         return reply(error.response.data)
       }
     },
-    async changePWD (form) {
+    async changePWD(form) {
       try {
         const { data } = await apiAuth.post('/user/changePWD', form)
         return reply(data)
@@ -104,64 +105,64 @@ export const useUserStore = defineStore('user', {
       }
     }
 
-  //   async addCart (data) {
-  //     if (this.token.length === 0) {
-  //       // Swal.fire({
-  //       //   icon: 'error',
-  //       //   title: '失敗',
-  //       //   text: '請先登入'
-  //       // })
-  //       this.router.push('/login')
-  //       return
-  //     }
-  //     if (data.quantity <= 0) {
-  //       // Swal.fire({
-  //       //   icon: 'error',
-  //       //   title: '失敗',
-  //       //   text: '數量必須大於 0'
-  //       // })
-  //       return
-  //     }
-  //     try {
-  //       const { data: resData } = await apiAuth.post('/user/cart', data)
-  //       this.cart = resData.result
-  //       // Swal.fire({
-  //       //   icon: 'success',
-  //       //   title: '成功',
-  //       //   text: '加入購物車成功'
-  //       // })
-  //     } catch (error) {
-  //       // Swal.fire({
-  //       //   icon: 'error',
-  //       //   title: '失敗',
-  //       //   text: '加入購物車失敗'
-  //       // })
-  //     }
-  //   },
-  //   async updateCart (data) {
-  //     try {
-  //       await apiAuth.patch('/user/cart', data)
-  //       return true
-  //     } catch (error) {
-  //       // Swal.fire({
-  //       //   icon: 'error',
-  //       //   title: '失敗',
-  //       //   text: '更新購物車失敗'
-  //       // })
-  //       return false
-  //     }
-  //   },
-  //   async getUser () {
-  //     if (this.token.length === 0) return
-  //     try {
-  //       const { data } = await apiAuth.get('/user')
-  //       this.account = data.result.account
-  //       this.role = data.result.role
-  //       this.cart = data.result.cart
-  //     } catch (error) {
-  //       this.logout()
-  //     }
-  //   }
+    //   async addCart (data) {
+    //     if (this.token.length === 0) {
+    //       // Swal.fire({
+    //       //   icon: 'error',
+    //       //   title: '失敗',
+    //       //   text: '請先登入'
+    //       // })
+    //       this.router.push('/login')
+    //       return
+    //     }
+    //     if (data.quantity <= 0) {
+    //       // Swal.fire({
+    //       //   icon: 'error',
+    //       //   title: '失敗',
+    //       //   text: '數量必須大於 0'
+    //       // })
+    //       return
+    //     }
+    //     try {
+    //       const { data: resData } = await apiAuth.post('/user/cart', data)
+    //       this.cart = resData.result
+    //       // Swal.fire({
+    //       //   icon: 'success',
+    //       //   title: '成功',
+    //       //   text: '加入購物車成功'
+    //       // })
+    //     } catch (error) {
+    //       // Swal.fire({
+    //       //   icon: 'error',
+    //       //   title: '失敗',
+    //       //   text: '加入購物車失敗'
+    //       // })
+    //     }
+    //   },
+    //   async updateCart (data) {
+    //     try {
+    //       await apiAuth.patch('/user/cart', data)
+    //       return true
+    //     } catch (error) {
+    //       // Swal.fire({
+    //       //   icon: 'error',
+    //       //   title: '失敗',
+    //       //   text: '更新購物車失敗'
+    //       // })
+    //       return false
+    //     }
+    //   },
+    //   async getUser () {
+    //     if (this.token.length === 0) return
+    //     try {
+    //       const { data } = await apiAuth.get('/user')
+    //       this.account = data.result.account
+    //       this.role = data.result.role
+    //       this.cart = data.result.cart
+    //     } catch (error) {
+    //       this.logout()
+    //     }
+    //   }
   },
   persist: {
     key: 'users'
