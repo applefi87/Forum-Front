@@ -61,7 +61,7 @@
       </h6>
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
         <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
+          <q-tab-panel name="board" v-if="hasChild" class="searchRows">
             <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
               :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
             <div>
@@ -76,7 +76,7 @@
               </template>
             </q-btn>
           </q-tab-panel>
-          <q-tab-panel name="articles" v-if="hasArticle">
+          <q-tab-panel name="article" v-if="hasArticle">
             <!-- 先不過濾全抓  要評價再顯示table供選-->
             <!-- <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
           :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
@@ -183,15 +183,22 @@ const filterOptions = shallowRef([])
 const filterUnique = ref('')
 const filterUniqueOptions = shallowRef([])
 const time = ref(0)
-const getArticles = async () => {
-  const { data } = await api.get('/article/' + route.params.id)
-  articles.length = 0
-  articles.push(...data.result)
-}
+
 const init = async () => {
-  console.log('init')
   time.value = Date.now()
-  // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
+  // 調整tab
+  // switch (route.name) {
+  //   case 'uploadBoard':
+  //     tab.value = 'edit'
+  //     break
+  //   case 'articles':
+  //     tab.value = 'articles'
+  //     // router.push('/articles/' + route.params.id)
+  //     // getArticles()
+  //     break
+  //   default:
+  //     console.log('error')
+  // }
   try {
     boards.length = 0
     const { data } = await api.get('/board/' + route.params.id)
@@ -213,57 +220,33 @@ const init = async () => {
           hasChild.value = false
         }
       }
-      await getBoards()
+      getBoards()
       // 處理文章(規則去他母版抓)
       // 有成功才顯示不然清除
-      const checkArticles = async () => {
-        // 要有母版
-        if (data.result.parent) {
-          const parent = await api.get('/board/' + data.result.parent)
-          for (const k in article) delete article[k]
-          Object.assign(article, parent.data.result.childBoard?.article)
-          console.log('母版是' + parent.data.result.title)
-          // 母版要開放文章
-          if (article.active) {
-            console.log('有文章區')
-            hasArticle.value = true
-            if (tab.value === 'articles') getArticles()
-            // ********************************************* 取得文章 ************************
-          }
-          return
+      // 要有母版
+      if (data.result.parent) {
+        const parent = await api.get('/board/' + data.result.parent)
+        for (const k in article) delete article[k]
+        Object.assign(article, parent.data.result.childBoard?.article)
+        console.log('母版是' + parent.data.result.title)
+        // 母版要開放文章
+        if (article.active) {
+          console.log('有文章區')
+          hasArticle.value = true
+          // ********************************************* 取得文章 ************************
+          // if (tab.value === 'articles') {
+          const { data } = await api.get('/article/' + route.params.id)
+          articles.length = 0
+          articles.push(...data.result)
+          // }
         }
-        hasArticle.value = false
-        for (const k in article) {
-          delete article[k]
-        }
+        return
       }
-      await checkArticles()
-      // 抓第一個分頁顯示
-      if (!hasChild.value) {
-        if (!hasArticle.value) {
-          tab.value = 'edit'
-          router.push('/board/uploadBoard/' + route.params.id)
-        } else {
-          tab.value = 'articles'
-          router.push('/board/articles/' + route.params.id)
-        }
-      }
-      // 調整tab
-      switch (route.name) {
-        case 'uploadBoard':
-          tab.value = 'edit'
-          break
-        case 'articles':
-          tab.value = 'articles'
-          break
-        case 'boards':
-          tab.value = 'boards'
-          break
-        default:
-          console.log('error')
+      hasArticle.value = false
+      for (const k in article) {
+        delete article[k]
       }
     }
-    // 判斷是否有版/文章 微調
     filterC0.value = filterOptions.value[0]
     time.value = Date.now() - time.value
     //
@@ -274,24 +257,20 @@ const init = async () => {
 }
 init()
 // *
-watch(tab, (newV, oldV) => {
-  switch (tab.value) {
-    case 'edit':
-      console.log('changed edit')
-      router.push('/board/uploadBoard/' + route.params.id)
-      // expected output: "Mangoes and papayas are $2.79 a pound."
-      break
-    case 'articles':
-      console.log('changed articles')
-      router.push('/board/articles/' + route.params.id)
-      // expected output: "Mangoes and papayas are $2.79 a pound."
-      break
-    case 'boards':
-      console.log('changed boards')
-      router.push('/board/' + route.params.id)
-    // expected output: "Mangoes and papayas are $2.79 a pound."
-  }
-})
+// watch(tab, () => {
+//   switch (tab.value) {
+//     case 'edit':
+//       router.push('/board/uploadBoard/' + route.params.id)
+//       // expected output: "Mangoes and papayas are $2.79 a pound."
+//       break
+//     case 'articles':
+//       router.push('/board/articles/' + route.params.id)
+//       // expected output: "Mangoes and papayas are $2.79 a pound."
+//       break
+//     default:
+//       router.push('/board/' + route.params.id)
+//   }
+// })
 // *********************************************取得子版************************
 const getChildboardLoading = ref(false)
 const getChildboard = async () => {
@@ -308,7 +287,7 @@ const getChildboard = async () => {
         text: filterUnique.value
       }]
     }))
-    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
+    const { data } = await api.get('/board/childs/' + route.params.id + '?' + 'test=' + encodedFilter)
     boards.length = 0
     boards.push(...data.result)
   } catch (error) {

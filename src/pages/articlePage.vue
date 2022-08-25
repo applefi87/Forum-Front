@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex flex-center">
-    <q-table v-if="hasArticle" :rows="articles" :columns="columns" row-key="_id"
-      :virtual-scroll="pagination.rowsPerPage === 0" v-model:pagination="pagination" auto-width no-data-label="無資料"
-      grid-header :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" style="height: 700px ;width:900px">
+    <q-table :rows="articles" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
+      v-model:pagination="pagination" auto-width no-data-label="無資料" grid-header
+      :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" style="height: 700px ;width:900px">
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">

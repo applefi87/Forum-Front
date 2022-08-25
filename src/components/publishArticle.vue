@@ -175,13 +175,10 @@ const publish = async () => {
       submit.category = selectCat.value.value
       submit.uniqueId = unique.value.value
       const { data } = await apiAuth.post('/article/create/' + route.params.id, submit)
+      console.log(data.result)
       publishArticleState.value = false
-      // 重整才能看到評分的
-      router.push(route.params.id)
-      watch(route, function (to, from) {
-        router.go(0)
-      }
-      )
+      // 自動重整才能看到評分
+      router.push('/board/articles/' + route.params.id)
     } catch (error) {
       console.log(error.response.data)
     }

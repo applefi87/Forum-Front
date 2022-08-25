@@ -1,9 +1,8 @@
 <template>
   <q-page class="flex flex-center ">
-    <q-table v-if="hasChild" :rows="filtedBoards" :columns="columns" row-key="_id"
-      :virtual-scroll="pagination.rowsPerPage === 0" v-model:pagination="pagination" auto-width separator="none"
-      no-data-label="無資料" grid-header :rows-per-page-options="[0, 10, 15, 30, 50, 100]"
-      style="height: 100% ;width: 100%">
+    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
+      v-model:pagination="pagination" auto-width separator="none" no-data-label="無資料" grid-header
+      :rows-per-page-options="[0, 10, 15, 30, 50, 100]" style="height: 100% ;width: 100%">
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !(['title', 'tag', 'review'].find((n) => n === c.name)))"
@@ -101,6 +100,7 @@ const columns = reactive([
 // $
 .q-page
   min-height: 0 !important
+  height: 100%
 .q-table
   .q-table__top,
   .q-table__bottom,
