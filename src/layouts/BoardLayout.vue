@@ -88,7 +88,8 @@
             <q-btn v-else @click="loginDropdownState = true" color="orange" label="給評價" />
           </q-tab-panel>
           <q-tab-panel name="edit" v-if="users.role === 0">
-            <q-btn label='新增板塊' color="orange" class="q-ml-sm" :to="'/board/uploadBoard/' + route.params.id" />
+            <q-btn v-if="hasChild" label='新增板塊' color="orange" class="q-ml-sm"
+              :to="'/board/uploadBoard/' + route.params.id" />
           </q-tab-panel>
         </q-tab-panels>
         <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="teal-4"
@@ -183,11 +184,6 @@ const filterOptions = shallowRef([])
 const filterUnique = ref('')
 const filterUniqueOptions = shallowRef([])
 const time = ref(0)
-const getArticles = async () => {
-  const { data } = await api.get('/article/' + route.params.id)
-  articles.length = 0
-  articles.push(...data.result)
-}
 const init = async () => {
   console.log('init')
   time.value = Date.now()
@@ -227,8 +223,6 @@ const init = async () => {
           if (article.active) {
             console.log('有文章區')
             hasArticle.value = true
-            if (tab.value === 'articles') getArticles()
-            // ********************************************* 取得文章 ************************
           }
           return
         }
@@ -262,6 +256,13 @@ const init = async () => {
         default:
           console.log('error')
       }
+      // ********* 取得文章 (tab要是articles 不然不浪費資源)*******
+      const getArticles = async () => {
+        const { data } = await api.get('/article/' + route.params.id)
+        articles.length = 0
+        articles.push(...data.result)
+      }
+      if (tab.value === 'articles') getArticles()
     }
     // 判斷是否有版/文章 微調
     filterC0.value = filterOptions.value[0]

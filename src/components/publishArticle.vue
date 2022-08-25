@@ -1,14 +1,14 @@
 <template >
   <q-dialog v-model="publishArticleState" persistent v-if="categoryList.length > 0">
     <div>
-      <q-form class="q-gutter-md" @submit.prevent="publish()">
+      <q-form class="q-gutter-md" ref="formRef">
         <table v-if="category">
           <!--  -->
           <tr>
             <td>文章分類</td>
             <td>
               <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
             </td>
           </tr>
           <!--  -->
@@ -24,7 +24,7 @@
             <td>{{ t('privacy') }}</td>
             <td>
               <q-select outlined v-model="privacy" :options="privacyList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
             </td>
           </tr>
           <!-- 評分 -->
@@ -54,22 +54,22 @@
           <tr v-for="col in (category.cols?.length > 0 ? category.cols : [])" :key="col">
             <td>{{ t(col.n) }}</td>
             <td>
-              <q-input v-model="form['f' + selectCat.value].cols[col.n]">
+              <q-input v-model="form['f' + selectCat.value].cols[col.n]" placeholder="選填">
               </q-input>
             </td>
           </tr>
-          <!-- content(放最後) -->
+          <!-- content(放最後) ****************************-->
           <tr>
-            <td>{{ category.contentCol }}</td>
-            <td>
-              <q-input v-model="form['f' + selectCat.value].content" :rules="contentVal">
-              </q-input>
+            <td style="vertical-align:text-top ; padding-top: 30px">{{ category.contentCol }}</td>
+            <td style=" padding-top: 20px">
+              <QuillEditor class="editor" toolbar="essential" theme="snow"
+                v-model:content="form['f' + selectCat.value].content" contentType="html" />
             </td>
           </tr>
           <tr>
             <td></td>
             <td>
-              <q-btn :label="t('submit')" type="submit" color="primary" :loading="publishing"></q-btn>
+              <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing"></q-btn>
               <q-btn label='關閉' flat class="q-ml-sm close-register" @click="publishArticleState = false" />
             </td>
           </tr>
@@ -80,7 +80,10 @@
 </template>
 
 <script setup scoped>
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { ref, reactive, inject, watch, computed } from 'vue'
+import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
@@ -100,6 +103,7 @@ const article = inject('article')
 // 用for 建置 加上讀取規則自動產生
 // 如果換版>watch，把原本全清除for[key]，重新建
 const form = reactive({})
+const formRef = ref(null)
 const unique = ref('')
 // const uniqueList = reactive([])
 const selectCat = ref(null)
@@ -163,35 +167,59 @@ const contentVal = [
   val => (val && val.length >= 20 && val.length <= 500) || '需20~500字之間'
 ]
 const uniqueVal = [val => (val) || '必須選學期,上課時間']
-
+const mustHaveVal = [val => (val) || '必填']
 // ****************發布****
 const publishing = ref(false)
 const publish = async () => {
-  if (route.params.id) {
-    publishing.value = true
-    try {
-      const submit = JSON.parse(JSON.stringify(form['f' + selectCat.value.value]))
-      submit.privacy = privacy.value.value
-      submit.category = selectCat.value.value
-      submit.uniqueId = unique.value.value
-      const { data } = await apiAuth.post('/article/create/' + route.params.id, submit)
-      console.log(data.result)
-      publishArticleState.value = false
-      // 自動重整才能看到評分
-      router.push('/board/articles/' + route.params.id)
-    } catch (error) {
-      console.log(error.response.data)
+  const val = formRef.value.validate()
+  if (!val.success) {
+    notify({ title: '部分欄位未填寫完成' })
+  } else {
+    if (route.params.id) {
+      publishing.value = true
+      try {
+        const submit = JSON.parse(JSON.stringify(form['f' + selectCat.value.value]))
+        submit.privacy = privacy.value.value
+        submit.category = selectCat.value.value
+        submit.uniqueId = unique.value.value
+        const { data } = await apiAuth.post('/article/create/' + route.params.id, submit)
+        console.log(data.result)
+        publishArticleState.value = false
+        // 自動重整才能看到評分
+        router.go()
+      } catch (error) {
+        console.log(error.response.data)
+      }
+      publishing.value = false
     }
-    publishing.value = false
   }
 }
 
 </script>
 
 <style lang="sass">
+.q-dialog__inner--minimized > div
+  max-width: 800px
 .q-form
+  width: 800px
   background: white
+  padding: 50px 30px 20px 40px
+  tr
+    height: 50px
+  td:first-child
+    font-size: 0.8rem
+.q-select
+  width: 300px
+.q-input
+  width: 300px
+.q-rating
+  margin-bottom: 0
 .q-option-group
   display: flex
   flex-wrap: wrap
+.ql-snow
+  width: 600px
+.editor
+  height: 300px
+  border: 1px solid black
 </style>

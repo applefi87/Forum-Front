@@ -36,7 +36,7 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%">
-            <div class="text-left">{{ props.row.content }}</div>
+            <div class="text-left" v-html="props.row.content"></div>
           </q-td>
         </q-tr>
       </template>

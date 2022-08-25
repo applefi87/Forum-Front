@@ -98,9 +98,6 @@ const columns = reactive([
 <style lang="sass" scoped>
 
 // $
-.q-page
-  min-height: 0 !important
-  height: 100%
 .q-table
   .q-table__top,
   .q-table__bottom,
