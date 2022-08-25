@@ -309,7 +309,8 @@ const getChildboard = async () => {
         text: filterUnique.value
       }]
     }))
-    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
+    const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'c0=' + filterC0.value + '&c80=' + filterUnique.value)
+    // const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?' + 'test=' + encodedFilter)
     boards.length = 0
     // 查詢完左側隱藏(若電腦版不能被隱藏，會出問題)
     if (document.documentElement.scrollWidth < 768) {
