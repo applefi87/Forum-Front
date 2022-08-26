@@ -2,7 +2,7 @@
   <q-toolbar>
     <q-btn v-if="leftDrawerActive" class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
     <q-toolbar-title class="q-pl-none" style="padding-bottom: 10px">
-      <q-btn flat @click="router.push('/board/6305df25f302b171b210ad66')">
+      <q-btn flat @click="router.push('/board/6306281929b69afd3b82d7ab')">
         <q-avatar class="gt-sm q-mr-sm">
           <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
         </q-avatar>
@@ -67,12 +67,13 @@ const users = useUserStore()
 // ****
 const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
+const loginState = inject('loginState')
 const registerState = ref(false)
 defineProps(['leftDrawerActive'])
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
 const isPwd = ref(true)
-const loginState = ref(false)
+
 const localeOptions = [
   { value: 'en-US', label: 'English' },
   { value: 'zh-TW', label: '繁體中文' }

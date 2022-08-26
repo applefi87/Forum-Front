@@ -1,8 +1,7 @@
 <template>
-  <q-page class="flex flex-center ">
+  <q-page v-if="boards.length > 0">
     <q-table :rows="filtedBoards" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
-      v-model:pagination="pagination" auto-width separator="none" grid-header
-      :rows-per-page-options="[0, 15, 30, 50, 100]" style="height: 100% ;width: 100%">
+      v-model:pagination="pagination" auto-width separator="none" :rows-per-page-options="[0, 15, 30, 50, 100]">
       <!-- <template v-slot:header="props">
         <q-tr>
           <q-td colspan="5">
@@ -59,9 +58,9 @@
       </template> -->
       <template v-slot:header="props">
         <q-tr>
-          <q-td colspan="5">
+          <q-td colspan="8" class="searchTd">
             <q-input borderless dense debounce="300" v-model="filter" :placeholder="t('search')" outlined
-              style="width:300px; max-width:80%;display:inline-block;float:right">
+              style="width:300px; max-width:80%;display:inline-block;float:right ;margin:0 10px 0 10px">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -69,36 +68,42 @@
           </q-td>
         </q-tr>
         <q-tr :props="props">
-          <q-th v-for="col in props.cols.filter((c) => !(['tag', 'review'].find((n) => n === c.name)))" :key="col.name"
-            :props="props">
+          <q-th v-for="col in props.cols.filter((c) => !([].find((n) => n === c.name)))" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
-          <q-th v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
+          <!-- <q-th v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <div style="line-height:40px ;display:inline-block">{{ col.label }}</div>
-          </q-th>
+          </q-th> -->
         </q-tr>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="colTR" no-hover>
-          <q-td v-for="col in props.cols.filter((c) => !(['review', 'tag'].find((n) => n === c.name)))" :key="col.name"
-            :props="props">
+          <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name)))"
+            :key="col.name" :props="props">
             <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
               {{ col.value }}</button>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              <div
-                style="display:flex;flex-direction: column;justify-content: space-between ;align-items: flex-start; height: 100% ">
-                <div>
-                  <div class="tag" v-for="t in (props.row.beScored?.tag ? props.row.beScored?.tag : ['涼', '甜', '閒'])"
-                    :tag="t" :key="t">
-                    {{ t }}
-                  </div>
+              <q-icon name="star" color="warning" v-for="it of ([].length = col.value) " :key="it" />
+            </button>
+          </q-td>
+          <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
+            :props="props">
+            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
+              {{ col.value }}
+            </button>
+          </q-td>
+          <q-td v-for="col in   props.cols.filter((c) => (['tag'].find((n) => n === c.name)))" :key="col.name"
+            :props="props">
+            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
+              <div>
+                <div class="tag" v-for="t in   (props.row.beScored?.tag ? props.row.beScored?.tag : ['涼', '甜', '閒'])"
+                  :tag="t" :key="t">
+                  {{ t }}
                 </div>
-                {{ t('score') + ":" + col.value }}&nbsp; {{ t("review") + ":" + (props.row.beScored?.amount || 0)
-                }}
               </div>
             </button>
           </q-td>
@@ -115,6 +120,9 @@
         </div>
       </template>
     </q-table>
+  </q-page>
+  <q-page v-else>
+    <h6 style="margin-left: calc(5vw);">請點選功能列，搜尋您想查詢的課程評價。</h6>
   </q-page>
 </template>
 
@@ -146,11 +154,13 @@ const columns = computed(() => [
     // classes: 'q-table--col-auto-width',
     headerClasses: 'q-table--col-auto-width'
   },
-  { name: 'score', align: 'left', label: t('credits'), field: row => (row.colData.c50 ? row.colData.c50 : 0), sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'required', align: 'left', label: t('required'), field: row => row.colData.c55, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'tag', align: 'left', label: t('tags'), field: row => (row.beScored?.tag ? row.beScored?.tag : ['涼', '甜', '閒']) },
+  // , headerClasses: 'q-table--col-auto-width'
+  { name: 'score', align: 'left', label: t('credits'), field: row => (row.colData.c50 ? row.colData.c50 : 0), sortable: true, sortOrder: 'da' },
+  { name: 'required', align: 'left', label: t('required'), field: row => row.colData.c55, sortable: true, sortOrder: 'da' },
+  { name: 'title', align: 'left', label: t('className'), field: 'title' },
   { name: 'review', align: 'left', label: t('score'), field: row => (row.beScored?.score ? row.beScored?.score : 6), sortable: true, sortOrder: 'da' },
-  { name: 'title', align: 'left', label: t('className'), field: 'title' }
+  { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || 6, sortable: true, sortOrder: 'da' },
+  { name: 'tag', align: 'left', label: t('tags'), field: row => (row.beScored?.tag ? row.beScored?.tag : ['涼', '甜', '閒']) }
 ]
 )
 // **********************************************子文章清單***
@@ -158,7 +168,6 @@ const columns = computed(() => [
 
 </script>
 <style lang="sass" scoped>
-
 // $
 .q-table
   .q-table__top,
@@ -170,7 +179,8 @@ const columns = computed(() => [
     position: sticky
     z-index: 1
     padding: 5px
-    border: #000 1px solid
+  tr
+
   thead tr:first-child th
     top: 0
   /* this is when the loading indicator appears */
@@ -191,8 +201,6 @@ const columns = computed(() => [
   padding: 0
 .colTR
   height: 10px
-  .q-td
-    height: 10px
 // 舊版CSS
 // .q-tr td:nth-child(4)
 //   background: #f9f9f9
@@ -210,16 +218,19 @@ const columns = computed(() => [
 // 新版CSS
 
 // 奇偶行不同顏色
-.q-tr:nth-child(2n) td
+
+.q-tr:nth-child(2n+1) td
   background: #f5f5f5
 .q-tr td:nth-child(4) button
   text-align: left
-
+.q-tr td.searchTd
+  background: #fff
 .cellBTN
   width: 100%
   height: 100%
   background: transparent
   border: none
   cursor: pointer
+  text-align: left
 
 </style>

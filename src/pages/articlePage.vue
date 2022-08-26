@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex flex-center">
     <q-table :rows="articles" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
-      v-model:pagination="pagination" auto-width :no-data-label="t('noFound')" grid-header
-      :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" style="height: 700px ;width:900px">
+      v-model:pagination="pagination" :no-data-label="t('noFound')"
+      :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" separator="none">
       <!-- <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
@@ -48,7 +48,7 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="">
+        <q-tr :props="props" auto-width>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button class="cellBTN" @click="props.expand = !props.expand">
               <div v-if="col.name === 'user'"
@@ -67,9 +67,6 @@
               <div v-else-if="col.name === 'title'">
                 {{ col.value }}
                 <p>▼看內文</p>
-                <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
-                  {{ t }}
-                </div>
               </div>
               <div v-else-if="col.name === 'semester'" style="text-align: left;">
                 {{ col.value }}
@@ -138,8 +135,10 @@ const columns = computed(() => [
 
 </script>
 <style lang="sass" scoped>
-.q-page
-  min-height: 0 !important
+// .q-page
+//   min-height: 0 !important
+//   box-sizing: border-box
+//   height: 100%
 .q-table
   .q-table__top,
   .q-table__bottom,

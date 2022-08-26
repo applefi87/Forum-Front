@@ -11,7 +11,7 @@
         {{ t('csvMax5MB') }}
       </template>
     </q-file>
-    <button v-if="fileUploaded" @click="transform">transform</button>
+    <q-btn v-if="fileUploaded" color="primary" @click="transform" class="q-mt-md">{{ t('upload') }}</q-btn>
   </q-page>
 </template>
 

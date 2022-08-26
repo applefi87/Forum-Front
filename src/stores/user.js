@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', {
     return {
       token: null,
       account: null,
-      role: 0,
+      role: null,
       score: 0,
       local: null,
       tab: 'boards'
@@ -56,12 +56,12 @@ export const useUserStore = defineStore('user', {
         const { data } = await apiAuth.delete('/user/logout')
         this.token = ''
         this.account = ''
-        this.role = 0
+        this.role = null
         return reply(data)
       } catch (error) {
         this.token = ''
         this.account = ''
-        this.role = 0
+        this.role = null
         return reply(error.response.data)
       }
     },

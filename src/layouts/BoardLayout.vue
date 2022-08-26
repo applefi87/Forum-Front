@@ -35,16 +35,16 @@
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
             <br>
-            <q-btn v-if="users.token" @click="publishArticleState = true" color="primary" label="給評價" />
-            <q-btn v-else @click="loginDropdownState = true" color="orange" label="給評價" />
+            <q-btn v-if="users.token" @click="publishArticleState = true" color="primary" :label="t('review')" />
+            <q-btn v-else @click="loginState = true" color="primary" :label="t('review')" />
           </q-tab-panel>
           <q-tab-panel name="edit" v-if="users.role === 0">
             <q-btn v-if="hasChild" :label='t("addChildBoards")' color="primary" class="q-ml-sm"
               :to="'/board/uploadBoard/' + route.params.id" />
           </q-tab-panel>
         </q-tab-panels>
-        <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="teal-4"
-          align="justify" :breakpoint="0" class="bg-teal text-grey-5 shadow-2" dense>
+        <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange"
+          align="justify" :breakpoint="0" class="bg-orange-8 text-grey-5 " dense>
           <q-tab name="boards" :label="t('boards')" v-if="hasChild" />
           <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
           <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
@@ -55,7 +55,7 @@
       <q-select v-model="locale" :options="localeOptions" label="Language:" borderless emit-value map-options />
     </q-drawer>
     <q-page-container>
-      <router-view />
+      <router-view class="q-pa-lg" />
     </q-page-container>
     <!--****************** 彈出視窗 ------>
     <!-- 發布文章框 -->
@@ -77,6 +77,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { api } from 'src/boot/axios'
 const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
+const loginState = inject('loginState')
+
 const leftDrawerActive = true
 const route = useRoute()
 const router = useRouter()
