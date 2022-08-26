@@ -1,7 +1,8 @@
 <template>
   <q-page v-if="boards.length > 0">
     <q-table :rows="filtedBoards" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
-      v-model:pagination="pagination" auto-width separator="none" :rows-per-page-options="[0, 15, 30, 50, 100]">
+      v-model:pagination="pagination" auto-width separator="none" :rows-per-page-options="[0, 15, 30, 50, 100]"
+      :no-data-label="t('noFound')">
       <!-- <template v-slot:header="props">
         <q-tr>
           <q-td colspan="5">
@@ -108,16 +109,6 @@
             </button>
           </q-td>
         </q-tr>
-      </template>
-      <template v-slot:no-data="">
-        <div class="full-width row flex-center text-accent q-gutter-sm">
-          <q-icon size="2em" name="sentiment_dissatisfied" />
-          22222222222
-          <span>
-            {{ t('noFound') }}
-          </span>
-          <q-icon size="2em" :name='filter_b_and_w' />
-        </div>
       </template>
     </q-table>
   </q-page>

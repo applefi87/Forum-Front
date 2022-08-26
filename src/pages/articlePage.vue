@@ -50,34 +50,27 @@
       <template v-slot:body="props">
         <q-tr :props="props" auto-width>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <button class="cellBTN" @click="props.expand = !props.expand">
-              <div v-if="col.name === 'user'"
-                style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
-                {{ props.row.user.nickName }}
-                <br>
-                &nbsp; {{ col.value || '白紙用戶' }}
+            <button v-if="col.name === 'user'" class="cellBTN" @click="props.expand = !props.expand">
+              {{ col.value }}</button>
+            <div v-else-if="col.name === 'review'">
+              <q-icon name="star" color="warning" />
+              {{ col.value }}
+              <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
+                {{ t }}
               </div>
-              <div v-else-if="col.name === 'review'">
-                <q-icon name="star" color="warning" />
-                {{ col.value }}
-                <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
-                  {{ t }}
-                </div>
-              </div>
-              <div v-else-if="col.name === 'title'">
-                {{ col.value }}
-                <p>▼看內文</p>
-              </div>
-              <div v-else-if="col.name === 'semester'" style="text-align: left;">
-                {{ col.value }}
-              </div>
-            </button>
+            </div>
+            <div v-else-if="col.name === 'title'">
+              {{ col.value }}
+            </div>
+            <div v-else-if="col.name === 'semester'" style="text-align: left;">
+              {{ col.value }}
+            </div>
+            <div v-else-if="col.name === 'content'" style="text-align: left;" v-html="col.value">
+            </div>
           </q-td>
-        </q-tr>
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
+          <!-- <q-td colspan="100%">
             <div class="text-left" v-html="props.row.content"></div>
-          </q-td>
+          </q-td> -->
         </q-tr>
       </template>
     </q-table>
@@ -120,13 +113,14 @@ const columns = computed(() => [
     required: true,
     label: t('user'),
     align: 'left',
-    field: row => row.user.record.toBoard.score || '',
+    field: row => row.user.nickName || '',
     // 似乎在header設就好
     // classes: 'q-table--col-auto-width',
     headerClasses: 'q-table--col-auto-width'
   },
   { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' }
+  { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' },
+  { name: 'content', align: 'left', label: t('experience'), field: row => row.content, sortOrder: 'da' }
   // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
 
 ])
