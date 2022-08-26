@@ -13,7 +13,7 @@
           </tr>
           <!--  -->
           <tr>
-            <td>學期/班</td>
+            <td>{{ t('semester') }}</td>
             <td>
               <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
                 options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
@@ -44,23 +44,23 @@
           </tr>
           <!-- 標題 -->
           <tr>
-            <td>{{ category.titleCol }}</td>
+            <td>{{ t(category.titleCol) }}</td>
             <td>
               <q-input v-model="form['f' + selectCat.value].title" :rules="titleVal">
               </q-input>
             </td>
           </tr>
           <!-- 其他col -->
-          <tr v-for="col in (category.cols?.length > 0 ? category.cols : [])" :key="col">
+          <!-- <tr v-for="col in (category.cols?.length > 0 ? category.cols : [])" :key="col">
             <td>{{ t(col.n) }}</td>
             <td>
               <q-input v-model="form['f' + selectCat.value].cols[col.n]" placeholder="選填">
               </q-input>
             </td>
-          </tr>
+          </tr> -->
           <!-- content(放最後) ****************************-->
           <tr>
-            <td style="vertical-align:text-top ; padding-top: 30px">{{ category.contentCol }}</td>
+            <td style="vertical-align:text-top ; padding-top: 30px">{{ t(category.contentCol) }}</td>
             <td style=" padding-top: 20px">
               <QuillEditor class="editor" toolbar="essential" theme="snow"
                 v-model:content="form['f' + selectCat.value].content" contentType="html" />

@@ -14,7 +14,7 @@
         <q-tr :props="props" class="">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button class="cellBTN" @click="props.expand = !props.expand">
-              <div v-if="col.name === 'userScore'"
+              <div v-if="col.name === 'user'"
                 style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
                 {{ props.row.user.nickName }}
                 <br>
