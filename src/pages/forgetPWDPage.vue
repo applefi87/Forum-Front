@@ -4,13 +4,13 @@
       <q-form>
         <q-input ref="emailFormatValid" filled v-model="form.email" :label='t("email")' :rules="emailVal(true)"
           autocomplete="new-password" />
-        <q-btn dense color="secondary" :loading="mailSending" @click="sendPWDMail()" label="寄驗證信">
+        <q-btn dense color="primary" :loading="mailSending" @click="sendPWDMail()" label="寄驗證信">
           <template v-slot:loading>
             <q-spinner-radio />
           </template>
         </q-btn>
         <q-input filled v-model="form.code" :label='t("schoolEmailCode")' :rules="mailCodeVal" ref="mailCodeValid" />
-        <q-btn dense color="secondary" :loading="mailVerifying" @click="verifyPWDMail()" label="驗證">
+        <q-btn dense color="primary" :loading="mailVerifying" @click="verifyPWDMail()" label="驗證">
           <template v-slot:loading>
             <q-spinner-radio />
           </template>
@@ -97,3 +97,10 @@ const verifyPWDMail = async () => {
   mailVerifying.value = false
 }
 </script>
+
+<style lang="sass" scoped>
+.q-form
+  width: 300px
+.q-btn
+  margin-bottom: 30px
+</style>

@@ -10,7 +10,7 @@
           :type="isPwd ? 'password' : 'text'" :rules="passwordVal" autocomplete="new-password"><template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template></q-input>
-        <q-btn dense color="secondary" :loading="pwdVerifying" @click="changePWD()" label="驗證">
+        <q-btn dense color="primary" :loading="pwdVerifying" @click="changePWD()" label="驗證">
           <template v-slot:loading>
             <q-spinner-radio />
           </template>

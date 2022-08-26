@@ -3,7 +3,7 @@
     <q-table :rows="articles" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
       v-model:pagination="pagination" auto-width :no-data-label="t('noFound')" grid-header
       :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" style="height: 700px ;width:900px">
-      <!-- <template v-slot:header="props">
+      <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
@@ -24,49 +24,6 @@
                 <p class="tableTitle">{{ props.row.title }}</p>
                 <br>
                 {{ col.value }}
-                <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
-                  {{ t }}
-                </div>
-              </div>
-              <div v-else-if="col.name === 'semester'" style="text-align: left;">
-                {{ col.value }}
-              </div>
-            </button>
-          </q-td>
-        </q-tr>
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
-            <div class="text-left" v-html="props.row.content"></div>
-          </q-td>
-        </q-tr>
-      </template> -->
-      <template v-slot:header="props">
-        <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
-          </q-th>
-        </q-tr>
-      </template>
-      <template v-slot:body="props">
-        <q-tr :props="props" class="">
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <button class="cellBTN" @click="props.expand = !props.expand">
-              <div v-if="col.name === 'user'"
-                style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
-                {{ props.row.user.nickName }}
-                <br>
-                &nbsp; {{ col.value || '白紙用戶' }}
-              </div>
-              <div v-else-if="col.name === 'review'">
-                <q-icon name="star" color="warning" />
-                {{ col.value }}
-                <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
-                  {{ t }}
-                </div>
-              </div>
-              <div v-else-if="col.name === 'title'">
-                {{ col.value }}
-                <p>▼看內文</p>
                 <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
                   {{ t }}
                 </div>
@@ -104,6 +61,18 @@ const pagination = ref({ rowsPerPage: 20 })
 const columns = computed(() => [
 
   {
+    name: 'userScore',
+    required: true,
+    label: t('userScore'),
+    align: 'left',
+    field: row => row.user.record.toBoard.score || '',
+    // 似乎在header設就好
+    // classes: 'q-table--col-auto-width',
+    headerClasses: 'q-table--col-auto-width'
+  },
+  { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
+  // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
+  {
     name: 'semester',
     align: 'left',
     label: t('semester'),
@@ -115,23 +84,8 @@ const columns = computed(() => [
       return unique.c80
     },
     sortable: true,
-    sortOrder: 'da',
-    headerClasses: 'q-table--col-auto-width'
-  },
-  {
-    name: 'user',
-    required: true,
-    label: t('user'),
-    align: 'left',
-    field: row => row.user.record.toBoard.score || '',
-    // 似乎在header設就好
-    // classes: 'q-table--col-auto-width',
-    headerClasses: 'q-table--col-auto-width'
-  },
-  { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' }
-  // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
-
+    sortOrder: 'da'
+  }
 ])
 // **********************************************子文章清單***
 // 要去母版看規則
@@ -145,11 +99,10 @@ const columns = computed(() => [
   .q-table__bottom,
   thead tr:first-child th
     /* bg color is important for th; just specify one */
-    background-color: #fff
+    background-color: #c1f4cd
   thead tr th
     position: sticky
     z-index: 1
-    padding: 0 0 0 10px
   thead tr:first-child th
     top: 0
   /* this is when the loading indicator appears */
@@ -158,26 +111,15 @@ const columns = computed(() => [
     top: 48px
 .q-td
   padding: 0
-  // 舊style
-// .q-tr:nth-child(4n+1) td:nth-child(n+2)
-//   background: #f8f8f8
-// // 奇偶行不同顏色
-// .q-tr:nth-child(4n+3) td
-//   background: #FFF8F3
-// .q-tr:nth-child(4n+3) td:nth-child(n+2)
-//   background: #FAF3EF
-// .q-tr:nth-child(4n) td
-//   background: #FFF8F3
-// .q-tr td:nth-child(4) button
-//   text-align: left
-// 新
+.q-tr:nth-child(4n+1) td:nth-child(n+2)
+  background: #f8f8f8
 // 奇偶行不同顏色
-.q-tr:nth-child(4n+1) td
-  background: #f5f5f5
-.q-tr:nth-child(4n+2) td
-  background: #f5f5f5
-.q-tr td:nth-child(4) button
-  text-align: left
+.q-tr:nth-child(4n+3) td
+  background: #FFF8F3
+.q-tr:nth-child(4n+3) td:nth-child(n+2)
+  background: #FAF3EF
+.q-tr:nth-child(4n) td
+  background: #FFF8F3
 .tag
   display: inline-block
   width: 30px

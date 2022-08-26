@@ -21,7 +21,7 @@
               <q-checkbox v-model="filterAll" :label="t('all')" />
             </div>
             <br>
-            <q-btn :loading="getChildboardLoading" color="red" @click="getChildboard" :label="t('search')">
+            <q-btn :loading="getChildboardLoading" color="primary" @click="getChildboard" :label="t('search')">
               <template v-slot:getChildboardLoading>
                 Loading...
               </template>
@@ -35,11 +35,11 @@
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
             <br>
-            <q-btn v-if="users.token" @click="publishArticleState = true" color="orange" label="給評價" />
+            <q-btn v-if="users.token" @click="publishArticleState = true" color="primary" label="給評價" />
             <q-btn v-else @click="loginDropdownState = true" color="orange" label="給評價" />
           </q-tab-panel>
           <q-tab-panel name="edit" v-if="users.role === 0">
-            <q-btn v-if="hasChild" :label='t("addChildBoards")' color="orange" class="q-ml-sm"
+            <q-btn v-if="hasChild" :label='t("addChildBoards")' color="primary" class="q-ml-sm"
               :to="'/board/uploadBoard/' + route.params.id" />
           </q-tab-panel>
         </q-tab-panels>

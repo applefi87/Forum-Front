@@ -207,7 +207,7 @@ const publish = () => {
   background: white
   padding: 50px 30px 20px 40px
   tr
-    height: 50px
+    min-height: 40px
   td:first-child
     font-size: 0.8rem
 .q-select
@@ -221,7 +221,6 @@ const publish = () => {
   flex-wrap: wrap
 .ql-snow
   width: 600px
-.editor
-  height: 300px
-  border: 1px solid black
+tr :deep(.editor)
+  height: 200px
 </style>
