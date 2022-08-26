@@ -74,11 +74,12 @@
         </q-tr>
       </template>
     </q-table>
+    <!-- <chartPage></chartPage> -->
   </q-page>
 </template>
 
 <script setup scoped>
-import { api } from 'src/boot/axios'
+// import chartPage from 'components/chartPage'
 import { useRouter } from 'vue-router'
 import { ref, reactive, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -91,8 +92,9 @@ const hasArticle = inject('hasArticle')
 // ----------
 const filter = ref('')
 const pagination = ref({ rowsPerPage: 20 })
+// --
+// --
 const columns = computed(() => [
-
   {
     name: 'semester',
     align: 'left',

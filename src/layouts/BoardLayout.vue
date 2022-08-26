@@ -11,7 +11,7 @@
         {{ time }} -->
       </h6>
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
-        <q-tab-panels v-model="tab" animated="false">
+        <q-tab-panels v-model="tab">
           <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
             <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
               :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />

@@ -1,62 +1,7 @@
 <template>
   <q-page v-if="boards.length > 0">
-    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
-      v-model:pagination="pagination" auto-width separator="none" :rows-per-page-options="[0, 15, 30, 50, 100]"
-      :no-data-label="t('noFound')">
-      <!-- <template v-slot:header="props">
-        <q-tr>
-          <q-td colspan="5">
-            <q-input borderless dense debounce="300" v-model="filter" :placeholder="t('search')" outlined
-              style="width:300px; max-width:80%;display:inline-block;float:right">
-              <template v-slot:append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </q-td>
-        </q-tr>
-        <q-tr :props="props">
-          <q-th v-for="col in props.cols.filter((c) => !(['title', 'tag', 'review'].find((n) => n === c.name)))"
-            :key="col.name" :props="props">
-            {{ col.label }}
-          </q-th>
-          <q-th v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
-            :props="props">
-            <div style="line-height:40px ;display:inline-block">{{ col.label }}</div>
-          </q-th>
-        </q-tr>
-      </template> -->
-      <!-- <template v-slot:body="props">
-        <q-tr :props="props" class="colTR" no-hover>
-          <q-td v-for="col in props.cols.filter((c) => !(['title', 'review', 'tag'].find((n) => n === c.name)))"
-            :key="col.name" :props="props">
-            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              {{ col.value }}</button>
-          </q-td>
-          <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
-            :props="props" rowspan="2">
-            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              <div
-                style="display:flex;flex-direction: column;justify-content: space-between ;align-items: flex-start; height: 100% ">
-                <div>
-                  <div class="tag" v-for="t in (props.row.beScored?.tag ? props.row.beScored?.tag : ['涼', '甜', '閒'])"
-                    :tag="t" :key="t">
-                    {{ t }}
-                  </div>
-                </div>
-                {{ t('score') + ":" + col.value }}&nbsp; {{ t("review") + ":" + (props.row.beScored?.amount || 0)
-                }}
-              </div>
-            </button>
-          </q-td>
-        </q-tr>
-        <q-tr :props="props" no-hover>
-          <q-td colspan="3">
-            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              {{ props.row.title }}
-            </button>
-          </q-td>
-        </q-tr>
-      </template> -->
+    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage > 49"
+      v-model:pagination="pagination" auto-width separator="none" :rows-per-page-options="[0, 15, 30, 50, 100]">
       <template v-slot:header="props">
         <q-tr>
           <q-td colspan="8" class="searchTd">
@@ -133,7 +78,7 @@ const filtedBoards = computed(() => {
     return s.title.match(RegExp('.*' + filter.value + '.*', 'i'))
   })
 })
-const pagination = ref({ rowsPerPage: 30 })
+const pagination = ref({ rowsPerPage: 15 })
 const columns = computed(() => [
   {
     name: 'department',
