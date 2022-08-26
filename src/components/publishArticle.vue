@@ -80,6 +80,7 @@
 </template>
 
 <script setup scoped>
+import repNotify from 'src/utils/repNotify'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { ref, reactive, inject, watch, computed } from 'vue'
@@ -182,12 +183,14 @@ const publish = () => {
         submit.category = selectCat.value.value
         submit.uniqueId = unique.value.value
         const { data } = await apiAuth.post('/article/create/' + route.params.id, submit)
+        repNotify(data)
         console.log(data.result)
         publishArticleState.value = false
         // 自動重整才能看到評分
         router.go()
       } catch (error) {
         console.log(error.response.data)
+        repNotify(error.response.data)
       }
       publishing.value = false
     }

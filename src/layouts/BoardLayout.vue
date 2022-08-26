@@ -11,7 +11,7 @@
         {{ time }} -->
       </h6>
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
-        <q-tab-panels v-model="tab" animated>
+        <q-tab-panels v-model="tab" animated="false">
           <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
             <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
               :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
@@ -119,7 +119,7 @@ const init = async () => {
     boards.length = 0
     const { data } = await api.get('/board/' + route.params.id)
     if (data.result) {
-      const getBoards = () => {
+      const createBoardsFilter = () => {
         // 清空物件與加入物件的美妙
         for (const k in board) delete board[k]
         Object.assign(board, data.result)
@@ -136,7 +136,7 @@ const init = async () => {
           hasChild.value = false
         }
       }
-      getBoards()
+      createBoardsFilter()
       // 處理文章(規則去他母版抓)
       // 有成功才顯示不然清除
       const checkArticles = async () => {
@@ -158,7 +158,6 @@ const init = async () => {
             }
           }
         } catch (error) {
-          // notify(error.response.data)
           console.log(error.response.data)
         }
         // 要有母版

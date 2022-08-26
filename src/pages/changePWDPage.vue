@@ -67,3 +67,9 @@ const init = () => {
 }
 init()
 </script>
+<style lang="sass" scoped>
+.q-input
+  width: 300px
+  max-width: 80vw !important
+  margin-bottom: 30px
+</style>

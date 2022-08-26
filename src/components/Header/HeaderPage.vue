@@ -1,7 +1,7 @@
 <template >
   <q-toolbar>
     <q-btn v-if="leftDrawerActive" class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
-    <q-toolbar-title class="q-pl-none">
+    <q-toolbar-title class="q-pl-none" style="padding-bottom: 10px">
       <q-btn flat @click="router.push('/board/6305df25f302b171b210ad66')">
         <q-avatar class="gt-sm q-mr-sm">
           <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
@@ -61,6 +61,7 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 const users = useUserStore()
 // ****

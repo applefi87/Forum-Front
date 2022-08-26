@@ -13,7 +13,8 @@ export const useUserStore = defineStore('user', {
       account: null,
       role: 0,
       score: 0,
-      local: null
+      local: null,
+      tab: 'boards'
     }
   },
   // getters: {
