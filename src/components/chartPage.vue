@@ -1,10 +1,10 @@
 <template>
-  <!-- <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
-    :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" /> -->
-  <q-page></q-page>
+  <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+    :plugins="plugins()" :css-classes="cssClasses" :styles="styles()" :width="width" :height="height" />
 </template>
 
-<script setup >import { Bar } from 'vue-chartjs'
+<script setup >
+import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
@@ -13,12 +13,15 @@ const datasetIdKey = 'label'
 const width = 400
 const height = 400
 const cssClasses = ''
-const styles = () => { }
-const plugins = () => { }
-
+const styles = () => { return {} }
+const plugins = () => { return [] }
+const p = defineProps({
+  datas: Array,
+  labels: Array
+})
 const chartData = {
-  labels: ['January', 'February', 'March'],
-  datasets: [{ data: [40, 20, 12] }]
+  labels: p.labels,
+  datasets: [{ data: p.datas }]
 }
 const chartOptions = {
   responsive: true

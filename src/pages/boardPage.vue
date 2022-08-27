@@ -17,10 +17,6 @@
           <q-th v-for="col in props.cols.filter((c) => !([].find((n) => n === c.name)))" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
-          <!-- <q-th v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
-            :props="props">
-            <div style="line-height:40px ;display:inline-block">{{ col.label }}</div>
-          </q-th> -->
         </q-tr>
       </template>
       <template v-slot:body="props">
@@ -64,7 +60,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { ref, reactive, inject, computed } from 'vue'
+import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 const router = useRouter()
 const { t } = useI18n()
@@ -115,8 +111,6 @@ const columns = computed(() => [
     position: sticky
     z-index: 1
     padding: 5px
-  tr
-
   thead tr:first-child th
     top: 0
   /* this is when the loading indicator appears */

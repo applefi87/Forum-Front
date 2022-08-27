@@ -102,7 +102,6 @@ const login = async () => {
       loginForm.account = ''
       loginForm.password = ''
       loginForm.keepLogin = false
-      router.push('/')
     }
   } catch (error) {
     console.log(error.response.data)

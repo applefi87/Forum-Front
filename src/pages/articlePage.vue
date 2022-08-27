@@ -1,45 +1,8 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="flex flex-center" v-if="articles.length > 0">
     <q-table :rows="articles" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
       v-model:pagination="pagination" :no-data-label="t('noFound')"
       :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" separator="none">
-      <!-- <template v-slot:header="props">
-        <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
-          </q-th>
-        </q-tr>
-      </template>
-      <template v-slot:body="props">
-        <q-tr :props="props" class="">
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <button class="cellBTN" @click="props.expand = !props.expand">
-              <div v-if="col.name === 'user'"
-                style="display:flex;flex-direction: column;justify-content: space-between; height: 100% ">
-                {{ props.row.user.nickName }}
-                <br>
-                &nbsp; {{ col.value || '白紙用戶' }}
-              </div>
-              <div v-else-if="col.name === 'review'">
-                <p class="tableTitle">{{ props.row.title }}</p>
-                <br>
-                {{ col.value }}
-                <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
-                  {{ t }}
-                </div>
-              </div>
-              <div v-else-if="col.name === 'semester'" style="text-align: left;">
-                {{ col.value }}
-              </div>
-            </button>
-          </q-td>
-        </q-tr>
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
-            <div class="text-left" v-html="props.row.content"></div>
-          </q-td>
-        </q-tr>
-      </template> -->
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
@@ -55,9 +18,11 @@
             <div v-else-if="col.name === 'review'">
               <q-icon name="star" color="warning" />
               {{ col.value }}
-              <div class=" tag" v-for="t in (props.row.tags || ['涼', '甜', '閒'])" :tag="t" :key="t">
+            </div>
+            <div v-else-if="col.name === 'tags'">
+              <p class="tag" v-for="t in (col.value || ['涼', '甜'])" :tag="t" :key="t">
                 {{ t }}
-              </div>
+              </p>
             </div>
             <div v-else-if="col.name === 'title'">
               {{ col.value }}
@@ -68,20 +33,20 @@
             <div v-else-if="col.name === 'content'" style="text-align: left;" v-html="col.value">
             </div>
           </q-td>
-          <!-- <q-td colspan="100%">
-            <div class="text-left" v-html="props.row.content"></div>
-          </q-td> -->
         </q-tr>
       </template>
     </q-table>
-    <!-- <chartPage></chartPage> -->
+  </q-page>
+  <q-page v-else>
+    <h6 style="margin-left: calc(5vw);">目前還沒有評價喔~ 當第一個分享的吧~</h6>
+    <chartPage :datas="[5, 1, 6, 8, 9, 10]" :labels="[0, 1, 2, 3, 4, 5]"></chartPage>
   </q-page>
 </template>
 
 <script setup scoped>
-// import chartPage from 'components/chartPage'
 import { useRouter } from 'vue-router'
-import { ref, reactive, inject, computed } from 'vue'
+import chartPage from 'components/chartPage.vue'
+import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 const router = useRouter()
 const { t } = useI18n()
@@ -121,6 +86,7 @@ const columns = computed(() => [
     headerClasses: 'q-table--col-auto-width'
   },
   { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
+  { name: 'tags', align: 'left', label: t('tags'), field: row => row.tags, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' },
   { name: 'content', align: 'left', label: t('experience'), field: row => row.content, sortOrder: 'da' }
   // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
