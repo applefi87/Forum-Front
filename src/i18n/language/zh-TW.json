@@ -13,6 +13,7 @@
   "review": "評價",
   "rewiewNumber": "評價數",
   "tags": "標籤",
+  "rate": "評分(0~5)",
   "login": "登入",
   "keepLogin": "自動登入",
   "logout": "登出",

@@ -13,10 +13,12 @@
       <template v-slot:body="props">
         <q-tr :props="props" auto-width>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <button v-if="col.name === 'user'" class="cellBTN" @click="props.expand = !props.expand">
+            <button v-if="col.name === 'user'" class="cellBTN"
+              @click="showUserInfo(col.value, props.row.user.record.toBoard.score, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
               {{ col.value }}</button>
             <div v-else-if="col.name === 'review'">
               <q-icon name="star" color="warning" />
+
               {{ col.value }}
             </div>
             <div v-else-if="col.name === 'tags'">
@@ -36,17 +38,19 @@
         </q-tr>
       </template>
     </q-table>
+    <q-dialog v-model="userInfoState">
+      <chartInfo :form="userInfoForm" />
+    </q-dialog>
   </q-page>
   <q-page v-else>
     <h6 style="margin-left: calc(5vw);">目前還沒有評價喔~ 當第一個分享的吧~</h6>
-    <chartPage :datas="[5, 1, 6, 8, 9, 10]" :labels="[0, 1, 2, 3, 4, 5]"></chartPage>
   </q-page>
 </template>
 
 <script setup scoped>
 import { useRouter } from 'vue-router'
-import chartPage from 'components/chartPage.vue'
-import { ref, inject, computed } from 'vue'
+import chartInfo from 'components/chartInfo.vue'
+import { ref, reactive, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 const router = useRouter()
 const { t } = useI18n()
@@ -57,6 +61,16 @@ const hasArticle = inject('hasArticle')
 // ----------
 const filter = ref('')
 const pagination = ref({ rowsPerPage: 20 })
+const userInfoState = ref(false)
+const userInfoForm = reactive({ titleCol: '用戶', title: '', chartTitle: '給人的評分', score: 0, amount: 0, datas: [] })
+const showUserInfo = (title, score, amount, datas) => {
+  userInfoForm.title = title
+  userInfoForm.score = score
+  userInfoForm.amount = amount
+  userInfoForm.datas.length = 0
+  userInfoForm.datas.push(...datas)
+  userInfoState.value = true
+}
 // --
 // --
 const columns = computed(() => [

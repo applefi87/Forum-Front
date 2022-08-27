@@ -29,9 +29,9 @@
           </tr>
           <!-- 評分 -->
           <tr v-if="category && category.c === 1">
-            <td>{{ t('score') }}</td>
+            <td>{{ t('rate') }}</td>
             <td>
-              <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" :max="10" />
+              <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" :max="5" />
             </td>
           </tr>
           <!-- tag -->

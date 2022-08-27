@@ -7,9 +7,8 @@
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
       :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
       <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}
-        <!-- <hr>
-        {{ time }} -->
       </h6>
+      <chartInfo v-if="boardInfoForm.score && boardInfoForm.score >= 0" :form="boardInfoForm" />
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
         <q-tab-panels v-model="tab">
           <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
@@ -65,8 +64,8 @@
 
 <script setup>
 import headerPage from 'components/Header/HeaderPage.vue'
+import chartInfo from 'components/chartInfo.vue'
 import { ref, reactive, watch, shallowRef, provide, readonly, inject } from 'vue'
-
 import publishArticle from 'src/components/publishArticle.vue'
 import { useQuasar } from 'quasar'
 import notify from 'src/utils/notify'
@@ -95,7 +94,7 @@ locale.value = users.local || useQuasar().lang.getLocale()
 watch(locale, () => {
   users.local = locale.value
 })
-
+const boardInfoForm = reactive({ chartTitle: '學長姐的評分', score: 0, amount: 0, datas: [] })
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
 const tab = ref('boards')
@@ -127,6 +126,14 @@ const init = async () => {
         Object.assign(board, data.result)
         //
         title.value = data.result.title
+        if (data.result.beScored?.score && data.result.beScored.score >= 0) {
+          // boardInfoForm.title = data.result.title
+          boardInfoForm.score = data.result.beScored.score
+          boardInfoForm.amount = data.result.beScored.amount
+          boardInfoForm.datas.length = 0
+          boardInfoForm.datas.push(...data.result.beScored.scoreChart)
+        }
+        console.log(boardInfoForm)
         if (data.result.childBoard.active) {
           hasChild.value = true
           filterOptions.value = data.result.childBoard.rule.display.filter?.dataCol?.c0 || [0]
@@ -200,6 +207,8 @@ const init = async () => {
         }
       }
       if (tab.value === 'articles') getArticles()
+    } else {
+      boardInfoForm.score = null
     }
     // 判斷是否有版/文章 微調
     filterC0.value = filterOptions.value[0]

@@ -53,7 +53,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
-      extendViteConf (viteConf) {
+      extendViteConf(viteConf) {
         viteConf.base = ''
       },
       target: {
