@@ -83,13 +83,12 @@ const showUserInfo = (title, score, amount, datas) => {
 }
 // 文章留言 Dialog
 const msgState = ref(false)
-const article = reactive({ datas: [], _id: '' })
+const article = reactive({ datas: [], _id: '', isSelf: false })
 const showMsgInfo = (it) => {
   article._id = it._id
-  // msgForm.score = score
-  // msgForm.amount = article.msg1.amount
+  article.isSelf = it.user.nickName === 'you'
   article.datas.length = 0
-  article.datas.push(...it.msg1?.list)
+  if (it.msg1?.list) article.datas.push(...it.msg1?.list)
   msgState.value = true
 }
 

@@ -73,7 +73,7 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 // import { useBoardStore } from 'src/stores/board'
 import { useRoute, useRouter } from 'vue-router'
-import { api } from 'src/boot/axios'
+import { api, apiAuth } from 'src/boot/axios'
 const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
 const loginState = inject('loginState')
@@ -133,7 +133,6 @@ const init = async () => {
           boardInfoForm.datas.length = 0
           boardInfoForm.datas.push(...data.result.beScored.scoreChart)
         }
-        console.log(boardInfoForm)
         if (data.result.childBoard.active) {
           hasChild.value = true
           filterOptions.value = data.result.childBoard.rule.display.filter?.dataCol?.c0 || [0]
@@ -199,7 +198,7 @@ const init = async () => {
       // ********* 取得文章 (tab要是articles 不然不浪費資源)*******
       const getArticles = async () => {
         try {
-          const { data } = await api.get('/article/' + route.params.id)
+          const { data } = await apiAuth.get('/article/' + route.params.id)
           articles.length = 0
           articles.push(...data.result)
         } catch (error) {

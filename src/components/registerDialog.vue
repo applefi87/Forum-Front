@@ -6,7 +6,7 @@
           <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
             <q-card-section>
               <div class="text-h4">{{ t("register") }}</div>
-              <div class="text-h6">{{ t("onlyStudent") }}</div>
+              <div class="text-h6">{{ t("registerFirst") }}</div>
             </q-card-section>
             <!-- <p class="text-h6">1.可選匿名 <br>2.評價依照課程名保存，更好查閱 <br>3.好的評價置頂 <br>4.評價越受歡迎，帳號分數越高</p> -->
           </q-step>
@@ -27,7 +27,7 @@
           <!--  -->
           <q-step :name="3" title="帳密" icon="settings" :done="step > 3">
             <q-card-section class="q-pt-none">
-              <q-input filled v-model="registerForm.account" :label='t("account")' :rules="t(accountVal)"
+              <q-input filled v-model="registerForm.account" :label='t("account")' :rules="accountVal"
                 ref=accountValid />
               <q-input filled v-model="registerForm.password" :label='t("password")' :hint='t("pwdRule")'
                 :type="isPwd ? 'password' : 'text'" :rules="passwordVal"><template v-slot:append>

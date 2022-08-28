@@ -26,6 +26,7 @@
   "pwdEasyRule": "At least one character and number",
   "forgetPWD": "Forgot password?",
   "register": "Register",
+  "registerFirst": "Register and discuss~",
   "onlyStudent": "Only support school email register now(contain '.edu')",
   "email": "E-mail",
   "schoolEmail": "School email",
@@ -75,5 +76,6 @@
   "required": "Required",
   "className": "ClassName",
   "writeAComment": "Write a comment...",
-  "originalPoster": "Original Poster"
+  "originalPoster": "Original Poster",
+  "you": "You"
 }

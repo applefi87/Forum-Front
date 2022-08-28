@@ -1,9 +1,9 @@
 <!-- 統一格式  -->
 <template>
   <q-card id="msg">
-    <q-card-section class="q-pb-none">
+    <!-- <q-card-section class="q-pb-none">
       title
-    </q-card-section>
+    </q-card-section> -->
     <q-card-section v-if="p.article.datas" class="q-pa-none">
       <!-- <q-table :rows="p.form.datas" :columns="columns" row-key="id" virtual-scroll=true separator="none" hide-header
         flat hide-pagination>
@@ -23,7 +23,7 @@
         </template>
       </q-table> -->
       <q-list>
-        <q-item v-for="msg in p.article.datas" :key="msg.id">
+        <q-item v-for="msg in p.article.datas" :key="msg.createdAt">
           <q-item-section avatar>
             <q-avatar rounded>
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
@@ -38,7 +38,7 @@
       </q-list>
     </q-card-section>
     <q-card-section class="q-pt-none">
-      <q-select v-if="users._id !== p.article.user" borderless v-model="form.privacy" :options="privacyOptions" dense>
+      <q-select v-if="!p.article.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense>
         <template v-slot:before>
           <p> {{ t('privacy') }}</p>
         </template>
@@ -70,15 +70,15 @@ const p = defineProps({
 const route = useRoute()
 const router = useRouter()
 const users = useUserStore()
-console.log(users._id + ':' + p.article.user)
 const privacyOptions = computed(() => {
   return [
-    { label: t('anonymous'), value: 1 },
-    { label: t('showAll'), value: 0 }
+    { label: t('anonymous'), value: 0 },
+    { label: t('showAll'), value: 1 }
   ]
 })
 const form = reactive({ content: '', privacy: privacyOptions.value[0] })
 const send = async () => {
+  console.log(form.privacy.value)
   const submit = { content: form.content, privacy: form.privacy.value }
   try {
     apiAuth.post('/article/createMsg/' + p.article._id, submit)

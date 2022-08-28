@@ -26,6 +26,7 @@
   "pwdEasyRule": "必須含英文與數字",
   "forgetPWD": "忘記密碼?",
   "register": "註冊",
+  "registerFirst": "評論需先註冊喔~  ",
   "onlyStudent": "評論需先註冊喔~  \n初期僅開放學校信箱註冊(信箱含.edu)",
   "email": "信箱",
   "schoolEmail": "學校信箱",
@@ -75,5 +76,6 @@
   "required": "必/選修",
   "className": "課程名稱",
   "writeAComment": "留言...",
-  "originalPoster": "樓主"
+  "originalPoster": "樓主",
+  "you": "你"
 }
