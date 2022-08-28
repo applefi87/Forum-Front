@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', {
   state() {
     return {
       token: null,
+      _id: null,
       account: null,
       role: null,
       score: 0,
@@ -42,6 +43,7 @@ export const useUserStore = defineStore('user', {
         const { data } = await api.post('/user/login', form)
         // 使用者資訊存起來
         this.token = data.result.token
+        this._id = data.result._id
         this.account = data.result.account
         this.role = data.result.role
         this.score = data.result.score

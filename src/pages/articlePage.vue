@@ -15,10 +15,9 @@
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button v-if="col.name === 'user'" class="cellBTN"
               @click="showUserInfo(col.value, props.row.user.record.toBoard.score, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
-              {{ col.value }}</button>
+              {{ col.value || t('anonymous') }}</button>
             <div v-else-if="col.name === 'review'">
               <q-icon name="star" color="warning" />
-
               {{ col.value }}
             </div>
             <div v-else-if="col.name === 'tags'">
@@ -32,7 +31,13 @@
             <div v-else-if="col.name === 'semester'" style="text-align: left;">
               {{ col.value }}
             </div>
-            <div v-else-if="col.name === 'content'" style="text-align: left;" v-html="col.value">
+            <div v-else-if="col.name === 'content'"
+              style="text-align: left; display:flex;justify-content: space-between; height:100%">
+              <div v-html="col.value"></div>
+              <q-btn square color="primary" icon="message" style="height:100% " @click="showMsgInfo(props.row)">
+                <q-badge color="transparent" text-color="white" v-if="props.row.msg1?.amount">{{ props.row.msg1.amount
+                }}</q-badge>
+              </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -40,6 +45,9 @@
     </q-table>
     <q-dialog v-model="userInfoState">
       <chartInfo :form="userInfoForm" />
+    </q-dialog>
+    <q-dialog v-model="msgState">
+      <messageDialog :article="article" />
     </q-dialog>
   </q-page>
   <q-page v-else>
@@ -50,6 +58,7 @@
 <script setup scoped>
 import { useRouter } from 'vue-router'
 import chartInfo from 'components/chartInfo.vue'
+import messageDialog from 'components/messageDialog.vue'
 import { ref, reactive, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 const router = useRouter()
@@ -61,8 +70,9 @@ const hasArticle = inject('hasArticle')
 // ----------
 const filter = ref('')
 const pagination = ref({ rowsPerPage: 20 })
+// 使用者資訊Dialog
 const userInfoState = ref(false)
-const userInfoForm = reactive({ titleCol: '用戶', title: '', chartTitle: '給人的評分', score: 0, amount: 0, datas: [] })
+const userInfoForm = reactive({ titleCol: '用戶', title: '', averageTitle: '給評平均', chartTitle: '評分總覽', score: 0, amount: 0, datas: [] })
 const showUserInfo = (title, score, amount, datas) => {
   userInfoForm.title = title
   userInfoForm.score = score
@@ -71,6 +81,18 @@ const showUserInfo = (title, score, amount, datas) => {
   userInfoForm.datas.push(...datas)
   userInfoState.value = true
 }
+// 文章留言 Dialog
+const msgState = ref(false)
+const article = reactive({ datas: [], _id: '' })
+const showMsgInfo = (it) => {
+  article._id = it._id
+  // msgForm.score = score
+  // msgForm.amount = article.msg1.amount
+  article.datas.length = 0
+  article.datas.push(...it.msg1?.list)
+  msgState.value = true
+}
+
 // --
 // --
 const columns = computed(() => [
@@ -94,7 +116,7 @@ const columns = computed(() => [
     required: true,
     label: t('user'),
     align: 'left',
-    field: row => row.user.nickName || '',
+    field: row => row.user.nickName,
     // 似乎在header設就好
     // classes: 'q-table--col-auto-width',
     headerClasses: 'q-table--col-auto-width'

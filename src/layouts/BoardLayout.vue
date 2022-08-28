@@ -42,12 +42,12 @@
               :to="'/board/uploadBoard/' + route.params.id" />
           </q-tab-panel>
         </q-tab-panels>
-        <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange"
+        <!-- <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange"
           align="justify" :breakpoint="0" class="bg-orange-8 text-grey-5 " dense>
           <q-tab name="boards" :label="t('boards')" v-if="hasChild" />
           <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
           <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
-        </q-tabs>
+        </q-tabs> -->
       </div>
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>
@@ -94,7 +94,7 @@ locale.value = users.local || useQuasar().lang.getLocale()
 watch(locale, () => {
   users.local = locale.value
 })
-const boardInfoForm = reactive({ chartTitle: '學長姐的評分', score: 0, amount: 0, datas: [] })
+const boardInfoForm = reactive({ chartTitle: '課程評分', averageTitle: '課程平均分數', score: 0, amount: 0, datas: [] })
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
 const tab = ref('boards')

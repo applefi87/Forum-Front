@@ -23,6 +23,7 @@
   "pwdCheck": "Confirm password",
   "pwdCheckFail": "Not metch",
   "pwdRule": "At least one uppercase , lowercase character and number",
+  "pwdEasyRule": "At least one character and number",
   "forgetPWD": "Forgot password?",
   "register": "Register",
   "onlyStudent": "Only support school email register now(contain '.edu')",
@@ -72,5 +73,7 @@
   "department": "Department",
   "credits": "Credits",
   "required": "Required",
-  "className": "ClassName"
+  "className": "ClassName",
+  "writeAComment": "Write a comment...",
+  "originalPoster": "Original Poster"
 }

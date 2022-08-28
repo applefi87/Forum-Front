@@ -27,7 +27,7 @@
           <!--  -->
           <q-step :name="3" title="帳密" icon="settings" :done="step > 3">
             <q-card-section class="q-pt-none">
-              <q-input filled v-model="registerForm.account" :label='t("account")' :rules="accountVal"
+              <q-input filled v-model="registerForm.account" :label='t("account")' :rules="t(accountVal)"
                 ref=accountValid />
               <q-input filled v-model="registerForm.password" :label='t("password")' :hint='t("pwdRule")'
                 :type="isPwd ? 'password' : 'text'" :rules="passwordVal"><template v-slot:append>
@@ -137,21 +137,23 @@ const registerForm = reactive({ schoolEmail: 'wdada5d@efeafas.edu.tw', schoolEma
 
 // ***********rule val區******************************
 const accountVal = [
-  val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
+  val => (val && val.length >= 4 && val.length <= 30) || '長度需介於4~30字之間',
+  // 簡易版
+  // val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
   val => val.match(/^[a-z0-9]+$/) || '只能輸入英文小寫與數字'
 ]
 const passwordVal = [
   val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
-  val => (val.match(/[A-Z]/) && val.match(/[a-z]/) && val.match(/[0-9]/)) || '必須含英文大、小寫與數字',
-  val => true || '預留給有同名使用'
+  // 先改成簡易密碼 必須有英數就好
+  val => (val.match(/[a-zA-Z]/) && val.match(/[0-9]/)) || '必須含英文與數字',
+  val => true || '預留給有同名使用，名稱重複會把這行換成不能等於原本帳號'
 ]
 const nickNameVal = [
   val => (val && val.length >= 4 && val.length <= 20) || '長度需介於4~20字之間',
   val => true || '預留給有同名使用'
 ]
 const mailCodeVal = [
-  val => (val.length === 6 && val.match(/^[0-9]+$/)) || '為六位數字',
-  val => true || '預留給有同名使用'
+  val => (val.length === 6 && val.match(/^[0-9]+$/)) || '為六位數字'
 ]
 const register = async () => {
   try {

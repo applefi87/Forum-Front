@@ -23,6 +23,7 @@
   "pwdCheck": "確認密碼",
   "pwdCheckFail": "密碼不相符",
   "pwdRule": "必須含英文大、小寫與數字",
+  "pwdEasyRule": "必須含英文與數字",
   "forgetPWD": "忘記密碼?",
   "register": "註冊",
   "onlyStudent": "評論需先註冊喔~  \n初期僅開放學校信箱註冊(信箱含.edu)",
@@ -40,10 +41,10 @@
   "male": "男",
   "female": "女",
   "others": "其他",
-  "nickname": "暱稱",
+  "nickname": "綽號",
   "privacy": "隱私",
-  "showAll": "顯示暱稱",
-  "anonymous": "全匿名",
+  "showAll": "綽號",
+  "anonymous": "匿名",
   "userInfo": "個人資訊",
   "changePassword": "更改密碼",
   "user": "留言者",
@@ -72,5 +73,7 @@
   "department": "開課系所",
   "credits": "學分",
   "required": "必/選修",
-  "className": "課程名稱"
+  "className": "課程名稱",
+  "writeAComment": "留言...",
+  "originalPoster": "樓主"
 }
