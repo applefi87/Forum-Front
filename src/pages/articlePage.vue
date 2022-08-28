@@ -47,7 +47,7 @@
       <chartInfo :form="userInfoForm" />
     </q-dialog>
     <q-dialog v-model="msgState">
-      <messageDialog :article="article" />
+      <messageDialog />
     </q-dialog>
   </q-page>
   <q-page v-else>
@@ -59,7 +59,7 @@
 import { useRouter } from 'vue-router'
 import chartInfo from 'components/chartInfo.vue'
 import messageDialog from 'components/messageDialog.vue'
-import { ref, reactive, inject, computed } from 'vue'
+import { ref, reactive, inject, computed, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 const router = useRouter()
 const { t } = useI18n()
@@ -129,7 +129,7 @@ const columns = computed(() => [
 ])
 // **********************************************子文章清單***
 // 要去母版看規則
-
+provide('article', article)
 </script>
 <style lang="sass" scoped>
 // .q-page

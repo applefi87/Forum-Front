@@ -4,7 +4,7 @@
     <!-- <q-card-section class="q-pb-none">
       title
     </q-card-section> -->
-    <q-card-section v-if="p.article.datas" class="q-pa-none">
+    <q-card-section v-if="article.datas" class="q-pa-none">
       <!-- <q-table :rows="p.form.datas" :columns="columns" row-key="id" virtual-scroll=true separator="none" hide-header
         flat hide-pagination>
         <template v-slot:body="props">
@@ -23,7 +23,7 @@
         </template>
       </q-table> -->
       <q-list>
-        <q-item v-for="msg in p.article.datas" :key="msg.createdAt">
+        <q-item v-for="msg in article.datas" :key="msg.createdAt">
           <q-item-section avatar>
             <q-avatar rounded>
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
@@ -38,7 +38,7 @@
       </q-list>
     </q-card-section>
     <q-card-section class="q-pt-none">
-      <q-select v-if="!p.article.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense>
+      <q-select v-if="!article.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense>
         <template v-slot:before>
           <p> {{ t('privacy') }}</p>
         </template>
@@ -58,15 +58,17 @@
 
 <script setup >
 import { useUserStore } from 'src/stores/user'
-import { ref, reactive, computed, inject } from 'vue'
+import { reactive, computed, inject } from 'vue'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 const loginState = inject('loginState')
 const { t } = useI18n()
-const p = defineProps({
-  article: Object
-})
+const article = inject('article')
+// const p = defineProps({
+//   article: Object
+// })
+const e = defineEmits(['update:article'])
 const route = useRoute()
 const router = useRouter()
 const users = useUserStore()
@@ -78,10 +80,10 @@ const privacyOptions = computed(() => {
 })
 const form = reactive({ content: '', privacy: privacyOptions.value[0] })
 const send = async () => {
-  console.log(form.privacy.value)
   const submit = { content: form.content, privacy: form.privacy.value }
   try {
-    apiAuth.post('/article/createMsg/' + p.article._id, submit)
+    const { data } = await apiAuth.post('/article/createMsg/' + article._id, submit)
+    article.datas = data.result.msg1.list
   } catch (error) {
     console.log(error)
   }
