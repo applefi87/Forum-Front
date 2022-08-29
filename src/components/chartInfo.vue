@@ -7,15 +7,15 @@
     </q-card-section>
     <q-card-section v-if="p.form.datas" class="q-pt-none">
       <div v-if="p.form.chartTitle" class="text-h6 text-weight-bold text-center">{{  p.form.chartTitle  }}</div>
-      <!-- <apexchart type="pie" width="280" :options="options" :series="p.form.datas" class="q-pa-md">
-      </apexchart> -->
+      <apexchart type="pie" width="280" :options="options" :series="p.form.datas" class="q-pa-md">
+      </apexchart>
     </q-card-section>
   </q-card>
 </template>
 
 <script setup >
 
-// import ApexCharts from 'apexcharts'
+import ApexCharts from 'apexcharts'
 const p = defineProps({
   form: Object
 })
