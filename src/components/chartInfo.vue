@@ -14,12 +14,13 @@
 </template>
 
 <script setup >
-import { createApp } from 'vue'
+import { createApp, defineComponent } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
-import ApexCharts from 'apexcharts'
+defineComponent({
+  apexchart: VueApexCharts
+})
 
 const app = createApp()
-app.use(VueApexCharts)
 const p = defineProps({
   form: Object
 })

@@ -1,9 +1,6 @@
 <template >
   <div style="max-width: 300px; margin: 20px auto">
     <h4>{{ t('adminLogin') }}</h4>
-    <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
-      map-options />
-    <hr>
     <q-form @submit.prevent="login" class="q-gutter-xs">
       <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
         :rules="[val => val && val.length > 0 || t('cantNull')]" />
@@ -15,7 +12,7 @@
       <div>
         <div style="height:50px">
           <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
-          <q-btn label="忘記密碼?" type="submit" color="primary" class="f-r" flat to="/forgetPWD" />
+          <q-btn :label="t('forgetPWD')" type="submit" color="primary" class="f-r" flat to="/forgetPWD" />
         </div>
         <q-btn :label='t("login")' type="submit" color="primary" />
         <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
@@ -35,13 +32,7 @@ const router = useRouter()
 const users = useUserStore()
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
-const localeOptions = [
-  { value: 'en-US', label: 'English' },
-  { value: 'zh-TW', label: '繁體中文' }
-]
-const { locale, t } = useI18n({ useScope: 'global' })
-locale.value = useQuasar().lang.getLocale()
-
+const { t } = useI18n({ useScope: 'global' })
 const isPwd = ref(true)
 if (users.token) {
   notify({ title: '已登入', text: '請先登出' })

@@ -2,7 +2,7 @@
   <q-toolbar>
     <q-btn v-if="leftDrawerActive" class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
     <q-toolbar-title class="q-pl-none" style="padding-bottom: 10px">
-      <q-btn flat @click="router.push('/board/630cb75e17c1381fd35db4fc')">
+      <q-btn flat @click="router.push('/board/630cc9f6cfcc19225bc5b3a5')">
         <q-avatar class="gt-sm q-mr-sm">
           <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png">
         </q-avatar>

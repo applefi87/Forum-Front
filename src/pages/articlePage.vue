@@ -6,7 +6,7 @@
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{  col.label  }}
+            {{ col.label }}
           </q-th>
         </q-tr>
       </template>
@@ -17,21 +17,21 @@
               @click="showUserInfo(col.value, props.row.user.record.toBoard.score, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
               <img :src="'https://source.boringavatars.com/beam/30/' + col.value">
               <br>
-              {{  col.value || t('anonymous')  }}</button>
+              {{ col.value || t('anonymous') }}</button>
             <div v-else-if="col.name === 'review'">
               <q-icon name="star" color="warning" />
-              {{  col.value  }}
+              {{ col.value }}
             </div>
             <div v-else-if="col.name === 'tags'">
               <p class="tag" v-for="t in (col.value || ['涼', '甜'])" :tag="t" :key="t">
-                {{  t  }}
+                {{ t }}
               </p>
             </div>
             <div v-else-if="col.name === 'title'">
-              {{  col.value  }}
+              {{ col.value }}
             </div>
             <div v-else-if="col.name === 'semester'" style="text-align: left;">
-              {{  col.value  }}
+              {{ col.value }}
             </div>
             <div v-else-if="col.name === 'content'" class="content"
               style="text-align: left; display:flex;justify-content: space-between; height:100%">
@@ -39,7 +39,7 @@
               <div>
                 <q-btn square color="primary" icon="message" flat style="height:100% " @click="showMsgInfo(props.row)">
                   <q-badge v-if="props.row.msg1?.amount" rounded>
-                    {{  props.row.msg1.amount  }}
+                    {{ props.row.msg1.amount }}
                   </q-badge>
                 </q-btn>
                 <q-btn v-if="users.role === 0" square color="red" flat icon="delete" style="height:100% "
@@ -62,7 +62,7 @@
     </q-dialog>
   </q-page>
   <q-page v-else>
-    <h6 style="margin-left: calc(5vw);">目前還沒有評價喔~ 當第一個分享的吧~</h6>
+    <h6 style="margin-left: calc(5vw);">{{ t('noReview') }}</h6>
   </q-page>
 </template>
 

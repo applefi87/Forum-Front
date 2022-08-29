@@ -59,7 +59,7 @@
   "articleCategory": "Article Category",
   "title": "Title",
   "experience": "Experience",
-  "content": "",
+  "noReview": "No review... Be the first one?",
   "submit": "Submit",
   "search": "Search",
   "close": "Close",
@@ -77,6 +77,7 @@
   "credits": "Credits",
   "required": "Required",
   "className": "ClassName",
+  "searchFirst": "Search First",
   "writeAComment": "Write a comment below...",
   "originalPoster": "Original Poster",
   "you": "You"

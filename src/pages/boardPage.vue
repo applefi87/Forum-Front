@@ -15,7 +15,7 @@
         </q-tr>
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !([].find((n) => n === c.name)))" :key="col.name" :props="props">
-            {{  col.label  }}
+            {{ col.label }}
           </q-th>
         </q-tr>
       </template>
@@ -24,7 +24,7 @@
           <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
             :key="col.name" :props="props">
             <button class="cellBTN limited-length" @click="router.push('/board/' + props.row._id)">
-              {{  col.value  }}</button>
+              {{ col.value }}</button>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
@@ -36,14 +36,14 @@
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              {{  (col.value >= 0 ? col.value : '')  }}
+              {{ (col.value >= 0 ? col.value : '') }}
             </button>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['tag'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
               <div class="tag" v-for="t in (col.value || ['無'])" :tag="t" :key="t">
-                {{  t  }}
+                {{ t }}
               </div>
             </button>
           </q-td>
@@ -52,7 +52,7 @@
     </q-table>
   </q-page>
   <q-page v-else>
-    <h6 style="margin-left: calc(5vw);">請點選功能列，搜尋您想查詢的課程評價。</h6>
+    <h6 style="margin-left: calc(5vw);">{{ t('searchFirst') }}</h6>
   </q-page>
 </template>
 
