@@ -2,7 +2,7 @@
   <q-page class="flex flex-center">
     <q-card-section v-if="!getTempPWD" class="q-pt-none">
       <q-form>
-        <q-input ref="emailFormatValid" filled v-model="form.email" :label='t("email")' :rules="emailVal(true)"
+        <q-input ref="emailFormatValid" filled v-model="form.email" :label='t("email")' :rules="emailVal(false)"
           autocomplete="new-password" />
         <q-btn dense color="primary" :loading="mailSending" @click="sendPWDMail()" label="寄驗證信">
           <template v-slot:loading>
