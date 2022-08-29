@@ -18,17 +18,6 @@ export const useUserStore = defineStore('user', {
       tab: 'boards'
     }
   },
-  // getters: {
-  //   isLogin () {
-  //     return this.token.length !== 0
-  //   },
-  //   isAdmin () {
-  //     return this.role === 1
-  //   },
-  //   avatar () {
-  //     return 'https://source.boringavatars.com/beam/120/' + this.account
-  //   }
-  // },
   actions: {
     async register(form) {
       try {

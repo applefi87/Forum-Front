@@ -1,6 +1,6 @@
 import { Notify } from 'quasar'
-
-// or with a config object:
+// import { useI18n } from 'vue-i18n'
+// const { t } = useI18n()
 
 export default (rep) => {
   Notify.create({

@@ -39,7 +39,7 @@
         </q-item>
       </q-list>
     </q-card-section>
-    <q-card-section v-else>{{  t('leaveAMsg')  }}
+    <q-card-section v-else>{{  t('writeAComment')  }}
     </q-card-section>
     <hr>
     <q-card-section class="q-pt-none">

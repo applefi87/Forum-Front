@@ -33,16 +33,16 @@
             <div v-else-if="col.name === 'semester'" style="text-align: left;">
               {{  col.value  }}
             </div>
-            <div v-else-if="col.name === 'content'"
+            <div v-else-if="col.name === 'content'" class="content"
               style="text-align: left; display:flex;justify-content: space-between; height:100%">
-              <div v-html="col.value" class="contentHTML"></div>
+              <div v-html="col.value"></div>
               <div>
-                <q-btn square color="primary" icon="message" style="height:100% " @click="showMsgInfo(props.row)">
-                  <q-badge color="transparent" text-color="white" v-if="props.row.msg1?.amount">
+                <q-btn square color="primary" icon="message" flat style="height:100% " @click="showMsgInfo(props.row)">
+                  <q-badge v-if="props.row.msg1?.amount" rounded>
                     {{  props.row.msg1.amount  }}
                   </q-badge>
                 </q-btn>
-                <q-btn v-if="users.role === 0" square color="red" icon="delete" style="height:100% "
+                <q-btn v-if="users.role === 0" square color="red" flat icon="delete" style="height:100% "
                   @click="banMsg(props.row._id)">
                 </q-btn>
               </div>
@@ -50,7 +50,7 @@
           </q-td>
         </q-tr>
         <q-tr v-else no-hover>
-          <q-td colspan="6">此文章已經被版主屏蔽</q-td>
+          <q-td colspan="6" class="q-ml-lg">此文章已經被版主屏蔽</q-td>
         </q-tr>
       </template>
     </q-table>
@@ -169,6 +169,11 @@ provide('articles', articles)
     position: sticky
     z-index: 1
     padding: 0 0 0 10px
+  tr
+    max-height: 200px !important
+    overflow: hidden
+  td:first-child
+    padding-left: 8px
   thead tr:first-child th
     top: 0
   /* this is when the loading indicator appears */
@@ -209,15 +214,11 @@ provide('articles', articles)
   background: transparent
   border: none
   cursor: pointer
-.contentHTML
-  max-width: 300px
-  &:deep(> p)
-    width: 100%
-    max-height: 500px
-    -webkit-line-clamp: 3
-    word-wrap: break-word
+.content
+  width: 100%
+  // max-width: 30vw
+  max-height: 200px
+  &:deep(> div)
+    max-width: calc(200px + 10vw)
     overflow: hidden
-    text-overflow: ellipsis
-    display: -webkit-box
-    -webkit-box-orient: vertical
 </style>

@@ -15,7 +15,7 @@
         </q-tr>
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !([].find((n) => n === c.name)))" :key="col.name" :props="props">
-            {{ col.label }}
+            {{  col.label  }}
           </q-th>
         </q-tr>
       </template>
@@ -24,28 +24,26 @@
           <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name)))"
             :key="col.name" :props="props">
             <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              {{ col.value }}</button>
+              {{  col.value  }}</button>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              <q-icon name="star" color="warning" v-for="it of ([].length = col.value) " :key="it" />
+              <div v-if="col.value < 0"></div>
+              <q-icon v-else name="star" color="warning" v-for="it of ([].length = col.value) " :key="it" />
             </button>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              {{ col.value }}
+              {{  (col.value >= 0 ? col.value : '')  }}
             </button>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['tag'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              <div>
-                <div class="tag" v-for="t in   (props.row.beScored?.tag ? props.row.beScored?.tag : ['涼', '甜', '閒'])"
-                  :tag="t" :key="t">
-                  {{ t }}
-                </div>
+              <div class="tag" v-for="t in (col.value || ['無'])" :tag="t" :key="t">
+                {{  t  }}
               </div>
             </button>
           </q-td>
@@ -87,12 +85,12 @@ const columns = computed(() => [
     headerClasses: 'q-table--col-auto-width'
   },
   // , headerClasses: 'q-table--col-auto-width'
-  { name: 'score', align: 'left', label: t('credits'), field: row => (row.colData.c50 ? row.colData.c50 : 0), sortable: true, sortOrder: 'da' },
+  { name: 'score', align: 'left', label: t('credits'), field: row => (row.colData.c50 || 0), sortable: true, sortOrder: 'da' },
   { name: 'required', align: 'left', label: t('required'), field: row => row.colData.c55, sortable: true, sortOrder: 'da' },
   { name: 'title', align: 'left', label: t('className'), field: 'title' },
-  { name: 'review', align: 'left', label: t('score'), field: row => (row.beScored?.score ? row.beScored?.score : 6), sortable: true, sortOrder: 'da' },
-  { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || 6, sortable: true, sortOrder: 'da' },
-  { name: 'tag', align: 'left', label: t('tags'), field: row => (row.beScored?.tag ? row.beScored?.tag : ['涼', '甜', '閒']) }
+  { name: 'review', align: 'left', label: t('score'), field: row => (row.beScored?.score || ''), sortable: true, sortOrder: 'da' },
+  { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
+  { name: 'tag', align: 'left', label: t('tags'), field: row => row.beScored?.tag }
 ]
 )
 // **********************************************子文章清單***
