@@ -5,7 +5,7 @@
       title
     </q-card-section> -->
 
-    <q-card-section v-if="article.datas" class="q-pa-none" style="max-height:70vh;overflow-y:scroll;">
+    <q-card-section v-if="article.datas.length > 0" class="q-pa-none" style="max-height:70vh;overflow-y:scroll;">
       <!-- <q-table :rows="p.form.datas" :columns="columns" row-key="id" virtual-scroll=true separator="none" hide-header
         flat hide-pagination>
         <template v-slot:body="props">
@@ -39,10 +39,14 @@
         </q-item>
       </q-list>
     </q-card-section>
+    <q-card-section v-else>{{  t('leaveAMsg')  }}
+    </q-card-section>
+    <hr>
     <q-card-section class="q-pt-none">
-      <q-select v-if="!article.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense>
+      <q-select v-if="!article.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense
+        style="width:150px">
         <template v-slot:before>
-          <p> {{  t('privacy')  }}</p>
+          <p style="font-size: 0.8rem;color: black; margin: 0"> {{  t('privacy')  }}:</p>
         </template>
       </q-select>
       <q-input filled v-model="form.content" :placeholder="t('writeAComment')" dense
@@ -118,6 +122,8 @@ const send = async function () {
 <style lang="sass" scoped>
 .q-card
   min-width:300px
+.q-list
+  padding-top: 10px
 #msg td
   height: auto
   min-height: 50px
