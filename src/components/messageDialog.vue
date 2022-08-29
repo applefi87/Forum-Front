@@ -26,13 +26,14 @@
         <q-item v-for="msg in article.datas" :key="msg.createdAt">
           <q-item-section avatar>
             <q-avatar rounded>
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+              <q-icon v-if="msg.user.nickName === 'originalPoster'" name="home" />
+              <img v-else :src="'https://source.boringavatars.com/beam/120/' + msg.user.nickName">
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            {{ msg.user.nickName === 'originalPoster' ? t('originalPoster') : (msg.user.nickName || t('anonymous'))
-            }}<br>
-            {{ msg.content }}
+            {{  msg.user.nickName === 'originalPoster' ? t('originalPoster') : (msg.user.nickName || t('anonymous'))  }}
+            <br>
+            {{  msg.content  }}
           </q-item-section>
         </q-item>
       </q-list>
@@ -40,7 +41,7 @@
     <q-card-section class="q-pt-none">
       <q-select v-if="!article.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense>
         <template v-slot:before>
-          <p> {{ t('privacy') }}</p>
+          <p> {{  t('privacy')  }}</p>
         </template>
       </q-select>
       <q-input filled v-model="form.content" :placeholder="t('writeAComment')" dense>
