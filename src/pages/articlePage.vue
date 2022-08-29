@@ -11,7 +11,7 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" auto-width>
+        <q-tr :props="props" auto-width v-if="props.row.state != 0">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button v-if="col.name === 'user'" class="cellBTN"
               @click="showUserInfo(col.value, props.row.user.record.toBoard.score, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
@@ -35,14 +35,22 @@
             </div>
             <div v-else-if="col.name === 'content'"
               style="text-align: left; display:flex;justify-content: space-between; height:100%">
-              <div v-html="col.value"></div>
-              <q-btn square color="primary" icon="message" style="height:100% " @click="showMsgInfo(props.row)">
-                <q-badge color="transparent" text-color="white" v-if="props.row.msg1?.amount">
-                  {{  props.row.msg1.amount  }}
-                </q-badge>
-              </q-btn>
+              <div v-html="col.value" class="contentHTML"></div>
+              <div>
+                <q-btn square color="primary" icon="message" style="height:100% " @click="showMsgInfo(props.row)">
+                  <q-badge color="transparent" text-color="white" v-if="props.row.msg1?.amount">
+                    {{  props.row.msg1.amount  }}
+                  </q-badge>
+                </q-btn>
+                <q-btn v-if="users.role === 0" square color="red" icon="delete" style="height:100% "
+                  @click="banMsg(props.row._id)">
+                </q-btn>
+              </div>
             </div>
           </q-td>
+        </q-tr>
+        <q-tr v-else no-hover>
+          <q-td colspan="6">此文章已經被版主屏蔽</q-td>
         </q-tr>
       </template>
     </q-table>
@@ -59,6 +67,8 @@
 </template>
 
 <script setup scoped>
+import { apiAuth } from 'src/boot/axios'
+import { useUserStore } from 'src/stores/user'
 import { useRouter } from 'vue-router'
 import chartInfo from 'components/chartInfo.vue'
 import messageDialog from 'components/messageDialog.vue'
@@ -70,6 +80,7 @@ const { t } = useI18n()
 const board = inject('board')
 const articles = inject('articles')
 const hasArticle = inject('hasArticle')
+const users = useUserStore()
 // ----------
 const filter = ref('')
 const pagination = ref({ rowsPerPage: 20 })
@@ -94,7 +105,15 @@ const showMsgInfo = (it) => {
   if (it.msg1?.list) article.datas.push(...it.msg1?.list)
   msgState.value = true
 }
-
+const banMsg = async (id) => {
+  console.log(id)
+  const { data } = await apiAuth.delete('/article/' + id)
+  const idx = articles.findIndex(it => it._id === data.result._id)
+  if (idx >= 0) {
+    console.log('ok')
+    articles[idx] = data.result
+  }
+}
 // --
 // --
 const columns = computed(() => [
@@ -133,6 +152,7 @@ const columns = computed(() => [
 // **********************************************子文章清單***
 // 要去母版看規則
 provide('article', article)
+provide('articles', articles)
 </script>
 <style lang="sass" scoped>
 // .q-page
@@ -171,9 +191,7 @@ provide('article', article)
 //   text-align: left
 // 新
 // 奇偶行不同顏色
-.q-tr:nth-child(4n+1) td
-  background: #f5f5f5
-.q-tr:nth-child(4n+2) td
+.q-tr:nth-child(2n+1) td
   background: #f5f5f5
 .q-tr td:nth-child(4) button
   text-align: left
@@ -191,5 +209,15 @@ provide('article', article)
   background: transparent
   border: none
   cursor: pointer
-
+.contentHTML
+  max-width: 300px
+  &:deep(> p)
+    width: 100%
+    max-height: 500px
+    -webkit-line-clamp: 3
+    word-wrap: break-word
+    overflow: hidden
+    text-overflow: ellipsis
+    display: -webkit-box
+    -webkit-box-orient: vertical
 </style>

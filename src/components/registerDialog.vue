@@ -5,8 +5,8 @@
         <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green">
           <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
             <q-card-section>
-              <div class="text-h4">{{ t("register") }}</div>
-              <div class="text-h6">{{ t("registerFirst") }}</div>
+              <div class="text-h4">{{  t("register")  }}</div>
+              <div class="text-h6">{{  t("registerFirst")  }}</div>
             </q-card-section>
             <!-- <p class="text-h6">1.可選匿名 <br>2.評價依照課程名保存，更好查閱 <br>3.好的評價置頂 <br>4.評價越受歡迎，帳號分數越高</p> -->
           </q-step>
@@ -168,6 +168,7 @@ const register = async () => {
       registerForm.nickName = ''
       registerForm.gender = '0'
       step.value = 1
+      registerState.value = false
       return
     }
     if (rep.accountOccupied) {
@@ -182,7 +183,6 @@ const register = async () => {
     }
     accountValid.value.validate()
     nickNameValid.value.validate()
-    registerState.value = false
   } catch (error) {
     console.log(error.response.data)
     notify(error.response.data)

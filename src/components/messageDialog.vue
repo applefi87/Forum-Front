@@ -4,7 +4,8 @@
     <!-- <q-card-section class="q-pb-none">
       title
     </q-card-section> -->
-    <q-card-section v-if="article.datas" class="q-pa-none">
+
+    <q-card-section v-if="article.datas" class="q-pa-none" style="max-height:70vh;overflow-y:scroll;">
       <!-- <q-table :rows="p.form.datas" :columns="columns" row-key="id" virtual-scroll=true separator="none" hide-header
         flat hide-pagination>
         <template v-slot:body="props">
@@ -22,7 +23,7 @@
           </q-tr>
         </template>
       </q-table> -->
-      <q-list>
+      <q-list ref="msgBox">
         <q-item v-for="msg in article.datas" :key="msg.createdAt">
           <q-item-section avatar>
             <q-avatar rounded>
@@ -44,9 +45,10 @@
           <p> {{  t('privacy')  }}</p>
         </template>
       </q-select>
-      <q-input filled v-model="form.content" :placeholder="t('writeAComment')" dense>
+      <q-input filled v-model="form.content" :placeholder="t('writeAComment')" dense
+        @keydown.enter="users.token ? send() : loginState = true">
         <template v-slot:after>
-          <q-btn v-if="users.token" round dense flat icon="send" @click="send" />
+          <q-btn v-if="users.token" @click="send" round dense flat icon="send" />
           <q-btn v-else @click="loginState = true" round dense flat icon="send" />
         </template>
       </q-input>
@@ -59,13 +61,15 @@
 
 <script setup >
 import { useUserStore } from 'src/stores/user'
-import { reactive, computed, inject } from 'vue'
+import { ref, reactive, computed, inject, nextTick } from 'vue'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+const msgBox = ref(null)
 const loginState = inject('loginState')
 const { t } = useI18n()
 const article = inject('article')
+const articles = inject('articles')
 // const p = defineProps({
 //   article: Object
 // })
@@ -79,12 +83,22 @@ const privacyOptions = computed(() => {
     { label: t('showAll'), value: 1 }
   ]
 })
+// 請預設給匿名，這樣匿名發文者不用選，就會是匿名id
 const form = reactive({ content: '', privacy: privacyOptions.value[0] })
-const send = async () => {
+const send = async function () {
+  if (form.content === '') return
   const submit = { content: form.content, privacy: form.privacy.value }
   try {
     const { data } = await apiAuth.post('/article/createMsg/' + article._id, submit)
     article.datas = data.result.msg1.list
+    const idx = articles.findIndex(it => it._id === article._id)
+    if (idx >= 0) {
+      // console.log(article)
+      articles[idx] = data.result
+    }
+    nextTick(() => {
+      msgBox.value.$el.scrollIntoView(false, { behavior: 'smooth' })
+    })
   } catch (error) {
     console.log(error)
   }

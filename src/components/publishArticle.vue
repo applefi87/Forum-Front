@@ -5,7 +5,7 @@
         <table v-if="category">
           <!--  -->
           <tr>
-            <td>{{ t('articleCategory') }}</td>
+            <td>{{  t('articleCategory')  }}</td>
             <td>
               <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
                 :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
@@ -13,7 +13,7 @@
           </tr>
           <!--  -->
           <tr>
-            <td>{{ t('semester') }}</td>
+            <td>{{  t('semester')  }}</td>
             <td>
               <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
                 options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
@@ -21,7 +21,7 @@
           </tr>
           <!--  -->
           <tr>
-            <td>{{ t('privacy') }}</td>
+            <td>{{  t('privacy')  }}</td>
             <td>
               <q-select outlined v-model="privacy" :options="privacyList" dense options-dense
                 :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
@@ -29,14 +29,14 @@
           </tr>
           <!-- 評分 -->
           <tr v-if="category && category.c === 1">
-            <td>{{ t('rate') }}</td>
+            <td>{{  t('rate')  }}</td>
             <td>
               <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" :max="5" />
             </td>
           </tr>
           <!-- tag -->
           <tr v-if="category.tagActive">
-            <td>{{ t('tags') }}</td>
+            <td>{{  t('tags')  }}</td>
             <td>
               <q-option-group :options="category.tagOption.map(o => { return { label: o, value: o } })" type="checkbox"
                 v-model="form['f' + selectCat.value].tags" />
@@ -44,7 +44,7 @@
           </tr>
           <!-- 標題 -->
           <tr>
-            <td>{{ t(category.titleCol) }}</td>
+            <td>{{  t(category.titleCol)  }}</td>
             <td>
               <q-input v-model="form['f' + selectCat.value].title" :rules="titleVal">
               </q-input>
@@ -60,7 +60,7 @@
           </tr> -->
           <!-- content(放最後) ****************************-->
           <tr>
-            <td style="vertical-align:text-top ; padding-top: 30px">{{ t(category.contentCol) }}</td>
+            <td style="vertical-align:text-top ; padding-top: 30px">{{  t(category.contentCol)  }}</td>
             <td style=" padding-top: 20px">
               <QuillEditor class="editor" toolbar="essential" theme="snow"
                 v-model:content="form['f' + selectCat.value].content" contentType="html" />
@@ -142,7 +142,7 @@ watch(article, () => {
     categoryList.push(...article.category)
     // 對應加上form.fx
     categoryList?.forEach(f => {
-      form['f' + f.c] = { title: 'wdaaaaaaaaaaaaa', content: 'wwwwww5555555555555555wwwwwwwwww' }
+      form['f' + f.c] = { title: 'wdaaaaaaaaaaaaa', content: 'wwwwww5555ww5555555555555555wwwwwwwwwwww5555555555555555wwwwwwwwww555555555555wwwwwwwwww' }
       const formIn = form['f' + f.c]
       if (f.c === 1) formIn.score = 5
       if (f.tagActive) {
@@ -202,6 +202,7 @@ const publish = () => {
 <style lang="sass" scoped>
 .q-dialog__inner--minimized > div
   max-width: 800px
+  overflow-x: hidden
 .q-form
   width: 800px
   background: white
@@ -210,6 +211,9 @@ const publish = () => {
     min-height: 40px
   td:first-child
     font-size: 0.8rem
+  td:last-child
+    width: 60vw
+    max-width: 600px
 .q-select
   width: 300px
 .q-input
@@ -221,6 +225,8 @@ const publish = () => {
   flex-wrap: wrap
 .ql-snow
   width: 600px
-tr :deep(.editor)
+tr:deep(.editor)
   height: 200px
+.editor
+  width: 100%
 </style>
