@@ -43,7 +43,8 @@ const account = ref('')
 // ***********rule val區******************************
 const passwordVal = reactive([
   val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
-  val => (val.match(/[A-Z]/) && val.match(/[a-z]/) && val.match(/[0-9]/)) || '必須含英文大、小寫與數字',
+  val => (val.match(/[a-z]/) && val.match(/[0-9]/)) || '必須含英文與數字',
+  // val => (val.match(/[A-Z]/) && val.match(/[a-z]/) && val.match(/[0-9]/)) || '必須含英文大、小寫與數字',
   val => true || '預留給有同名使用'
 ])
 
