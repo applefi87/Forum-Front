@@ -49,6 +49,7 @@
   "userInfo": "UserInfo",
   "changePassword": "Change Password",
   "user": "User",
+  "adminLogin": "Admin Login",
   "addChildBoards": "Add class",
   "boardCSVlist": "Board list(.csv)",
   "uploadCSVHere": "Upload CSV here",
@@ -76,7 +77,7 @@
   "credits": "Credits",
   "required": "Required",
   "className": "ClassName",
-  "writeAComment": "Write a comment...",
+  "writeAComment": "Write a comment below...",
   "originalPoster": "Original Poster",
   "you": "You"
 }

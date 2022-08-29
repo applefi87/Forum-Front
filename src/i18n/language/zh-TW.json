@@ -49,6 +49,7 @@
   "userInfo": "個人資訊",
   "changePassword": "更改密碼",
   "user": "留言者",
+  "adminLogin": "管理員登入頁面",
   "addChildBoards": "新增課程",
   "boardCSVlist": "課程清單檔(.csv)",
   "uploadCSVHere": "課程csv檔上傳區",
@@ -76,7 +77,7 @@
   "credits": "學分",
   "required": "必/選修",
   "className": "課程名稱",
-  "writeAComment": "留言...",
+  "writeAComment": "你是第一位喔~ 請於下方留言~",
   "originalPoster": "樓主",
   "you": "你"
 }

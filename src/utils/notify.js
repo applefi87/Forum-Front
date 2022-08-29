@@ -9,6 +9,6 @@ export default (rep) => {
     type: rep.success ? 'positive' : 'negative',
     position: rep.position ? rep.position : 'center',
     group: false,
-    timeout: rep.suration ? rep.suration * 1000 : 3000
+    timeout: rep.duration ? rep.duration : 3000
   })
 }

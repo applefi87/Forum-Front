@@ -1,25 +1,27 @@
 <template >
-  <h4>管理員登入頁面</h4>
-  <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
-    map-options />
-  <hr>
-  <q-form @submit.prevent="login" class="q-gutter-xs">
-    <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
-      :rules="[val => val && val.length > 0 || t('cantNull')]" />
-    <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
-      :rules="[val => val && val.length > 0 || t('cantNull')]" :type="isPwd ? 'password' : 'text'"> <template
-        v-slot:append>
-        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
-      </template></q-input>
-    <div>
-      <div style="height:50px">
-        <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
-        <q-btn label="忘記密碼?" type="submit" color="primary" class="f-r" flat to="/forgetPWD" />
+  <div style="max-width: 300px; margin: 20px auto">
+    <h4>{{ t('adminLogin') }}</h4>
+    <q-select class="langSelect" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
+      map-options />
+    <hr>
+    <q-form @submit.prevent="login" class="q-gutter-xs">
+      <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
+        :rules="[val => val && val.length > 0 || t('cantNull')]" />
+      <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
+        :rules="[val => val && val.length > 0 || t('cantNull')]" :type="isPwd ? 'password' : 'text'"> <template
+          v-slot:append>
+          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+        </template></q-input>
+      <div>
+        <div style="height:50px">
+          <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
+          <q-btn label="忘記密碼?" type="submit" color="primary" class="f-r" flat to="/forgetPWD" />
+        </div>
+        <q-btn :label='t("login")' type="submit" color="primary" />
+        <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
       </div>
-      <q-btn :label='t("login")' type="submit" color="primary" />
-      <q-btn :label='t("register")' color="primary" flat class="q-ml-sm" @click="registerState = true" />
-    </div>
-  </q-form>
+    </q-form>
+  </div>
 </template>
 
 <script setup>
@@ -46,7 +48,7 @@ if (users.token) {
   router.push('/')
 }
 // ********************
-const loginForm = reactive({ account: 'testadmin', password: 'testadminA0', keepLogin: false, role: 0 })
+const loginForm = reactive({ account: '', password: '', keepLogin: false, role: 0 })
 // ****************登陸****
 const login = async () => {
   try {

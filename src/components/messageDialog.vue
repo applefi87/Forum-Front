@@ -32,21 +32,21 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            {{  msg.user.nickName === 'originalPoster' ? t('originalPoster') : (msg.user.nickName || t('anonymous'))  }}
+            {{ msg.user.nickName === 'originalPoster' ? t('originalPoster') : (msg.user.nickName || t('anonymous')) }}
             <br>
-            {{  msg.content  }}
+            {{ msg.content }}
           </q-item-section>
         </q-item>
       </q-list>
     </q-card-section>
-    <q-card-section v-else>{{  t('writeAComment')  }}
+    <q-card-section v-else>{{ t('writeAComment') }}
     </q-card-section>
     <hr>
     <q-card-section class="q-pt-none">
       <q-select v-if="!article.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense
         style="width:150px">
         <template v-slot:before>
-          <p style="font-size: 0.8rem;color: black; margin: 0"> {{  t('privacy')  }}:</p>
+          <p style="font-size: 0.8rem;color: black; margin: 0"> {{ t('privacy') }}:</p>
         </template>
       </q-select>
       <q-input filled v-model="form.content" :placeholder="t('writeAComment')" dense
@@ -100,6 +100,7 @@ const send = async function () {
       // console.log(article)
       articles[idx] = data.result
     }
+    form.content = ''
     nextTick(() => {
       msgBox.value.$el.scrollIntoView(false, { behavior: 'smooth' })
     })

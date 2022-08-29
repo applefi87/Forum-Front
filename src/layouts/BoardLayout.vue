@@ -6,7 +6,7 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
       :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
-      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{  title  }}
+      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}
       </h6>
       <chartInfo v-if="boardInfoForm.score && boardInfoForm.score >= 0" :form="boardInfoForm" />
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
@@ -38,8 +38,8 @@
             <q-btn v-else @click="loginState = true" color="primary" :label="t('review')" />
           </q-tab-panel>
           <q-tab-panel name="edit" v-if="users.role === 0">
-            <q-btn v-if="hasChild" :label='t("addChildBoards")' color="primary" class="q-ml-sm"
-              :to="'/board/uploadBoard/' + route.params.id" />
+            <!-- <q-btn v-if="hasChild" :label='t("addChildBoards")' color="primary" class="q-ml-sm"
+              :to="'/board/uploadBoard/' + route.params.id" /> -->
           </q-tab-panel>
         </q-tab-panels>
         <q-tabs v-if="users.role === 0" v-model="tab" indicator-color="transparent" active-color="white"

@@ -5,8 +5,8 @@
         <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green">
           <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
             <q-card-section>
-              <div class="text-h4">{{  t("register")  }}</div>
-              <div class="text-h6">{{  t("registerFirst")  }}</div>
+              <div class="text-h4">{{ t("register") }}</div>
+              <div class="text-h6">{{ t("registerFirst") }}</div>
             </q-card-section>
             <!-- <p class="text-h6">1.可選匿名 <br>2.評價依照課程名保存，更好查閱 <br>3.好的評價置頂 <br>4.評價越受歡迎，帳號分數越高</p> -->
           </q-step>
@@ -29,8 +29,8 @@
             <q-card-section class="q-pt-none">
               <q-input filled v-model="registerForm.account" :label='t("account")' :rules="accountVal"
                 ref=accountValid />
-              <q-input filled v-model="registerForm.password" :label='t("password")' :hint='t("pwdRule")'
-                :type="isPwd ? 'password' : 'text'" :rules="passwordVal"><template v-slot:append>
+              <q-input filled v-model="registerForm.password" :label='t("password")' :type="isPwd ? 'password' : 'text'"
+                :rules="passwordVal"><template v-slot:append>
                   <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                     @click="isPwd = !isPwd" />
                 </template></q-input>
@@ -73,6 +73,7 @@ const { t } = useI18n()
 const users = useUserStore()
 // 初始變數
 const registerState = inject('registerState')
+const loginState = inject('loginState')
 // ****************註冊****
 const accountValid = ref(null)
 const nickNameValid = ref(null)
@@ -169,6 +170,7 @@ const register = async () => {
       registerForm.gender = '0'
       step.value = 1
       registerState.value = false
+      loginState.value = false
       return
     }
     if (rep.accountOccupied) {
