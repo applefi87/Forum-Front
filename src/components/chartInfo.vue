@@ -7,40 +7,67 @@
     </q-card-section>
     <q-card-section v-if="p.form.datas" class="q-pt-none">
       <div v-if="p.form.chartTitle" class="text-h6 text-weight-bold text-center">{{ p.form.chartTitle }}</div>
-      <apexchart type="pie" width="280" :options="options" :series="p.form.datas" class="q-pa-md">
-      </apexchart>
+      <!-- <apexchart type="pie" width="280" :options="options" :series="p.form.datas" class="q-pa-md">
+      </apexchart> -->
+      <vue3-chart-js v-bind="{ ...chartOptions }" class="q-pa-md"></vue3-chart-js>
     </q-card-section>
   </q-card>
 </template>
 
 <script setup >
 import { createApp, defineComponent } from 'vue'
-import VueApexCharts from 'vue3-apexcharts'
-defineComponent({
-  apexchart: VueApexCharts
-})
+import Vue3ChartJs from '@j-t-mcc/vue3-chartjs'
+// import ApexCharts from 'apexcharts'
+// import VueApexCharts from 'vue3-apexcharts'
+// defineComponent({
+//   apexchart: VueApexCharts
+// })
 
 const app = createApp()
 const p = defineProps({
   form: Object
 })
-const options = {
-  bar: {
-    horizontal: true
-  },
-  labels: ['0分', '1分', '2分', '3分', '4分', '5分'],
-  responsive: [{
-    breakpoint: 480,
-    options: {
-      chart: {
-        width: 200
-      },
+// const options = {
+//   bar: {
+//     horizontal: true
+//   },
+//   labels: ['0分', '1分', '2分', '3分', '4分', '5分'],
+//   responsive: [{
+//     breakpoint: 480,
+//     options: {
+//       chart: {
+//         width: 200
+//       },
+//       legend: {
+//         position: 'bottom'
+//       }
+//     }
+//   }],
+//   colors: ['#e3f2fd', '#bbdefb', '#90caf9', '#64b5f6', '#42a5f5', '#2196f3']
+// }
+const chartOptions = {
+  type: 'pie',
+  options: {
+    min: 0,
+    max: 1,
+    responsive: true,
+    plugins: {
       legend: {
-        position: 'bottom'
+        display: false
       }
-    }
-  }],
-  colors: ['#e3f2fd', '#bbdefb', '#90caf9', '#64b5f6', '#42a5f5', '#2196f3']
+    },
+    animation: false
+  },
+  data: {
+    labels: ['0分', '1分', '2分', '3分', '4分', '5分'],
+    datasets: [
+      {
+        label: 'My First Dataset',
+        backgroundColor: ['#e3f2fd', '#bbdefb', '#90caf9', '#64b5f6', '#42a5f5', '#2196f3'],
+        data: p.form.datas
+      }
+    ]
+  }
 }
 </script>
 
