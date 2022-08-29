@@ -67,6 +67,7 @@
   "cost": "花費",
   "exam": "考試",
   "roll_call": "點名",
+  "teacher": "老師",
   "semester": "學期",
   "location": "地點",
   "time": "時間",
@@ -77,6 +78,5 @@
   "className": "課程名稱",
   "writeAComment": "留言...",
   "originalPoster": "樓主",
-  "you": "你",
-  "leaveAMsg": "我有話想說..."
+  "you": "你"
 }

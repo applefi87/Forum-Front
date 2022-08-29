@@ -2,11 +2,11 @@
   <q-toolbar>
     <q-btn v-if="leftDrawerActive" class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
     <q-toolbar-title class="q-pl-none" style="padding-bottom: 10px">
-      <q-btn flat @click="router.push('/board/6306281929b69afd3b82d7ab')">
+      <q-btn flat @click="router.push('/board/630c70ad9a3bed7bbd5a47b1')">
         <q-avatar class="gt-sm q-mr-sm">
           <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png">
         </q-avatar>
-        {{ t('home') }}
+        {{  t('home')  }}
       </q-btn>
     </q-toolbar-title>
     <q-select class="langSelect gt-md" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
@@ -92,7 +92,7 @@ const toggleRightDrawer = () => {
   rightDrawerState.value = !rightDrawerState.value
 }
 // ********************
-const loginForm = reactive({ account: 'testadmin', password: 'testadminA0', keepLogin: false })
+const loginForm = reactive({ account: '', password: '', keepLogin: false })
 // ****************登陸****
 const login = async () => {
   try {

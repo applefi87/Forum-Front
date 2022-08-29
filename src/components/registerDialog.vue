@@ -133,7 +133,7 @@ const nextPage = async () => {
 }
 // ********************
 
-const registerForm = reactive({ schoolEmail: 'wdada5d@efeafas.edu.tw', schoolEmailCode: '', account: 'efwdssfsfs', password: 'wdsadawd66A', nickName: 'WDAWDAD', gender: '0' })
+const registerForm = reactive({ schoolEmail: '', schoolEmailCode: '', account: '', password: '', nickName: '', gender: '0' })
 
 // ***********rule val區******************************
 const accountVal = [

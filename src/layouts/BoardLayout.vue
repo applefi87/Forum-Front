@@ -42,12 +42,12 @@
               :to="'/board/uploadBoard/' + route.params.id" />
           </q-tab-panel>
         </q-tab-panels>
-        <!-- <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange"
-          align="justify" :breakpoint="0" class="bg-orange-8 text-grey-5 " dense>
+        <q-tabs v-if="users.role === 0" v-model="tab" indicator-color="transparent" active-color="white"
+          active-bg-color="orange" align="justify" :breakpoint="0" class="bg-orange-8 text-grey-5 " dense>
           <q-tab name="boards" :label="t('boards')" v-if="hasChild" />
           <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
           <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
-        </q-tabs> -->
+        </q-tabs>
       </div>
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>

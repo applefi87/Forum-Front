@@ -21,9 +21,9 @@
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="colTR" no-hover>
-          <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name)))"
+          <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
             :key="col.name" :props="props">
-            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
+            <button class="cellBTN limited-length" @click="router.push('/board/' + props.row._id)">
               {{  col.value  }}</button>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
@@ -88,6 +88,7 @@ const columns = computed(() => [
   { name: 'score', align: 'left', label: t('credits'), field: row => (row.colData.c50 || 0), sortable: true, sortOrder: 'da' },
   { name: 'required', align: 'left', label: t('required'), field: row => row.colData.c55, sortable: true, sortOrder: 'da' },
   { name: 'title', align: 'left', label: t('className'), field: 'title' },
+  { name: 'teacher', align: 'left', label: t('teacher'), field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
   { name: 'review', align: 'left', label: t('score'), field: row => (row.beScored?.score || ''), sortable: true, sortOrder: 'da' },
   { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
   { name: 'tag', align: 'left', label: t('tags'), field: row => row.beScored?.tag }
@@ -98,7 +99,6 @@ const columns = computed(() => [
 
 </script>
 <style lang="sass" scoped>
-// $
 .q-table
   .q-table__top,
   .q-table__bottom,
@@ -129,6 +129,8 @@ const columns = computed(() => [
   padding: 0
 .colTR
   height: 10px
+// .limited-length
+//   max-width: 100px
 // 舊版CSS
 // .q-tr td:nth-child(4)
 //   background: #f9f9f9
@@ -153,6 +155,10 @@ const columns = computed(() => [
   text-align: left
 .q-tr td.searchTd
   background: #fff
+td:nth-child(4)
+  max-width: 200px
+td:nth-child(5)
+  max-width: 100px
 .cellBTN
   width: 100%
   height: 100%
@@ -160,5 +166,5 @@ const columns = computed(() => [
   border: none
   cursor: pointer
   text-align: left
-
+  overflow: hidden
 </style>

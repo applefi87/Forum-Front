@@ -67,6 +67,7 @@
   "cost": "Cost",
   "exam": "Exam",
   "roll_call": "Roll call",
+  "teacher": "Teacher",
   "semester": "Semester",
   "location": "Location",
   "time": "Time",
@@ -77,6 +78,5 @@
   "className": "ClassName",
   "writeAComment": "Write a comment...",
   "originalPoster": "Original Poster",
-  "you": "You",
-  "leaveAMsg": "Leave a message"
+  "you": "You"
 }
