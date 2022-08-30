@@ -6,7 +6,7 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
       :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
-      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}
+      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{  title  }}
       </h6>
       <chartInfo v-if="boardInfoForm.score && boardInfoForm.score >= 0" :form="boardInfoForm" />
       <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
@@ -42,8 +42,8 @@
               :to="'/board/uploadBoard/' + route.params.id" /> -->
           </q-tab-panel>
         </q-tab-panels>
-        <q-tabs v-if="users.role === 0" v-model="tab" indicator-color="transparent" active-color="white"
-          active-bg-color="orange" align="justify" :breakpoint="0" class="bg-orange-8 text-grey-5 " dense>
+        <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange"
+          align="justify" :breakpoint="0" class="bg-orange-8 text-grey-5 " dense>
           <q-tab name="boards" :label="t('boards')" v-if="hasChild" />
           <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
           <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
@@ -181,19 +181,19 @@ const init = async () => {
         }
       }
       // 調整tab
-      switch (route.name) {
-        case 'uploadBoard':
-          tab.value = 'edit'
-          break
-        case 'articles':
-          tab.value = 'articles'
-          break
-        case 'boards':
-          tab.value = 'boards'
-          break
-        default:
-          console.log('error')
-      }
+      // switch (route.name) {
+      //   case 'uploadBoard':
+      //     tab.value = 'edit'
+      //     break
+      //   case 'articles':
+      //     tab.value = 'articles'
+      //     break
+      //   case 'boards':
+      //     tab.value = 'boards'
+      //     break
+      //   default:
+      //     console.log('error')
+      // }
       // ********* 取得文章 (tab要是articles 不然不浪費資源)*******
       const getArticles = async () => {
         try {
@@ -218,6 +218,12 @@ const init = async () => {
   }
 }
 init()
+watch(() => route.params, (to, from) => {
+  // 因為是在layout做，確保是板的情況在因應:id更新重跑，不然不用
+  if (route.name === 'boards') {
+    init()
+  }
+})
 // *
 watch(tab, (newV, oldV) => {
   switch (tab.value) {

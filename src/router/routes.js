@@ -17,8 +17,8 @@ const routes = [
     component: () => import('layouts/BoardLayout.vue'),
     children: [
       { path: 'uploadBoard/:id', name: 'uploadBoard', displayName: 'uploadBoard', component: () => import('pages/uploadBoardPage.vue') },
-      { path: 'articles/:id', name: 'articles', displayName: 'articles', component: () => import('pages/articlePage.vue') },
-      { path: ':id', name: 'boards', displayName: 'boards', component: () => import('pages/boardPage.vue') }
+      // { path: 'articles/:id', name: 'articles', displayName: 'articles', component: () => import('pages/articlePage.vue') },
+      { path: ':id', name: 'boards', displayName: 'boards', component: () => import('pages/indexPage.vue') }
     ]
   },
 
