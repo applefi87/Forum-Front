@@ -2,11 +2,11 @@
   <q-toolbar>
     <q-btn v-if="leftDrawerActive" class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
     <q-toolbar-title class="q-pl-none" style="padding-bottom: 10px">
-      <q-btn flat @click="router.push('/board/630cc9f6cfcc19225bc5b3a5')">
+      <q-btn flat @click="router.push('/board/630d5361765629cdf3631bf2')">
         <q-avatar class="gt-sm q-mr-sm">
           <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png">
         </q-avatar>
-        {{ t('home') }}
+        {{  t('home')  }}
       </q-btn>
     </q-toolbar-title>
     <q-select class="langSelect gt-md" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
