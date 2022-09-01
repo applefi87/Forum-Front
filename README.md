@@ -1,3 +1,7 @@
+管理員帳密: admin admin1234，要去/admin登入
+去師大選課系統，選擇某學期課表下載，轉csv匯出後就可上傳。
+之後會再完善。
+
 # Quasar App (quasar-project)
 
 A Quasar Project
