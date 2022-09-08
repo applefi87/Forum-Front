@@ -1,5 +1,5 @@
 <template >
-  <q-layout view="hHh lpR fff" id="m">
+  <q-layout view="hHh lpR fff" id="m">taba
     <q-header elevated class="bg-primary text-white">
       <headerPage :leftDrawerActive="leftDrawerActive"></headerPage>
     </q-header>
@@ -8,53 +8,60 @@
       :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
       <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{  title  }}
       </h6>
+      <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange" align="justify"
+        :breakpoint="0" class="bg-orange-8 text-grey-5 " dense mobile-arrows>
+        <q-tab name="boards" :label="t('boards')" v-if="hasChild" />
+        <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
+        <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
+      </q-tabs>
+
       <chartInfo v-if="boardInfoForm.score && boardInfoForm.score >= 0" :form="boardInfoForm" />
-      <div style="display:flex;flex-direction: column; justify-content: space-between; flex-grow: 1">
-        <q-tab-panels v-model="tab">
-          <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
-            <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
-              :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-            <div>
-              <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
-                :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
-              <q-checkbox v-model="filterAll" :label="t('all')" />
-            </div>
-            <br>
-            <q-btn :loading="getChildboardLoading" color="primary" @click="getChildboard" :label="t('search')">
-              <template v-slot:getChildboardLoading>
-                Loading...
-              </template>
-            </q-btn>
-          </q-tab-panel>
-          <q-tab-panel name="articles" v-if="hasArticle">
-            <!-- 先不過濾全抓  要評價再顯示table供選-->
-            <!-- <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
+      <q-tab-panels v-model="tab">
+        <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
+          <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
+            :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+          <div>
+            <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
+              :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
+            <q-checkbox v-model="filterAll" :label="t('all')" />
+          </div>
+          <br>
+          <q-btn :loading="getChildboardLoading" color="primary" @click="getChildboard" :label="t('search')">
+            <template v-slot:getChildboardLoading>
+              Loading...
+            </template>
+          </q-btn>
+        </q-tab-panel>
+        <q-tab-panel name="articles" v-if="hasArticle">
+          <!-- 先不過濾全抓  要評價再顯示table供選-->
+          <!-- <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
           :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
-            <br>
-            <q-btn v-if="users.token" @click="publishArticleState = true" color="primary" :label="t('review')" />
-            <q-btn v-else @click="loginState = true" color="primary" :label="t('review')" />
-          </q-tab-panel>
-          <q-tab-panel name="edit" v-if="users.role === 0">
-            <!-- <q-btn v-if="hasChild" :label='t("addChildBoards")' color="primary" class="q-ml-sm"
+          <br>
+          <q-btn v-if="users.token" @click="publishArticleState = true" color="primary" :label="t('review')" />
+          <q-btn v-else @click="loginState = true" color="primary" :label="t('review')" />
+        </q-tab-panel>
+        <q-tab-panel name="edit" v-if="users.role === 0">
+          <!-- <q-btn v-if="hasChild" :label='t("addChildBoards")' color="primary" class="q-ml-sm"
               :to="'/board/uploadBoard/' + route.params.id" /> -->
-          </q-tab-panel>
-        </q-tab-panels>
-        <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange"
-          align="justify" :breakpoint="0" class="bg-orange-8 text-grey-5 " dense>
-          <q-tab name="boards" :label="t('boards')" v-if="hasChild" />
-          <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
-          <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
-        </q-tabs>
-      </div>
+        </q-tab-panel>
+      </q-tab-panels>
+
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>
       <q-select v-model="locale" :options="localeOptions" label="Language:" borderless emit-value map-options />
     </q-drawer>
     <q-page-container>
-      <router-view class="q-pa-lg" />
+      <div class="q-pa-lg">
+        <boardPage v-if="tab === 'boards'" class="h100">
+        </boardPage>
+        <articlePage v-if="tab === 'articles'" class="h100">
+        </articlePage>
+        <uploadBoardPage v-if="tab === 'edit'" class="h100">
+        </uploadBoardPage>
+      </div>
     </q-page-container>
     <!--****************** 彈出視窗 ------>
     <!-- 發布文章框 -->
@@ -63,6 +70,9 @@
 </template>
 
 <script setup>
+import uploadBoardPage from 'pages/admin/uploadBoardPage.vue'
+import articlePage from 'pages/articlePage.vue'
+import boardPage from 'pages/boardPage.vue'
 import headerPage from 'components/Header/HeaderPage.vue'
 import chartInfo from 'components/chartInfo.vue'
 import { ref, reactive, watch, shallowRef, provide, readonly, inject } from 'vue'
@@ -110,44 +120,46 @@ const filterOptions = shallowRef([])
 // 之後再自動抓
 const filterUnique = ref('')
 const filterUniqueOptions = shallowRef([])
-const time = ref(0)
+// 每次進到新版統一的步驟
+//
 const init = async () => {
   console.log('init')
-  time.value = Date.now()
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
     boards.length = 0
     const { data } = await api.get('/board/' + route.params.id)
     if (data.result) {
-      const createBoardsFilter = () => {
-        // 清空物件與加入物件的美妙
+      // 左方該版資訊
+      const createLeftDrawer = async () => {
+        // 重整該版資訊
         for (const k in board) delete board[k]
         Object.assign(board, data.result)
-        //
         title.value = data.result.title
+        // *****如果有被評分 顯示被評分資訊與圖表
         if (data.result.beScored?.score && data.result.beScored.score >= 0) {
           // boardInfoForm.title = data.result.title
           boardInfoForm.score = data.result.beScored.score
           boardInfoForm.amount = data.result.beScored.amount
           boardInfoForm.datas.length = 0
           boardInfoForm.datas.push(...data.result.beScored.scoreChart)
+        } else {
+          boardInfoForm.score = undefined
         }
+        // *****有子板?，顯示都有的UniqueOptions、filterOptions
         if (data.result.childBoard.active) {
           hasChild.value = true
           filterOptions.value = data.result.childBoard.rule.display.filter?.dataCol?.c0 || [0]
           filterUniqueOptions.value = data.result.childBoard.rule.display.filter?.uniqueCol?.c80 || [0]
           filterUnique.value = filterUniqueOptions.value[0]
         } else {
+          // 不然就清空不顯示
           filterOptions.value = []
           filterUniqueOptions.value = []
           hasChild.value = false
         }
-      }
-      createBoardsFilter()
-      // 處理文章(規則去他母版抓)
-      // 有成功才顯示不然清除
-      const checkArticles = async () => {
+        // *****有文章?(他的母版-開放他有文章區)
         try {
+          let findArticle = false
           if (data.result.parent) {
             const parent = await api.get('/board/' + data.result.parent)
             for (const k in article) delete article[k]
@@ -157,8 +169,11 @@ const init = async () => {
             if (article.active) {
               console.log('有文章區')
               hasArticle.value = true
+              findArticle = true
             }
-          } else {
+          }
+          if (!findArticle) {
+            // 不然就清空不顯示
             hasArticle.value = false
             for (const k in article) {
               delete article[k]
@@ -167,50 +182,21 @@ const init = async () => {
         } catch (error) {
           console.log(error.response.data)
         }
-        // 要有母版
       }
-      await checkArticles()
-      // 抓第一個分頁顯示
-      if (!hasChild.value) {
-        if (!hasArticle.value) {
-          tab.value = 'edit'
-          router.push('/board/uploadBoard/' + route.params.id)
-        } else {
-          tab.value = 'articles'
-          router.push('/board/articles/' + route.params.id)
-        }
+      await createLeftDrawer()
+      // 如果該分頁沒有tab，顯示下個tab
+      if (hasChild.value) {
+        tab.value = 'boards'
+      } else if (hasArticle.value) {
+        tab.value = 'articles'
+      } else {
+        tab.value = 'edit'
       }
-      // 調整tab
-      // switch (route.name) {
-      //   case 'uploadBoard':
-      //     tab.value = 'edit'
-      //     break
-      //   case 'articles':
-      //     tab.value = 'articles'
-      //     break
-      //   case 'boards':
-      //     tab.value = 'boards'
-      //     break
-      //   default:
-      //     console.log('error')
-      // }
-      // ********* 取得文章 (tab要是articles 不然不浪費資源)*******
-      const getArticles = async () => {
-        try {
-          const { data } = await apiAuth.get('/article/' + route.params.id)
-          articles.length = 0
-          articles.push(...data.result)
-        } catch (error) {
-          console.log(error.response.data)
-        }
-      }
-      if (tab.value === 'articles') getArticles()
     } else {
       boardInfoForm.score = null
     }
     // 判斷是否有版/文章 微調
     filterC0.value = filterOptions.value[0]
-    time.value = Date.now() - time.value
     //
   } catch (error) {
     console.log(error)
@@ -225,21 +211,16 @@ watch(() => route.params, (to, from) => {
   }
 })
 // *
-watch(tab, (newV, oldV) => {
-  switch (tab.value) {
-    case 'edit':
-      console.log('changed edit')
-      router.push('/board/uploadBoard/' + route.params.id)
-      break
-    case 'articles':
-      console.log('changed articles')
-      router.push('/board/' + route.params.id)
-      break
-    case 'boards':
-      console.log('changed boards')
-      router.push('/board/' + route.params.id)
+// ********* 取得文章 (tab要是articles 不然不浪費資源)*******
+const getArticles = async () => {
+  try {
+    const { data } = await apiAuth.get('/article/' + route.params.id)
+    articles.length = 0
+    articles.push(...data.result)
+  } catch (error) {
+    console.log(error.response.data)
   }
-})
+}
 // *********************************************取得子版************************
 
 const getChildboardLoading = ref(false)
@@ -290,5 +271,8 @@ provide('article', readonly(article))
     max-width: 300px
   &:deep(.q-drawer__backdrop)
     z-index: 1999 !important
+// 處理圖表太大問題
+.q-card
+  min-width: 250px
 
 </style>

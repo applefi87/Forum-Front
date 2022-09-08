@@ -15,7 +15,7 @@
         </q-tr>
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !([].find((n) => n === c.name)))" :key="col.name" :props="props">
-            {{ col.label }}
+            {{  col.label  }}
           </q-th>
         </q-tr>
       </template>
@@ -23,43 +23,47 @@
         <q-tr :props="props" class="colTR" no-hover>
           <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
             :key="col.name" :props="props">
-            <button class="cellBTN limited-length" @click="router.push('/board/' + props.row._id)">
-              {{ col.value }}</button>
+            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank"> {{  col.value  }}
+            </router-link>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
-            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
+            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div v-if="col.value < 0"></div>
               <q-icon v-else name="star" color="warning" v-for="it of ([].length = col.value) " :key="it" />
-            </button>
+            </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
-            :props="props">
-            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
-              {{ (col.value >= 0 ? col.value : '') }}
-            </button>
+            :props="props" target="_blank">
+            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank"> {{  (col.value >= 0 ?
+            col.value : '')
+
+
+              }}
+            </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['tag'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
-            <button class="cellBTN" @click="router.push('/board/' + props.row._id)">
+            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div class="tag" v-for="t in (col.value || ['無'])" :tag="t" :key="t">
-                {{ t }}
+                {{  t  }}
               </div>
-            </button>
+            </router-link>
           </q-td>
         </q-tr>
       </template>
     </q-table>
   </q-page>
   <q-page v-else>
-    <h6 style="margin-left: calc(5vw);">{{ t('searchFirst') }}</h6>
+    <h6 style="margin-left: calc(5vw);">{{  t('searchFirst')  }}</h6>
   </q-page>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 // **********************************************子版清單***
@@ -94,8 +98,6 @@ const columns = computed(() => [
   { name: 'tag', align: 'left', label: t('tags'), field: row => row.beScored?.tag }
 ]
 )
-// **********************************************子文章清單***
-// 要去母版看規則
 
 </script>
 <style lang="sass" scoped>
