@@ -1,7 +1,7 @@
 <template>
   <q-page v-if="boards.length > 0">
-    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage > 49"
-      v-model:pagination="pagination" auto-width separator="none" :rows-per-page-options="[0, 15, 30, 50, 100]">
+    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" v-model:pagination="pagination" auto-width
+      separator="none" :rows-per-page-options="[15, 30, 50]">
       <template v-slot:header="props">
         <q-tr>
           <q-td colspan="8" class="searchTd">
