@@ -55,11 +55,11 @@
     </q-drawer>
     <q-page-container>
       <div class="q-pa-lg">
-        <boardPage v-if="tab === 'boards'" class="h100">
+        <boardPage v-if="tab === 'boards'" class="wh100">
         </boardPage>
-        <articlePage v-if="tab === 'articles'" class="h100">
+        <articlePage v-if="tab === 'articles'" class="wh100">
         </articlePage>
-        <uploadBoardPage v-if="tab === 'edit'" class="h100">
+        <uploadBoardPage v-if="tab === 'edit'" class="wh100">
         </uploadBoardPage>
       </div>
     </q-page-container>
@@ -274,5 +274,7 @@ provide('article', readonly(article))
 // 處理圖表太大問題
 .q-card
   min-width: 250px
-
+.wh100
+  width: 100%
+  height: 100%
 </style>

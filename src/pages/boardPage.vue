@@ -23,30 +23,32 @@
         <q-tr :props="props" class="colTR" no-hover>
           <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
             :key="col.name" :props="props">
-            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank"> {{  col.value  }}
+            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
+              <div> {{  col.value  }}</div>
             </router-link>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
-              <div v-if="col.value < 0"></div>
-              <q-icon v-else name="star" color="warning" v-for="it of ([].length = col.value) " :key="it" />
+              <div>
+                <div v-if="col.value < 0"></div>
+                <q-icon v-else name="star" color="warning" v-for="it of ([].length = col.value) " :key="it" />
+              </div>
             </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
             :props="props" target="_blank">
-            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank"> {{  (col.value >= 0 ?
-            col.value : '')
-
-
-              }}
+            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
+              <div> {{  (col.value >= 0 ? col.value : '')  }}</div>
             </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['tag'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
-              <div class="tag" v-for="t in (col.value || ['無'])" :tag="t" :key="t">
-                {{  t  }}
+              <div>
+                <div class="tag" v-for="t in (col.value || ['無'])" :tag="t" :key="t">
+                  {{  t  }}
+                </div>
               </div>
             </router-link>
           </q-td>
@@ -104,52 +106,37 @@ const columns = computed(() => [
 .q-table
   .q-table__top,
   .q-table__bottom,
-  thead tr:first-child th
+  thead
+    tr:first-child th
     /* bg color is important for th; just specify one */
     background-color: #fff
-  thead tr th
-    position: sticky
-    z-index: 1
-    padding: 5px
-  thead tr:first-child th
-    top: 0
+    tr th
+      position: sticky
+      z-index: 1
+      padding: 5px
+    tr:first-child th
+      top: 0
+  tbody .q-tr:hover>td
+    background: #f0f0f0
   /* this is when the loading indicator appears */
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
+
 .q-td
-  padding: 0 !important
+  padding: 0 5px !important
 .tag
   display: inline-block
+  height: 20px
+  line-height: 20px
   width: 30px
   margin: 0 2px
   text-align: center
   color: white
   background: green
   border-radius: 50px
-.q-td
-  padding: 0
 .colTR
   height: 10px
-// .limited-length
-//   max-width: 100px
-// 舊版CSS
-// .q-tr td:nth-child(4)
-//   background: #f9f9f9
-//   border-bottom: solid #999 1px
-// .q-tr:nth-child(even) td
-//   border-bottom: solid #999 1px
-//   // 之後再處理
-// // 奇偶行不同顏色
-// .q-tr:nth-child(4n+3) td
-//   background: #fffaf4
-// .q-tr:nth-child(4n+3) td:nth-child(4)
-//   background: #fff5e4
-// .q-tr:nth-child(4n) td
-//   background: #fffaf4
-// 新版CSS
-
-// 奇偶行不同顏色
 
 .q-tr:nth-child(2n+1) td
   background: #f5f5f5
@@ -161,12 +148,16 @@ td:nth-child(4)
   max-width: 200px
 td:nth-child(5)
   max-width: 100px
-.cellBTN
+.btnLink
   width: 100%
   height: 100%
   background: transparent
   border: none
   cursor: pointer
-  text-align: left
   overflow: hidden
+  &>div
+    height: 100%
+    line-height: 48px
+a
+  text-decoration: none
 </style>
