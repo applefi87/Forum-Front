@@ -204,6 +204,7 @@ const init = async () => {
   }
 }
 init()
+// 雖然目前都開新分頁，原本這樣可避免id便頁面不跳轉，保險還是留著
 watch(() => route.params, (to, from) => {
   // 因為是在layout做，確保是板的情況在因應:id更新重跑，不然不用
   if (route.name === 'boards') {
@@ -221,6 +222,12 @@ const getArticles = async () => {
     console.log(error.response.data)
   }
 }
+// 進articles的tab才載入，加快初始速度，同時載入過不重複載入
+watch(tab, (to, from) => {
+  if (tab.value === 'articles' && articles.length <= 0) {
+    getArticles()
+  }
+})
 // *********************************************取得子版************************
 
 const getChildboardLoading = ref(false)
