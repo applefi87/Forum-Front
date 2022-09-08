@@ -230,17 +230,14 @@ watch(tab, (newV, oldV) => {
     case 'edit':
       console.log('changed edit')
       router.push('/board/uploadBoard/' + route.params.id)
-      // expected output: "Mangoes and papayas are $2.79 a pound."
       break
     case 'articles':
       console.log('changed articles')
-      router.push('/board/articles/' + route.params.id)
-      // expected output: "Mangoes and papayas are $2.79 a pound."
+      router.push('/board/' + route.params.id)
       break
     case 'boards':
       console.log('changed boards')
       router.push('/board/' + route.params.id)
-    // expected output: "Mangoes and papayas are $2.79 a pound."
   }
 })
 // *********************************************取得子版************************
