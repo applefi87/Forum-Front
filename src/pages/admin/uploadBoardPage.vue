@@ -16,7 +16,6 @@
 </template>
 
 <script setup>
-import converter from 'json-2-csv'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute } from 'vue-router'
 import loading from 'src/utils/loading'
@@ -48,26 +47,18 @@ watch(file, () => {
   }
 })
 const out = ref('')
-const transform = () => {
+const transform = async () => {
   if (input.value) {
     console.log('in')
-    converter.csv2json(
-      input.value,
-      async (err, json) => {
-        let load
-        try {
-          load = loading({ title: 'Please wait,building.', delay: 100 })
-          if (err) throw err
-          const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: json, uniqueCol: uniqueCol.value })
-          notify({ success: data.success, ...data.message })
-        } catch (error) {
-          console.log(error)
-          notify(...error.response.data.message)
-        }
-        load.hide()
-      },
-      { delimiter: { wrap: '"', eol: '\r' } }
-    )
+    const load = loading({ title: 'Please wait,building.', delay: 100 })
+    try {
+      const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: input.value, lang: 'zhTW' })
+      notify({ success: data.success, ...data.message })
+    } catch (error) {
+      console.log(error)
+      notify(...error.response.data.message)
+    }
+    load.hide()
   }
 }
 const uniqueColVal = [
