@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <p> {{ t('uploadCSVHere') }}</p>
-    <q-input filled v-model="uniqueCol" :label='t("semester")' lazy-rules :rules="uniqueColVal" />
+    <!-- <q-input filled v-model="uniqueCol" :label='t("semester")' lazy-rules :rules="uniqueColVal" /> -->
     <q-file filled bottom-slots v-model="file" :label="t('boardCSVlist')" counter accept="text/csv"
       max-file-size="5242880" @rejected="onRejected">
       <template v-slot:prepend>
@@ -50,7 +50,7 @@ const out = ref('')
 const transform = async () => {
   if (input.value) {
     console.log('in')
-    const load = loading({ title: 'Please wait,building.', delay: 100 })
+    // const load = loading({ title: 'Please wait,building.', delay: 100 })
     try {
       const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: input.value, lang: 'zhTW' })
       notify({ success: data.success, ...data.message })
@@ -58,7 +58,7 @@ const transform = async () => {
       console.log(error)
       notify(...error.response.data.message)
     }
-    load.hide()
+    // load.hide()
   }
 }
 const uniqueColVal = [

@@ -6,7 +6,7 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
       :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
-      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{  title  }}
+      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}
       </h6>
       <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange" align="justify"
         :breakpoint="0" class="bg-orange-8 text-grey-5 " dense mobile-arrows>
@@ -148,8 +148,8 @@ const init = async () => {
         // *****有子板?，顯示都有的UniqueOptions、filterOptions
         if (data.result.childBoard.active) {
           hasChild.value = true
-          filterOptions.value = data.result.childBoard.rule.display.filter?.dataCol?.c0 || [0]
-          filterUniqueOptions.value = data.result.childBoard.rule.display.filter?.uniqueCol?.c80 || [0]
+          filterOptions.value = data.result.childBoard.rule.display.filter?.dataCols?.c0 || [0]
+          filterUniqueOptions.value = data.result.childBoard.rule.display.filter?.uniqueCols?.c80 || [0]
           filterUnique.value = filterUniqueOptions.value[0]
         } else {
           // 不然就清空不顯示
