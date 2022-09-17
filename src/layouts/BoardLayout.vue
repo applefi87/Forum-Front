@@ -121,7 +121,6 @@ const filterOptions = shallowRef([])
 const filterUnique = ref('')
 const filterUniqueOptions = shallowRef([])
 // 每次進到新版統一的步驟
-//
 const init = async () => {
   console.log('init')
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function

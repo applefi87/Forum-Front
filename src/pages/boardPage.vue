@@ -15,7 +15,7 @@
         </q-tr>
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !([].find((n) => n === c.name)))" :key="col.name" :props="props">
-            {{  col.label  }}
+            {{ col.label }}
           </q-th>
         </q-tr>
       </template>
@@ -24,7 +24,7 @@
           <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
             :key="col.name" :props="props">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
-              <div> {{  col.value  }}</div>
+              <div> {{ col.value }}</div>
             </router-link>
           </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
@@ -39,7 +39,7 @@
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
             :props="props" target="_blank">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
-              <div> {{  (col.value >= 0 ? col.value : '')  }}</div>
+              <div> {{ (col.value >= 0 ? col.value : '') }}</div>
             </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['tag'].find((n) => n === c.name)))" :key="col.name"
@@ -47,7 +47,7 @@
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div>
                 <div class="tag" v-for="t in (col.value || ['無'])" :tag="t" :key="t">
-                  {{  t  }}
+                  {{ t }}
                 </div>
               </div>
             </router-link>
@@ -57,7 +57,7 @@
     </q-table>
   </q-page>
   <q-page v-else>
-    <h6 style="margin-left: calc(5vw);">{{  t('searchFirst')  }}</h6>
+    <h6 style="margin-left: calc(5vw);">{{ t('searchFirst') }}</h6>
   </q-page>
 </template>
 
@@ -107,9 +107,8 @@ const columns = computed(() => [
   .q-table__top,
   .q-table__bottom,
   thead
-    tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: #fff
+    tr:first-child th    /* bg color is important for th; just specify one */
+      background-color: #fff
     tr th
       position: sticky
       z-index: 1
