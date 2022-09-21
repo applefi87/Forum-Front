@@ -74,8 +74,9 @@ const hasChild = inject('hasChild')
 // ----------
 const filter = ref('')
 const filtedBoards = computed(() => {
+  console.log(boards)
   return boards.filter((s) => {
-    return s.title.match(RegExp('.*' + filter.value + '.*', 'i'))
+    return s.colData.c40.match(RegExp('.*' + filter.value + '.*', 'i'))
   })
 })
 const pagination = ref({ rowsPerPage: 15 })

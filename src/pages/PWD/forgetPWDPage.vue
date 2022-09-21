@@ -30,7 +30,7 @@
 import { ref, reactive } from 'vue'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
-import notify from '../utils/notify'
+import notify from 'src/utils/notify'
 const { t } = useI18n({ useScope: 'global' })
 const users = useUserStore()
 const getTempPWD = ref(false)

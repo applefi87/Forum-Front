@@ -27,7 +27,7 @@
 <script setup>
 
 import { ref, reactive } from 'vue'
-import notify from '../utils/notify'
+import notify from 'src/utils/notify'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'

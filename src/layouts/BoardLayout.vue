@@ -9,7 +9,7 @@
       <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}
       </h6>
       <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange" align="justify"
-        :breakpoint="0" class="bg-orange-8 text-grey-5 " dense mobile-arrows>
+        :breakpoint="0" class="bg-orange-8 text-grey-5 " dense mobile-arrows v-if="users.role === 0">
         <q-tab name="boards" :label="t('boards')" v-if="hasChild" />
         <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
         <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
@@ -133,7 +133,8 @@ const init = async () => {
         // 重整該版資訊
         for (const k in board) delete board[k]
         Object.assign(board, data.result)
-        title.value = data.result.title
+        console.log(data.result)
+        title.value = data.result.title || data.result.colData.c40
         // *****如果有被評分 顯示被評分資訊與圖表
         if (data.result.beScored?.score && data.result.beScored.score >= 0) {
           // boardInfoForm.title = data.result.title
@@ -246,6 +247,7 @@ const getChildboard = async () => {
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?test=' + encodedFilter)
     boards.length = 0
+    console.log(data)
     // 查詢完左側隱藏(若電腦版不能被隱藏，會出問題)
     if (document.documentElement.scrollWidth < 768) {
       leftDrawerState.value = false
