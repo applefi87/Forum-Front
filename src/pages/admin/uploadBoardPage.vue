@@ -11,7 +11,8 @@
         {{ t('csvMax5MB') }}
       </template>
     </q-file>
-    <q-btn v-if="fileUploaded" color="primary" @click="transform" class="q-mt-md">{{ t('upload') }}</q-btn>
+    <q-btn v-if="fileUploaded" loading="uploading" color="primary" @click="transform" class="q-mt-md">{{ t('upload') }}
+    </q-btn>
   </q-page>
 </template>
 
@@ -30,7 +31,7 @@ const onRejected = (file) => {
   console.log(file)
   notify({ title: t('csvMax5MB') })
 }
-
+const uploading = ref(true)
 const reader = new FileReader()
 
 const uniqueCol = ref('')
@@ -50,6 +51,7 @@ const out = ref('')
 const transform = async () => {
   if (input.value) {
     console.log('in')
+    uploading.value = true
     // const load = loading({ title: 'Please wait,building.', delay: 100 })
     try {
       const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: input.value, lang: 'zhTW' })
@@ -58,7 +60,7 @@ const transform = async () => {
       console.log(error)
       notify(...error.response.data.message)
     }
-    // load.hide()
+    uploading.value = false
   }
 }
 const uniqueColVal = [
