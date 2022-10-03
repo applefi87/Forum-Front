@@ -58,7 +58,6 @@ const transform = async () => {
       console.log(error)
       notify(...error.response.data.message)
     }
-    // load.hide()
   }
 }
 const uniqueColVal = [
