@@ -30,7 +30,7 @@ const onRejected = (file) => {
   console.log(file)
   notify({ title: t('csvMax5MB') })
 }
-const uploading = ref(true)
+const uploading = ref(false)
 const reader = new FileReader()
 
 const uniqueCol = ref('')
