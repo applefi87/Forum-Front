@@ -11,7 +11,7 @@
         {{ t('csvMax5MB') }}
       </template>
     </q-file>
-    <q-btn v-if="fileUploaded" loading="uploading" color="primary" @click="transform" class="q-mt-md">{{ t('upload') }}
+    <q-btn v-if="fileUploaded" :loading="uploading" color="primary" @click="transform" class="q-mt-md">{{ t('upload') }}
     </q-btn>
   </q-page>
 </template>
@@ -19,7 +19,6 @@
 <script setup>
 import { apiAuth } from 'src/boot/axios'
 import { useRoute } from 'vue-router'
-import loading from 'src/utils/loading'
 import { ref, watch } from 'vue'
 import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
