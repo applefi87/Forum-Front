@@ -73,7 +73,8 @@ module.exports = configure(function (/* ctx */) {
       env: {
         // env: require('dotenv').config().parsed
         GOOGLE_SHEET: process.env.GOOGLE_SHEET,
-        SERVER_URL: process.env.SERVER_URL
+        SERVER_URL: process.env.SERVER_URL,
+        HOME_ID: process.env.HOME_ID
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
