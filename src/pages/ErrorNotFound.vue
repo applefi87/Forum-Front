@@ -8,8 +8,12 @@
       <div class="text-h2" style="opacity:.4">
         You enter a nothing.
       </div>
-      <q-btn class="q-mt-xl" color="white" text-color="blue" unelevated to="/board/633a8f15866d2a22630cfb94"
-        label="Go Home" no-caps />
+      <q-btn class="q-mt-xl" color="white" text-color="blue" unelevated :to="'/board/'+homeID" label="Go Home"
+        no-caps />
     </div>
   </div>
 </template>
+
+<script setup>
+const homeID = process.env.HOME_ID
+</script>

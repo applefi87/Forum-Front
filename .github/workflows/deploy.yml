@@ -25,6 +25,7 @@ jobs:
         env:
           SERVER_URL: ${{ secrets.SERVER_URL}}
           GOOGLE_SHEET: ${{ secrets.GOOGLE_SHEET}}
+          HOME_ID: ${{ secrets.HOME_ID}}
       # 步驟三：部署
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.1
