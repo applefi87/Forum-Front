@@ -158,7 +158,7 @@ const columns = computed(() => [
   { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'tags', align: 'left', label: t('tags'), field: row => row.tags, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' },
-  { name: 'content', align: 'left', label: (parent.childBoard.article.category[0].contentCol[users?.local?.replace('-', '')] ||), field: row => row.content, sortOrder: 'da' }
+  { name: 'content', align: 'left', label: (parent.childBoard.article.category[0].contentCol[users?.local?.replace('-', '')]), field: row => row.content, sortOrder: 'da' }
   // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
 
 ])
