@@ -104,7 +104,7 @@ locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
 })
-const boardInfoForm = reactive({ chartTitle: '課程評分', averageTitle: '課程平均分數', score: 0, amount: 0, datas: [] })
+const boardInfoForm = reactive({ chartTitle: t('RatingPercentage'), averageTitle: t('averageScore'), score: 0, amount: 0, datas: [] })
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
 const tab = ref('boards')
