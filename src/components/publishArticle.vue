@@ -38,8 +38,9 @@
           <tr v-if="category.tagActive">
             <td>{{ t('tags') }}</td>
             <td>
-              <q-option-group :options="category.tagOption.map(o => { return { label: o, value: o } })" type="checkbox"
-                v-model="form['f' + selectCat.value].tags" />
+              <q-option-group
+                :options="category.tagOption.map(o => { return { label: o[users.local.replace('-','')], value: o.c } })"
+                type="checkbox" v-model="form['f' + selectCat.value].tags" />
             </td>
           </tr>
           <!-- 標題 -->
@@ -88,10 +89,12 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from 'src/stores/user'
 const route = useRoute()
 const router = useRouter()
-// import { useArticleStore } from 'src/stores/article'
 const { t } = useI18n()
+const users = useUserStore()
+// import { useArticleStore } from 'src/stores/article'
 // const articles = useArticleStore()
 // 初始變數
 const publishArticleState = inject('publishArticleState')
@@ -196,7 +199,6 @@ const publish = () => {
     }
   })
 }
-
 </script>
 
 <style lang="sass" scoped>
