@@ -99,11 +99,12 @@ const localeOptions = [
   { value: 'zh-TW', label: '繁體中文' }
 ]
 const { locale, t } = useI18n({ useScope: 'global' })
-locale.value = users.local || useQuasar().lang.getLocale()
+if (!users.local) users.local = useQuasar().lang.getLocale()
+locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
 })
-const boardInfoForm = reactive({ chartTitle: '課程評分', averageTitle: '課程平均分數', score: 0, amount: 0, datas: [] })
+const boardInfoForm = reactive({ chartTitle: t('RatingPercentage'), averageTitle: t('averageScore'), score: 0, amount: 0, datas: [] })
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
 const tab = ref('boards')
@@ -133,7 +134,7 @@ const init = async () => {
         // 重整該版資訊
         for (const k in board) delete board[k]
         Object.assign(board, data.result)
-        console.log(data.result)
+        // console.log(data.result)
         title.value = data.result.title || data.result.colData.c40
         // *****如果有被評分 顯示被評分資訊與圖表
         if (data.result.beScored?.score && data.result.beScored.score >= 0) {
@@ -164,10 +165,10 @@ const init = async () => {
             const parent = await api.get('/board/' + data.result.parent)
             for (const k in article) delete article[k]
             Object.assign(article, parent.data.result.childBoard?.article)
-            console.log('母版是' + parent.data.result.title)
+            // console.log('母版是' + parent.data.result.title)
             // 母版要開放文章
             if (article.active) {
-              console.log('有文章區')
+              // console.log('有文章區')
               hasArticle.value = true
               findArticle = true
             }
@@ -247,7 +248,7 @@ const getChildboard = async () => {
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?test=' + encodedFilter)
     boards.length = 0
-    console.log(data)
+    // console.log(data)
     // 查詢完左側隱藏(若電腦版不能被隱藏，會出問題)
     if (document.documentElement.scrollWidth < 768) {
       leftDrawerState.value = false

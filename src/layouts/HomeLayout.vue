@@ -31,12 +31,17 @@ const localeOptions = [
   { value: 'en-US', label: 'English' },
   { value: 'zh-TW', label: '繁體中文' }
 ]
+// const { locale, t } = useI18n({ useScope: 'global' })
+// locale.value = users.local || useQuasar().lang.getLocale()
+// watch(locale, () => {
+//   users.local = locale.value
+// })
 const { locale, t } = useI18n({ useScope: 'global' })
-locale.value = users.local || useQuasar().lang.getLocale()
+if (!users.local) users.local = useQuasar().lang.getLocale()
+locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
 })
-
 // *********************************************子文章************************
 </script>
 <style lang="sass" scoped >

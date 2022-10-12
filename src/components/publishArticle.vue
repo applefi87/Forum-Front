@@ -3,23 +3,6 @@
     <div>
       <q-form class="q-gutter-md" ref="formRef">
         <table v-if="category">
-          <!--  -->
-          <tr>
-            <td>{{ t('articleCategory') }}</td>
-            <td>
-              <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
-            </td>
-          </tr>
-          <!--  -->
-          <tr>
-            <td>{{ t('semester') }}</td>
-            <td>
-              <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
-                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
-            </td>
-          </tr>
-          <!--  -->
           <tr>
             <td>{{ t('privacy') }}</td>
             <td>
@@ -27,6 +10,21 @@
                 :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
             </td>
           </tr>
+          <tr>
+            <td>{{ t('articleCategory') }}</td>
+            <td>
+              <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
+            </td>
+          </tr>
+          <tr>
+            <td>{{ t('semester') }}</td>
+            <td>
+              <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
+                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
+            </td>
+          </tr>
+
           <!-- 評分 -->
           <tr v-if="category && category.c === 1">
             <td>{{ t('rate') }}</td>
@@ -38,13 +36,14 @@
           <tr v-if="category.tagActive">
             <td>{{ t('tags') }}</td>
             <td>
-              <q-option-group :options="category.tagOption.map(o => { return { label: o, value: o } })" type="checkbox"
-                v-model="form['f' + selectCat.value].tags" />
+              <q-option-group
+                :options="category.tagOption.map(o => { return { label: o[users.local.replace('-','')], value: o.c } })"
+                type="checkbox" v-model="form['f' + selectCat.value].tags" />
             </td>
           </tr>
           <!-- 標題 -->
           <tr>
-            <td>{{ t(category.titleCol) }}</td>
+            <td>{{ t('title') }}</td>
             <td>
               <q-input v-model="form['f' + selectCat.value].title" :rules="titleVal">
               </q-input>
@@ -60,7 +59,8 @@
           </tr> -->
           <!-- content(放最後) ****************************-->
           <tr>
-            <td style="vertical-align:text-top ; padding-top: 30px">{{ t(category.contentCol) }}</td>
+            <td style="vertical-align:text-top ; padding-top: 30px">{{
+            category.contentCol[users.local.replace('-','')] }}</td>
             <td style=" padding-top: 20px">
               <QuillEditor class="editor" toolbar="essential" theme="snow"
                 v-model:content="form['f' + selectCat.value].content" contentType="html" />
@@ -88,10 +88,12 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from 'src/stores/user'
 const route = useRoute()
 const router = useRouter()
-// import { useArticleStore } from 'src/stores/article'
 const { t } = useI18n()
+const users = useUserStore()
+// import { useArticleStore } from 'src/stores/article'
 // const articles = useArticleStore()
 // 初始變數
 const publishArticleState = inject('publishArticleState')
@@ -196,7 +198,6 @@ const publish = () => {
     }
   })
 }
-
 </script>
 
 <style lang="sass" scoped>

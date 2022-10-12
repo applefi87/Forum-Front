@@ -3,6 +3,7 @@
 node_modules
 .env
 *.local*
+.github
 base
 # Quasar core related directories
 .quasar
