@@ -75,7 +75,7 @@ import articlePage from 'pages/articlePage.vue'
 import boardPage from 'pages/boardPage.vue'
 import headerPage from 'components/Header/HeaderPage.vue'
 import chartInfo from 'components/chartInfo.vue'
-import { ref, reactive, watch, shallowRef, provide, readonly, inject } from 'vue'
+import { ref, reactive, watch, computed, shallowRef, provide, readonly, inject } from 'vue'
 import publishArticle from 'src/components/publishArticle.vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
@@ -86,6 +86,7 @@ import { api, apiAuth } from 'src/boot/axios'
 const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
 const loginState = inject('loginState')
+const langWord = inject('langWord')
 
 const leftDrawerActive = true
 const route = useRoute()
@@ -108,7 +109,6 @@ const boardInfoForm = reactive({ chartTitle: t('RatingPercentage'), averageTitle
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
 const tab = ref('boards')
-const title = ref('')
 const hasChild = ref(false)
 const hasArticle = ref(false)
 const board = reactive({})
@@ -136,7 +136,6 @@ const init = async () => {
         for (const k in board) delete board[k]
         Object.assign(board, data.result)
         // // console.log(data.result)
-        title.value = data.result.title || data.result.colData.c40
         // *****如果有被評分 顯示被評分資訊與圖表
         if (data.result.beScored?.score && data.result.beScored.score >= 0) {
           // boardInfoForm.title = data.result.title
@@ -208,6 +207,21 @@ const init = async () => {
   }
 }
 init()
+const title = computed(() => {
+  console.log('bc', board)
+  // 給board未讀取到的時間緩衝避免報錯
+  if (board?.colData) {
+    //  有母版就抓母版設定來顯示標題文字
+    if (parent?.childBoard?.rule?.titleCol) {
+      return board.colData[parent.childBoard.rule.titleCol[langWord.value]]
+    } else if (board.titleCol) {
+      // 不然就會是從自己資料抓
+      return board.colData[board.titleCol[langWord.value]]
+    }
+  }
+  return 'none'
+})
+
 // 雖然目前都開新分頁，原本這樣可避免id便頁面不跳轉，保險還是留著
 watch(() => route.params, (to, from) => {
   // 因為是在layout做，確保是板的情況在因應:id更新重跑，不然不用

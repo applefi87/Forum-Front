@@ -47,7 +47,8 @@
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div v-if="col.value">
                 <div class="tag" v-for="k in (Object.keys(col.value))" :key="k">
-                  {{ board.childBoard.article.category.find(i=>i.c===1).tagOption[k][langWord] }}
+                  <!-- {{board.childBoard.article.category}} -->
+                  {{ reviewRule.tagOption[k][langWord] }}
                 </div>
               </div>
             </router-link>
@@ -70,6 +71,8 @@ const board = inject('board')
 const boards = inject('boards')
 const langWord = inject('langWord')
 // ----------
+const reviewRule = computed(() => board.childBoard.article.category.find(i => i.c === 1))
+//
 const filter = ref('')
 const filtedBoards = computed(() => {
   return boards.filter((s) => {
@@ -91,7 +94,12 @@ const columns = computed(() => [
   // , headerClasses: 'q-table--col-auto-width'
   { name: 'score', align: 'left', label: t('credits'), field: row => (row.colData.c50 || 0), sortable: true, sortOrder: 'da' },
   { name: 'required', align: 'left', label: t('required'), field: row => row.colData.c55, sortable: true, sortOrder: 'da' },
-  { name: 'title', align: 'left', label: t('className'), field: row => row.colData.c40 },
+  {
+    name: 'title',
+    align: 'left',
+    label: t('className'),
+    field: row => row.colData[board.childBoard.rule.titleCol[langWord.value]]
+  },
   { name: 'teacher', align: 'left', label: t('teacher'), field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
   { name: 'review', align: 'left', label: t('score'), field: row => (row.beScored?.score || ''), sortable: true, sortOrder: 'da' },
   { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
