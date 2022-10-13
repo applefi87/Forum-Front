@@ -3,23 +3,6 @@
     <div>
       <q-form class="q-gutter-md" ref="formRef">
         <table v-if="category">
-          <!--  -->
-          <tr>
-            <td>{{ t('articleCategory') }}</td>
-            <td>
-              <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
-            </td>
-          </tr>
-          <!--  -->
-          <tr>
-            <td>{{ t('semester') }}</td>
-            <td>
-              <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
-                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
-            </td>
-          </tr>
-          <!--  -->
           <tr>
             <td>{{ t('privacy') }}</td>
             <td>
@@ -27,6 +10,21 @@
                 :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
             </td>
           </tr>
+          <tr>
+            <td>{{ t('articleCategory') }}</td>
+            <td>
+              <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
+            </td>
+          </tr>
+          <tr>
+            <td>{{ t('semester') }}</td>
+            <td>
+              <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
+                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
+            </td>
+          </tr>
+
           <!-- 評分 -->
           <tr v-if="category && category.c === 1">
             <td>{{ t('rate') }}</td>
@@ -35,16 +33,18 @@
             </td>
           </tr>
           <!-- tag -->
-          <tr v-if="category.tagActive">
+          <tr v-if="category.tagOption">
             <td>{{ t('tags') }}</td>
             <td>
-              <q-option-group :options="category.tagOption.map(o => { return { label: o, value: o } })" type="checkbox"
-                v-model="form['f' + selectCat.value].tags" />
+              <!-- <q-option-group :options="category.tagOption.map(o => { return { label: o[langWord], value: o.c } })" -->
+              <q-option-group
+                :options="Object.keys(category.tagOption).map(k => { return { label: category.tagOption[k][langWord], value: k } })"
+                type="checkbox" v-model="form['f' + selectCat.value].tags" />
             </td>
           </tr>
           <!-- 標題 -->
           <tr>
-            <td>{{ t(category.titleCol) }}</td>
+            <td>{{ t('title') }}</td>
             <td>
               <q-input v-model="form['f' + selectCat.value].title" :rules="titleVal">
               </q-input>
@@ -60,7 +60,8 @@
           </tr> -->
           <!-- content(放最後) ****************************-->
           <tr>
-            <td style="vertical-align:text-top ; padding-top: 30px">{{ t(category.contentCol) }}</td>
+            <td style="vertical-align:text-top ; padding-top: 30px">{{
+            category.contentCol[langWord] }}</td>
             <td style=" padding-top: 20px">
               <QuillEditor class="editor" toolbar="essential" theme="snow"
                 v-model:content="form['f' + selectCat.value].content" contentType="html" />
@@ -88,18 +89,22 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from 'src/stores/user'
 const route = useRoute()
 const router = useRouter()
-// import { useArticleStore } from 'src/stores/article'
 const { t } = useI18n()
+const users = useUserStore()
+// import { useArticleStore } from 'src/stores/article'
 // const articles = useArticleStore()
 // 初始變數
+const langWord = inject('langWord')
 const publishArticleState = inject('publishArticleState')
 // 版有unique資料
 const board = inject('board')
 // 母版有能留言的規則
 const article = inject('article')
 // ************************************************************
+
 // 有3個板，就產生3個表單 totalForm.f1 2 3
 // 用for 建置 加上讀取規則自動產生
 // 如果換版>watch，把原本全清除for[key]，重新建
@@ -138,6 +143,8 @@ watch(article, () => {
   publishArticleState.value = false
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
   if (article?.category?.length > 0) {
+    console.log('adding categoryList')
+    console.log(article.category)
     categoryList.length = 0
     categoryList.push(...article.category)
     // 對應加上form.fx
@@ -196,7 +203,6 @@ const publish = () => {
     }
   })
 }
-
 </script>
 
 <style lang="sass" scoped>

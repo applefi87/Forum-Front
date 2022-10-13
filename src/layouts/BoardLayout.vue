@@ -75,7 +75,7 @@ import articlePage from 'pages/articlePage.vue'
 import boardPage from 'pages/boardPage.vue'
 import headerPage from 'components/Header/HeaderPage.vue'
 import chartInfo from 'components/chartInfo.vue'
-import { ref, reactive, watch, shallowRef, provide, readonly, inject } from 'vue'
+import { ref, reactive, watch, computed, shallowRef, provide, readonly, inject } from 'vue'
 import publishArticle from 'src/components/publishArticle.vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
@@ -86,6 +86,7 @@ import { api, apiAuth } from 'src/boot/axios'
 const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
 const loginState = inject('loginState')
+const langWord = inject('langWord')
 
 const leftDrawerActive = true
 const route = useRoute()
@@ -99,19 +100,20 @@ const localeOptions = [
   { value: 'zh-TW', label: '繁體中文' }
 ]
 const { locale, t } = useI18n({ useScope: 'global' })
-locale.value = users.local || useQuasar().lang.getLocale()
+if (!users.local) users.local = useQuasar().lang.getLocale()
+locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
 })
-const boardInfoForm = reactive({ chartTitle: '課程評分', averageTitle: '課程平均分數', score: 0, amount: 0, datas: [] })
+const boardInfoForm = reactive({ chartTitle: t('RatingPercentage'), averageTitle: t('averageScore'), score: 0, amount: 0, datas: [] })
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
 const tab = ref('boards')
-const title = ref('')
 const hasChild = ref(false)
 const hasArticle = ref(false)
 const board = reactive({})
 const boards = reactive([])
+const parent = reactive({})
 const article = reactive({})
 const articles = reactive([])
 const filterC0 = ref('')
@@ -133,8 +135,7 @@ const init = async () => {
         // 重整該版資訊
         for (const k in board) delete board[k]
         Object.assign(board, data.result)
-        console.log(data.result)
-        title.value = data.result.title || data.result.colData.c40
+        // // console.log(data.result)
         // *****如果有被評分 顯示被評分資訊與圖表
         if (data.result.beScored?.score && data.result.beScored.score >= 0) {
           // boardInfoForm.title = data.result.title
@@ -160,14 +161,16 @@ const init = async () => {
         // *****有文章?(他的母版-開放他有文章區)
         try {
           let findArticle = false
-          if (data.result.parent) {
-            const parent = await api.get('/board/' + data.result.parent)
+          const parentID = data.result.parent
+          if (parentID) {
+            const { data } = await api.get('/board/' + parentID)
+            for (const k in parent) delete parent[k]
+            Object.assign(parent, data.result)
             for (const k in article) delete article[k]
-            Object.assign(article, parent.data.result.childBoard?.article)
-            console.log('母版是' + parent.data.result.title)
+            Object.assign(article, parent.childBoard?.article)
             // 母版要開放文章
             if (article.active) {
-              console.log('有文章區')
+              // console.log('有文章區')
               hasArticle.value = true
               findArticle = true
             }
@@ -204,6 +207,21 @@ const init = async () => {
   }
 }
 init()
+const title = computed(() => {
+  console.log('bc', board)
+  // 給board未讀取到的時間緩衝避免報錯
+  if (board?.colData) {
+    //  有母版就抓母版設定來顯示標題文字
+    if (parent?.childBoard?.rule?.titleCol) {
+      return board.colData[parent.childBoard.rule.titleCol[langWord.value]]
+    } else if (board.titleCol) {
+      // 不然就會是從自己資料抓
+      return board.colData[board.titleCol[langWord.value]]
+    }
+  }
+  return 'none'
+})
+
 // 雖然目前都開新分頁，原本這樣可避免id便頁面不跳轉，保險還是留著
 watch(() => route.params, (to, from) => {
   // 因為是在layout做，確保是板的情況在因應:id更新重跑，不然不用
@@ -247,7 +265,7 @@ const getChildboard = async () => {
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?test=' + encodedFilter)
     boards.length = 0
-    console.log(data)
+    // console.log(data)
     // 查詢完左側隱藏(若電腦版不能被隱藏，會出問題)
     if (document.documentElement.scrollWidth < 768) {
       leftDrawerState.value = false
@@ -261,6 +279,7 @@ const getChildboard = async () => {
 provide('publishArticleState', publishArticleState)
 provide('board', readonly(board))
 provide('boards', readonly(boards))
+provide('parent', readonly(parent))
 provide('articles', articles)
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
