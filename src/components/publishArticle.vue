@@ -33,11 +33,12 @@
             </td>
           </tr>
           <!-- tag -->
-          <tr v-if="category.tagActive">
+          <tr v-if="category.tagOption">
             <td>{{ t('tags') }}</td>
             <td>
+              <!-- <q-option-group :options="category.tagOption.map(o => { return { label: o[langWord], value: o.c } })" -->
               <q-option-group
-                :options="category.tagOption.map(o => { return { label: o[users.local.replace('-','')], value: o.c } })"
+                :options="Object.keys(category.tagOption).map(k => { return { label: category.tagOption[k][langWord], value: k } })"
                 type="checkbox" v-model="form['f' + selectCat.value].tags" />
             </td>
           </tr>
@@ -60,7 +61,7 @@
           <!-- content(放最後) ****************************-->
           <tr>
             <td style="vertical-align:text-top ; padding-top: 30px">{{
-            category.contentCol[users.local.replace('-','')] }}</td>
+            category.contentCol[langWord] }}</td>
             <td style=" padding-top: 20px">
               <QuillEditor class="editor" toolbar="essential" theme="snow"
                 v-model:content="form['f' + selectCat.value].content" contentType="html" />
@@ -96,12 +97,14 @@ const users = useUserStore()
 // import { useArticleStore } from 'src/stores/article'
 // const articles = useArticleStore()
 // 初始變數
+const langWord = inject('langWord')
 const publishArticleState = inject('publishArticleState')
 // 版有unique資料
 const board = inject('board')
 // 母版有能留言的規則
 const article = inject('article')
 // ************************************************************
+
 // 有3個板，就產生3個表單 totalForm.f1 2 3
 // 用for 建置 加上讀取規則自動產生
 // 如果換版>watch，把原本全清除for[key]，重新建
@@ -140,6 +143,8 @@ watch(article, () => {
   publishArticleState.value = false
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
   if (article?.category?.length > 0) {
+    console.log('adding categoryList')
+    console.log(article.category)
     categoryList.length = 0
     categoryList.push(...article.category)
     // 對應加上form.fx

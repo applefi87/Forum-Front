@@ -45,9 +45,9 @@
           <q-td v-for="col in   props.cols.filter((c) => (['tag'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
-              <div>
-                <div class="tag" v-for="t in (col.value || ['無'])" :tag="t" :key="t">
-                  {{ t }}
+              <div v-if="col.value">
+                <div class="tag" v-for="k in (Object.keys(col.value))" :key="k">
+                  {{ board.childBoard.article.category.find(i=>i.c===1).tagOption[k][langWord] }}
                 </div>
               </div>
             </router-link>
@@ -62,19 +62,16 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
 import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-const route = useRoute()
-const router = useRouter()
 const { t } = useI18n()
 // **********************************************子版清單***
+const board = inject('board')
 const boards = inject('boards')
-const hasChild = inject('hasChild')
+const langWord = inject('langWord')
 // ----------
 const filter = ref('')
 const filtedBoards = computed(() => {
-  console.log(boards)
   return boards.filter((s) => {
     return s.colData.c40.match(RegExp('.*' + filter.value + '.*', 'i'))
   })
@@ -98,7 +95,23 @@ const columns = computed(() => [
   { name: 'teacher', align: 'left', label: t('teacher'), field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
   { name: 'review', align: 'left', label: t('score'), field: row => (row.beScored?.score || ''), sortable: true, sortOrder: 'da' },
   { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
-  { name: 'tag', align: 'left', label: t('tags'), field: row => row.beScored?.tag }
+  {
+    name: 'tag',
+    align: 'left',
+    label: t('tags'),
+    field: row => {
+      if (row.beScored?.tags) {
+        const rateThreshold = row.beScored?.amount / 3
+        const m = new Map(Object.entries(row.beScored?.tags))
+        for (const [k, v] of m) {
+          if (v < rateThreshold) m.delete(k)
+        }
+        return Object.fromEntries(m)
+      } else {
+        return {}
+      }
+    }
+  }
 ]
 )
 

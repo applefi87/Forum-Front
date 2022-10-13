@@ -23,8 +23,9 @@
               {{ col.value }}
             </div>
             <div v-else-if="col.name === 'tags'">
-              <p class="tag" v-for="t in (col.value || ['涼', '甜'])" :tag="t" :key="t">
-                {{ t }}
+              <p class="tag" v-for="t in (col.value )" :tag="t" :key="t">
+                {{ parent.childBoard.article.category[0].tagOption
+                [t][langWord] }}
               </p>
             </div>
             <div v-else-if="col.name === 'title'">
@@ -69,33 +70,19 @@
 <script setup scoped>
 import { api, apiAuth } from 'src/boot/axios'
 import { useUserStore } from 'src/stores/user'
-import { useRouter } from 'vue-router'
 import chartInfo from 'components/chartInfo.vue'
 import messageDialog from 'components/messageDialog.vue'
 import { ref, reactive, inject, computed, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
-const router = useRouter()
 const { t } = useI18n()
-const parent = reactive({})
+
 // **********************************************子版清單***
 const board = inject('board')
+const parent = inject('parent')
 const articles = inject('articles')
-const hasArticle = inject('hasArticle')
+const langWord = inject('langWord')
 const users = useUserStore()
-//
-const getParent = async () => {
-  if (board.parent) {
-    const { data } = await api.get('/board/' + board.parent)
-    if (data) {
-      for (const k in parent) delete parent[k]
-      Object.assign(parent, data.result)
-    }
-    console.log(parent)
-  }
-}
-getParent()
-// ----------
-const filter = ref('')
+
 const pagination = ref({ rowsPerPage: 20 })
 // 使用者資訊Dialog
 const userInfoState = ref(false)
@@ -158,7 +145,7 @@ const columns = computed(() => [
   { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'tags', align: 'left', label: t('tags'), field: row => row.tags, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' },
-  { name: 'content', align: 'left', label: (parent.childBoard.article.category[0].contentCol[users?.local?.replace('-', '')]), field: row => row.content, sortOrder: 'da' }
+  { name: 'content', align: 'left', label: (parent.childBoard.article.category[0].contentCol[langWord]), field: row => row.content, sortOrder: 'da' }
   // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
 
 ])

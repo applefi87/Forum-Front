@@ -113,6 +113,7 @@ const hasChild = ref(false)
 const hasArticle = ref(false)
 const board = reactive({})
 const boards = reactive([])
+const parent = reactive({})
 const article = reactive({})
 const articles = reactive([])
 const filterC0 = ref('')
@@ -161,11 +162,13 @@ const init = async () => {
         // *****有文章?(他的母版-開放他有文章區)
         try {
           let findArticle = false
-          if (data.result.parent) {
-            const parent = await api.get('/board/' + data.result.parent)
+          const parentID = data.result.parent
+          if (parentID) {
+            const { data } = await api.get('/board/' + parentID)
+            for (const k in parent) delete parent[k]
+            Object.assign(parent, data.result)
             for (const k in article) delete article[k]
-            Object.assign(article, parent.data.result.childBoard?.article)
-            // console.log('母版是' + parent.data.result.title)
+            Object.assign(article, parent.childBoard?.article)
             // 母版要開放文章
             if (article.active) {
               // console.log('有文章區')
@@ -262,6 +265,7 @@ const getChildboard = async () => {
 provide('publishArticleState', publishArticleState)
 provide('board', readonly(board))
 provide('boards', readonly(boards))
+provide('parent', readonly(parent))
 provide('articles', articles)
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))

@@ -5,10 +5,10 @@ node_modules
 *.local*
 .github
 base
+src/i18n/language
 # Quasar core related directories
 .quasar
 /dist
-
 # Cordova related directories and files
 /src-cordova/node_modules
 /src-cordova/platforms
