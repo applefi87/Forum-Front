@@ -135,7 +135,7 @@ const init = async () => {
         // 重整該版資訊
         for (const k in board) delete board[k]
         Object.assign(board, data.result)
-        // console.log(data.result)
+        // // console.log(data.result)
         title.value = data.result.title || data.result.colData.c40
         // *****如果有被評分 顯示被評分資訊與圖表
         if (data.result.beScored?.score && data.result.beScored.score >= 0) {
