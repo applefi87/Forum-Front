@@ -208,7 +208,6 @@ const init = async () => {
 }
 init()
 const title = computed(() => {
-  console.log('bc', board)
   // 給board未讀取到的時間緩衝避免報錯
   if (board?.colData) {
     //  有母版就抓母版設定來顯示標題文字

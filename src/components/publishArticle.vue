@@ -143,8 +143,6 @@ watch(article, () => {
   publishArticleState.value = false
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
   if (article?.category?.length > 0) {
-    console.log('adding categoryList')
-    console.log(article.category)
     categoryList.length = 0
     categoryList.push(...article.category)
     // 對應加上form.fx
