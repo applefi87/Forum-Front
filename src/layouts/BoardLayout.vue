@@ -66,6 +66,7 @@
     <!--****************** 彈出視窗 ------>
     <!-- 發布文章框 -->
     <publishArticle></publishArticle>
+    <editArticlePage></editArticlePage>
   </q-layout>
 </template>
 
@@ -77,6 +78,7 @@ import headerPage from 'components/Header/HeaderPage.vue'
 import chartInfo from 'components/chartInfo.vue'
 import { ref, reactive, watch, computed, shallowRef, provide, readonly, inject } from 'vue'
 import publishArticle from 'src/components/publishArticle.vue'
+import editArticlePage from 'src/components/editArticlePage.vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
@@ -89,12 +91,14 @@ const loginState = inject('loginState')
 const langWord = inject('langWord')
 
 const leftDrawerActive = true
+const publishArticleState = ref(false)
+const editArticleState = ref(false)
+const editArticleContent = reactive({})
 const route = useRoute()
 const router = useRouter()
 const users = useUserStore()
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
-const publishArticleState = ref(false)
 const localeOptions = [
   { value: 'en-US', label: 'English' },
   { value: 'zh-TW', label: '繁體中文' }
@@ -283,6 +287,8 @@ provide('articles', articles)
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
 provide('article', readonly(article))
+provide('editArticleContent', editArticleContent)
+provide('editArticleState', editArticleState)
 // *********************************************子文章************************
 </script>
 <style lang="sass" scoped >

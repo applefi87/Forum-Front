@@ -43,6 +43,9 @@
                     {{ props.row.msg1.amount }}
                   </q-badge>
                 </q-btn>
+                <q-btn v-if="props.row.owner" square color="primary" flat icon="edit" style="height:100% "
+                  @click="editArticle(props.row)">
+                </q-btn>
                 <q-btn v-if="users.role === 0" square color="red" flat icon="delete" style="height:100% "
                   @click="banMsg(props.row._id)">
                 </q-btn>
@@ -68,7 +71,7 @@
 </template>
 
 <script setup scoped>
-import { api, apiAuth } from 'src/boot/axios'
+import { apiAuth } from 'src/boot/axios'
 import { useUserStore } from 'src/stores/user'
 import chartInfo from 'components/chartInfo.vue'
 import messageDialog from 'components/messageDialog.vue'
@@ -80,6 +83,8 @@ const { t } = useI18n()
 const board = inject('board')
 const parent = inject('parent')
 const articles = inject('articles')
+const editArticleState = inject('editArticleState')
+const editArticleContent = inject('editArticleContent')
 const langWord = inject('langWord')
 const users = useUserStore()
 
@@ -106,7 +111,7 @@ const showMsgInfo = (it) => {
   msgState.value = true
 }
 const banMsg = async (id) => {
-  console.log(id)
+  // console.log(id)
   const { data } = await apiAuth.delete('/article/' + id)
   const idx = articles.findIndex(it => it._id === data.result._id)
   if (idx >= 0) {
@@ -115,6 +120,18 @@ const banMsg = async (id) => {
   }
 }
 // --
+
+const editArticle = async (content) => {
+  for (const k in editArticleContent) delete editArticleContent[k]
+  Object.assign(editArticleContent, content)
+  // const { data } = await apiAuth.post('/article/edit' + id)
+  // const idx = articles.findIndex(it => it._id === data.result._id)
+  // if (idx >= 0) {
+  //   console.log('ok')
+  //   articles[idx] = data.result
+  // }
+  editArticleState.value = true
+}
 // --
 const columns = computed(() => [
   {
