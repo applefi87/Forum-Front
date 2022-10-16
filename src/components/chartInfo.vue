@@ -3,7 +3,9 @@
   <q-card>
     <q-card-section>
       <div v-if="p.form.titleCol" class="text-h6 text-weight-bold">{{ p.form.titleCol }}: {{ p.form.title }}</div>
-      <div v-if="p.form.score" class="text-weight-bold">{{ p.form.averageTitle }}: {{ p.form.score }}</div>
+      <div v-if="p.form.scoreSum" class="text-weight-bold">{{ p.form.averageTitle }}: {{
+      Math.ceil(p.form.scoreSum/p.form.amount)
+      }}</div>
     </q-card-section>
     <q-card-section v-if="p.form.datas" class="q-pt-none">
       <div v-if="p.form.chartTitle" class="text-h6 text-weight-bold text-center">{{ p.form.chartTitle }}</div>

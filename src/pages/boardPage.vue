@@ -31,7 +31,7 @@
             :props="props">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div>
-                <div v-if="col.value < 0"></div>
+                <div v-if="col.value <= 0"></div>
                 <q-icon v-else name="star" color="warning" v-for="it of ([].length = col.value) " :key="it" />
               </div>
             </router-link>
@@ -101,7 +101,8 @@ const columns = computed(() => [
     field: row => row.colData[board.childBoard.rule.titleCol[langWord.value]]
   },
   { name: 'teacher', align: 'left', label: t('teacher'), field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
-  { name: 'review', align: 'left', label: t('score'), field: row => (row.beScored?.score || ''), sortable: true, sortOrder: 'da' },
+  // 分母沒值會報錯，所以先預留1來保底
+  { name: 'review', align: 'left', label: t('score'), field: row => (Math.ceil(row.beScored?.scoreSum / (row.beScored?.amount || 1)) || ''), sortable: true, sortOrder: 'da' },
   { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
   {
     name: 'tag',

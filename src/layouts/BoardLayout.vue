@@ -15,7 +15,7 @@
         <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
       </q-tabs>
 
-      <chartInfo v-if="boardInfoForm.score && boardInfoForm.score >= 0" :form="boardInfoForm" />
+      <chartInfo v-if="boardInfoForm.amount " :form="boardInfoForm" />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
           <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
@@ -109,7 +109,7 @@ locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
 })
-const boardInfoForm = reactive({ chartTitle: t('RatingPercentage'), averageTitle: t('averageScore'), score: 0, amount: 0, datas: [] })
+const boardInfoForm = reactive({ chartTitle: t('RatingPercentage'), averageTitle: t('averageScore'), scoreSum: 0, amount: 0, datas: [] })
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
 const tab = ref('boards')
@@ -141,14 +141,13 @@ const init = async () => {
         Object.assign(board, data.result)
         // // console.log(data.result)
         // *****如果有被評分 顯示被評分資訊與圖表
-        if (data.result.beScored?.score && data.result.beScored.score >= 0) {
-          // boardInfoForm.title = data.result.title
-          boardInfoForm.score = data.result.beScored.score
+        if (data.result.beScored?.amount >= 0) {
+          boardInfoForm.scoreSum = data.result.beScored.scoreSum
           boardInfoForm.amount = data.result.beScored.amount
           boardInfoForm.datas.length = 0
           boardInfoForm.datas.push(...data.result.beScored.scoreChart)
         } else {
-          boardInfoForm.score = undefined
+          boardInfoForm.amount = undefined
         }
         // *****有子板?，顯示都有的UniqueOptions、filterOptions
         if (data.result.childBoard.active) {

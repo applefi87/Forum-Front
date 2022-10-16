@@ -166,7 +166,7 @@ const init = () => {
     privacy.value.value = privacyList.value[0].value
     privacy.value.label = privacyList.value[0].label
     // 預設第一個
-    selectCat.value = { label: categoryList[0].n, value: categoryList[0].c }
+    selectCat.value = categoryCodeList.value[0]
   }
 }
 // 當開啟編輯文章介面再更新介面

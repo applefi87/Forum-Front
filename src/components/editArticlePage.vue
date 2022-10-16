@@ -109,11 +109,12 @@ const uniqueInfo = computed(() => {
 // *********************
 // form 基礎object建立(依照article),並填上原先值
 const init = () => {
+  console.log('init adit')
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
   if (article?.category?.length > 0) {
     categoryList.length = 0
     categoryList.push(...article.category)
-    if (editArticleContent?.privacy) {
+    if (editArticleContent?.privacy !== undefined) {
       privacy.value.value = editArticleContent.privacy
       privacy.value.label = privacyList.value.find(p => p.value === editArticleContent.privacy).label
       // if (f.cols?.length > 0) {
