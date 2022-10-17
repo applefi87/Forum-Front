@@ -46,7 +46,10 @@
                 <q-btn v-if="props.row.owner" square color="primary" flat icon="edit" style="height:100% "
                   @click="editArticle(props.row)">
                 </q-btn>
-                <q-btn v-if="users.role === 0" square color="red" flat icon="delete" style="height:100% "
+                <q-btn v-if="props.row.owner" square color="red" flat icon="delete" style="height:100% "
+                  @click="deleteArticle(props.row._id)">
+                </q-btn>
+                <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
                   @click="banMsg(props.row._id)">
                 </q-btn>
               </div>
@@ -112,11 +115,18 @@ const showMsgInfo = (it) => {
 }
 const banMsg = async (id) => {
   // console.log(id)
-  const { data } = await apiAuth.delete('/article/' + id)
+  const { data } = await apiAuth.delete('/article/banMsg/' + id)
   const idx = articles.findIndex(it => it._id === data.result._id)
   if (idx >= 0) {
     console.log('ok')
     articles[idx] = data.result
+  }
+}
+const deleteArticle = async (id) => {
+  const { data } = await apiAuth.delete('/article/' + id)
+  if (data.success) {
+    console.log('delete ok')
+    articles.splice(articles.findIndex(it => it._id === id), 1)
   }
 }
 // --
@@ -124,12 +134,6 @@ const banMsg = async (id) => {
 const editArticle = async (content) => {
   for (const k in editArticleContent) delete editArticleContent[k]
   Object.assign(editArticleContent, content)
-  // const { data } = await apiAuth.post('/article/edit' + id)
-  // const idx = articles.findIndex(it => it._id === data.result._id)
-  // if (idx >= 0) {
-  //   console.log('ok')
-  //   articles[idx] = data.result
-  // }
   editArticleState.value = true
 }
 // --
