@@ -14,8 +14,7 @@
         <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
         <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
       </q-tabs>
-
-      <chartInfo v-if="boardInfoForm.score && boardInfoForm.score >= 0" :form="boardInfoForm" />
+      <chartInfo v-if="boardInfoForm.amount>0 " :form="boardInfoForm" />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
           <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
@@ -66,6 +65,7 @@
     <!--****************** 彈出視窗 ------>
     <!-- 發布文章框 -->
     <publishArticle></publishArticle>
+    <editArticlePage></editArticlePage>
   </q-layout>
 </template>
 
@@ -77,6 +77,7 @@ import headerPage from 'components/Header/HeaderPage.vue'
 import chartInfo from 'components/chartInfo.vue'
 import { ref, reactive, watch, computed, shallowRef, provide, readonly, inject } from 'vue'
 import publishArticle from 'src/components/publishArticle.vue'
+import editArticlePage from 'src/components/editArticlePage.vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
@@ -89,12 +90,15 @@ const loginState = inject('loginState')
 const langWord = inject('langWord')
 
 const leftDrawerActive = true
+const publishArticleState = ref(false)
+const editArticleState = ref(false)
+const editArticleContent = reactive({})
 const route = useRoute()
 const router = useRouter()
 const users = useUserStore()
+const list = ['體育系（碩）', '體育系（學）', '體育系（博）', '音樂系（碩）', '音樂系（學）', '音樂系（博）', '電機系（碩）', '電機系（學）', '運休學院', '通識', '車能學位學程（學）', '資教所（碩）', '資教所（博）', '資工系（碩）', '資工系（學）', '財金學程', '課程所（碩）', '課程所（博）', '設計系（碩）', '設計系（學）', '設計系（博）', '表演所（碩）', '表演學位學程（學）', '衛教系（碩）', '衛教系（學）', '衛教系（博）', '藝術學院', '藝史所（碩）', '華語系（碩）', '華語系（學）', '華語系（博）', '英語系（碩）', '英語系（學）', '英語系（博）', '臺文系（碩）', '臺文系（學）', '臺史所（碩）', '臺史所（學）', '翻譯所（碩）', '翻譯所（學）', '翻譯所（博）', '美術系（碩）', '美術系（學）', '美術系（博）', '管理所（碩）', '管理學院', '競技系（碩）', '競技系（學）', '空間學程', '科教所（碩）', '科教所（博）', '科技系（碩）', '科技系（學）', '科技系（博）', '科工學位學程（博）', '社會與傳播學程', '社教系（碩）', '社教系（學）', '社教系（博）', '社工所（碩）', '社團領導學程', '生醫學位學程（碩）', '生科系（碩）', '生科系（學）', '生科系（博）', '生物多樣學位學程（碩）', '生物多樣學位學程（博）', '環教所（碩）', '環教所（博）', '環境監測學程', '特教系（碩）', '特教系（學）', '特教系（博）', '物理系（碩）', '物理系（學）', '營養學位學程（碩）', '營養學位學程（學）', '民音所（碩）', '歷史系（碩）', '歷史系（學）', '歐洲文化學程', '歐文所（碩）', '機電系（碩）', '機電系（學）', '榮譽英語學程', '校際臺科大（碩）', '校際臺科大（學）', '校際臺大（碩）', '校際臺大（學）', '校際臺大（博）', '東亞系（碩）', '東亞系（學）', '東亞系（博）', '普通體育', '文學院', '數學系（碩）', '數學系（學）', '教院不分系（學）', '教育系（碩）', '教育系（學）', '教育系（博）', '教育學院', '教政所（碩）', '心輔系（碩）', '心輔系（學）', '心輔系（博）', '復諮所（碩）', '師培學院', '工教系（碩）', '工教系（學）', '工教系（博）', '學習科學學位學程（學）', '學校心理學學程', '大師創業學程', '大傳所（碩）', '基礎管理學程', '地科系（碩）', '地科系（學）', '地科系（博）', '地理系（碩）', '地理系（學）', '地理系（博）', '圖資所（碩）', '圖資所（博）', '圖傳系（碩）', '圖傳系（學）', '國社學院', '國文系（碩）', '國文系（學）', '化學系（碩）', '化學系（學）', '化學系（博）', '共同科', '公領系（碩）', '公領系（學）', '公領系（博）', '全營所（碩）', '全人中心', '光電所（碩）', '光電學位學程（學）', '休旅所（碩）', '休旅所（博）', '企管系（學）', '人資所（碩）', '人發系（碩）', '人發系（學）', '人發系（博）', 'PASSION偏鄉學程']
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
-const publishArticleState = ref(false)
 const localeOptions = [
   { value: 'en-US', label: 'English' },
   { value: 'zh-TW', label: '繁體中文' }
@@ -105,7 +109,7 @@ locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
 })
-const boardInfoForm = reactive({ chartTitle: t('RatingPercentage'), averageTitle: t('averageScore'), score: 0, amount: 0, datas: [] })
+const boardInfoForm = reactive({ chartTitle: t('RatingPercentage'), averageTitle: t('averageScore'), scoreSum: 0, amount: 0, datas: [] })
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
 const tab = ref('boards')
@@ -137,14 +141,13 @@ const init = async () => {
         Object.assign(board, data.result)
         // // console.log(data.result)
         // *****如果有被評分 顯示被評分資訊與圖表
-        if (data.result.beScored?.score && data.result.beScored.score >= 0) {
-          // boardInfoForm.title = data.result.title
-          boardInfoForm.score = data.result.beScored.score
+        if (data.result.beScored?.amount >= 0) {
+          boardInfoForm.scoreSum = data.result.beScored.scoreSum
           boardInfoForm.amount = data.result.beScored.amount
           boardInfoForm.datas.length = 0
           boardInfoForm.datas.push(...data.result.beScored.scoreChart)
         } else {
-          boardInfoForm.score = undefined
+          boardInfoForm.amount = undefined
         }
         // *****有子板?，顯示都有的UniqueOptions、filterOptions
         if (data.result.childBoard.active) {
@@ -208,7 +211,6 @@ const init = async () => {
 }
 init()
 const title = computed(() => {
-  console.log('bc', board)
   // 給board未讀取到的時間緩衝避免報錯
   if (board?.colData) {
     //  有母版就抓母版設定來顯示標題文字
@@ -284,6 +286,8 @@ provide('articles', articles)
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
 provide('article', readonly(article))
+provide('editArticleContent', editArticleContent)
+provide('editArticleState', editArticleState)
 // *********************************************子文章************************
 </script>
 <style lang="sass" scoped >

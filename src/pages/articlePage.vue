@@ -43,7 +43,13 @@
                     {{ props.row.msg1.amount }}
                   </q-badge>
                 </q-btn>
-                <q-btn v-if="users.role === 0" square color="red" flat icon="delete" style="height:100% "
+                <q-btn v-if="props.row.owner" square color="primary" flat icon="edit" style="height:100% "
+                  @click="editArticle(props.row)">
+                </q-btn>
+                <q-btn v-if="props.row.owner" square color="red" flat icon="delete" style="height:100% "
+                  @click="deleteArticle(props.row._id)">
+                </q-btn>
+                <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
                   @click="banMsg(props.row._id)">
                 </q-btn>
               </div>
@@ -68,7 +74,7 @@
 </template>
 
 <script setup scoped>
-import { api, apiAuth } from 'src/boot/axios'
+import { apiAuth } from 'src/boot/axios'
 import { useUserStore } from 'src/stores/user'
 import chartInfo from 'components/chartInfo.vue'
 import messageDialog from 'components/messageDialog.vue'
@@ -80,6 +86,8 @@ const { t } = useI18n()
 const board = inject('board')
 const parent = inject('parent')
 const articles = inject('articles')
+const editArticleState = inject('editArticleState')
+const editArticleContent = inject('editArticleContent')
 const langWord = inject('langWord')
 const users = useUserStore()
 
@@ -106,15 +114,28 @@ const showMsgInfo = (it) => {
   msgState.value = true
 }
 const banMsg = async (id) => {
-  console.log(id)
-  const { data } = await apiAuth.delete('/article/' + id)
+  // console.log(id)
+  const { data } = await apiAuth.delete('/article/banMsg/' + id)
   const idx = articles.findIndex(it => it._id === data.result._id)
   if (idx >= 0) {
     console.log('ok')
     articles[idx] = data.result
   }
 }
+const deleteArticle = async (id) => {
+  const { data } = await apiAuth.delete('/article/' + id)
+  if (data.success) {
+    console.log('delete ok')
+    articles.splice(articles.findIndex(it => it._id === id), 1)
+  }
+}
 // --
+
+const editArticle = async (content) => {
+  for (const k in editArticleContent) delete editArticleContent[k]
+  Object.assign(editArticleContent, content)
+  editArticleState.value = true
+}
 // --
 const columns = computed(() => [
   {
@@ -145,11 +166,9 @@ const columns = computed(() => [
   { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'tags', align: 'left', label: t('tags'), field: row => row.tags, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' },
-  { name: 'content', align: 'left', label: (parent.childBoard.article.category[0].contentCol[langWord]), field: row => row.content, sortOrder: 'da' }
-  // 把unique的id對應到版的uniqueData清單，抓取學期出來供排序
-
+  { name: 'content', align: 'left', label: parent?.childBoard?.article?.category[0]?.contentCol[langWord.value], field: row => row.content, sortOrder: 'da' }
 ])
-// **********************************************子文章清單***
+
 // 要去母版看規則
 provide('article', article)
 provide('articles', articles)
