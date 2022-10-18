@@ -101,7 +101,6 @@ const showUserInfo = (title, scoreSum, amount, datas) => {
   userInfoForm.amount = amount
   userInfoForm.datas.length = 0
   userInfoForm.datas.push(...datas)
-  console.log(userInfoForm)
   userInfoState.value = true
 }
 // 文章留言 Dialog
