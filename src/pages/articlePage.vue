@@ -14,7 +14,7 @@
         <q-tr :props="props" auto-width v-if="props.row.state != 0">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button v-if="col.name === 'user'" class="cellBTN"
-              @click="showUserInfo(col.value, props.row.user.record.toBoard.score, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
+              @click="showUserInfo(col.value, props.row.user.record.toBoard.scoreSum, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
               <img :src="'https://source.boringavatars.com/beam/30/' + col.value">
               <br>
               {{ col.value || t('anonymous') }}</button>
@@ -94,10 +94,10 @@ const users = useUserStore()
 const pagination = ref({ rowsPerPage: 20 })
 // 使用者資訊Dialog
 const userInfoState = ref(false)
-const userInfoForm = reactive({ titleCol: '用戶', title: '', averageTitle: '給評平均', chartTitle: '評分總覽', score: 0, amount: 0, datas: [] })
-const showUserInfo = (title, score, amount, datas) => {
+const userInfoForm = reactive({ titleCol: 'user', title: '', averageTitle: 'averageGiveScore', chartTitle: 'ratingChart', scoreSum: 0, amount: 0, datas: [] })
+const showUserInfo = (title, scoreSum, amount, datas) => {
   userInfoForm.title = title
-  userInfoForm.score = score
+  userInfoForm.scoreSum = scoreSum
   userInfoForm.amount = amount
   userInfoForm.datas.length = 0
   userInfoForm.datas.push(...datas)

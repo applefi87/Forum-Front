@@ -14,7 +14,7 @@ extractSheets(
     // your google oauth2 credentials or API_KEY
     credentials: JSON.parse(key),
     // optional: names of the sheets you want to extract
-    sheetsToExtract: ['basic', 'user', 'admin', 'board', 'article', 'form', 'ClassReview', 'Msg']
+    sheetsToExtract: ['basic', 'user', 'admin', 'board', 'article', 'form', 'ClassReview', 'Msg', 'chart']
     // optional: custom function to parse the cells
     // formatCell
   },
