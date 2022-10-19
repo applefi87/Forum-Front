@@ -25,43 +25,48 @@
       </q-table> -->
       <q-list ref="msgBox">
         <q-item v-for="msg in article.datas" :key="msg.createdAt">
-          <q-item-section avatar>
+          <q-item-section avatar v-if="msg.state===1">
             <q-avatar rounded>
               <q-icon v-if="msg.user.nickName === 'originalPoster'" name="home" />
               <img v-else :src="'https://source.boringavatars.com/beam/120/' + msg.user.nickName">
             </q-avatar>
           </q-item-section>
-          <q-item-section v-if="editingId!==msg.id">
+          <q-item-section v-if="editingId!==msg.id &&msg.state===1">
             <b> {{ msg.user.nickName === 'originalPoster' ? t('originalPoster') :msg.user.nickName === 'you' ?
             t('you'):
             (msg.user.nickName || t('anonymous')) }}</b>
             {{ msg.content }}
           </q-item-section>
-          <div v-if="editingId!==msg.id">
-            <q-btn v-if="msg.owner" square color="primary" flat icon="edit" style="height:100% "
-              @click="editMsg(msg.id,msg.content,msg.privacy)">
-            </q-btn>
-            <q-btn v-if="msg.owner" square color="red" flat icon="delete" style="height:100% "
-              @click="deleteMsg(msg.id)">
-            </q-btn>
-            <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
-              @click="banMsg(msg.id)">
-            </q-btn>
-          </div>
-          <div v-else class="editArea">
-            <!-- 目前不開放更改文章隱私權限 -->
-            <!-- <q-select borderless v-model="editContent.privacy" :options="privacyOptions" dense style="width:150px">
+          <q-item-section v-if="msg.state===0">
+            <div class="q-ml-lg">此文章已經被版主屏蔽</div>
+          </q-item-section>
+          <div v-if="msg.state===1">
+            <div v-if="editingId!==msg.id">
+              <q-btn v-if="msg.owner" square color="primary" flat icon="edit" style="height:100% "
+                @click="editMsg(msg.id,msg.content,msg.privacy)">
+              </q-btn>
+              <q-btn v-if="msg.owner" square color="red" flat icon="delete" style="height:100% "
+                @click="deleteMsg(msg.id)">
+              </q-btn>
+              <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
+                @click="banMsg(msg.id)">
+              </q-btn>
+            </div>
+            <div v-else class="editArea">
+              <!-- 目前不開放更改文章隱私權限 -->
+              <!-- <q-select borderless v-model="editContent.privacy" :options="privacyOptions" dense style="width:150px">
               <template v-slot:before>
                 <p style="font-size: 0.8rem;color: black; margin: 0"> {{ t('privacy') }}:</p>
               </template>
             </q-select> -->
-            <q-input style="width:100%" filled v-model="editContent.content" dense @keydown.enter="updateMsg()">
-              <template v-slot:after>
-                <q-btn @click="updateMsg" round dense flat icon="send" />
-              </template>
-            </q-input>
-            <q-btn square color="red" flat icon="cancel" style="height:100% " @click="cancelEdit()">
-            </q-btn>
+              <q-input style="width:100%" filled v-model="editContent.content" dense @keydown.enter="updateMsg()">
+                <template v-slot:after>
+                  <q-btn @click="updateMsg" round dense flat icon="send" />
+                </template>
+              </q-input>
+              <q-btn square color="red" flat icon="cancel" style="height:100% " @click="cancelEdit()">
+              </q-btn>
+            </div>
           </div>
         </q-item>
       </q-list>
@@ -145,19 +150,20 @@ const deleteMsg = async function (msgId) {
     console.log(error)
   }
 }
-
+const banMsg = async function (msgId) {
+  try {
+    const { data } = await apiAuth.post('/article/msg/ban/' + article._id, { id: msgId })
+    if (data.success) {
+      article.datas[article.datas.findIndex(it => it.id === msgId)].state = 0
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
 const editMsg = async function (msgId, msg, privacy) {
   editContent.content = msg
   // editContent.privacy = privacy
   editingId.value = msgId
-  // try {
-  //   const { data } = await apiAuth.post('/article/msg/delete/' + articleId, { id: msgId })
-  //   if (data.success) {
-  //     article.datas.splice(article.datas.findIndex(it => it._id === msgId), 1)
-  //   }
-  // } catch (error) {
-  //   console.log(error)
-  // }
 }
 const updateMsg = async function () {
   if (editContent.content === '') return
@@ -168,16 +174,6 @@ const updateMsg = async function () {
       article.datas[article.datas.findIndex(it => it.id === editingId.value)].content = editContent.content
       cancelEdit()
     }
-    // article.datas = data.result.msg1.list
-    // const idx = articles.findIndex(it => it._id === article._id)
-    // if (idx >= 0) {
-    //   // console.log(article)
-    //   articles[idx] = data.result
-    // }
-    // form.content = ''
-    // nextTick(() => {
-    //   msgBox.value.$el.scrollIntoView(false, { behavior: 'smooth' })
-    // })
   } catch (error) {
     console.log(error)
   }
