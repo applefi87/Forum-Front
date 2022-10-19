@@ -149,7 +149,6 @@ const update = () => {
         console.log(editArticleContent)
         const { data } = await apiAuth.post('/article/edit/' + route.params.id, editArticleContent)
         repNotify(data)
-        console.log(data.result)
         editArticleState.value = false
         // 自動重整才能看到評分
         router.go()

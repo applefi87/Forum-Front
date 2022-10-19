@@ -17,7 +17,8 @@
               @click="showUserInfo(col.value, props.row.user.record.toBoard.scoreSum, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
               <img :src="'https://source.boringavatars.com/beam/30/' + col.value">
               <br>
-              {{ col.value || t('anonymous') }}</button>
+              <b> {{ col.value === 'originalPoster' ? t('originalPoster') :col.value === 'you' ? t('you'):
+              (col.value || t('anonymous')) }}</b></button>
             <div v-else-if="col.name === 'review'">
               <q-icon name="star" color="warning" />
               {{ col.value }}
@@ -50,7 +51,7 @@
                   @click="deleteArticle(props.row._id)">
                 </q-btn>
                 <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
-                  @click="banMsg(props.row._id)">
+                  @click="banArticle(props.row._id)">
                 </q-btn>
               </div>
             </div>
@@ -113,9 +114,9 @@ const showMsgInfo = (it) => {
   if (it.msg1?.list) article.datas.push(...it.msg1?.list)
   msgState.value = true
 }
-const banMsg = async (id) => {
+const banArticle = async (id) => {
   // console.log(id)
-  const { data } = await apiAuth.delete('/article/banMsg/' + id)
+  const { data } = await apiAuth.delete('/article/banArticle/' + id)
   const idx = articles.findIndex(it => it._id === data.result._id)
   if (idx >= 0) {
     console.log('ok')
@@ -144,9 +145,7 @@ const columns = computed(() => [
     label: t('semester'),
     field: row => {
       const unique = board.uniqueData.find(i => i._id === row.uniqueId)
-      // console.log(row.uniqueId)
       // console.log(board.uniqueData)
-      // console.log(unique)
       return unique.c80
     },
     sortable: true,
