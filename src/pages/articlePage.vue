@@ -232,6 +232,8 @@ provide('articles', articles)
   background: transparent
   border: none
   cursor: pointer
+.q-btn
+  padding: 0 5px
 .content
   width: 100%
   // max-width: 30vw

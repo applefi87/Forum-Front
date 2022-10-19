@@ -214,4 +214,6 @@ td:last-child
 .editArea
   display: flex
   width:100%
+.q-btn
+  padding: 0 5px
 </style>
