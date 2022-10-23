@@ -38,7 +38,7 @@
             </div>
             <div v-else-if="col.name === 'content'" class="content"
               style="text-align: left; display:flex;justify-content: space-between; height:100%">
-              <button class="openBtn">
+              <button class="openViewBtn" @click="viewArticle(props.row)">
                 <div class="htmlContent" v-html="col.value"></div>
               </button>
               <div>
@@ -102,7 +102,10 @@ const { t } = useI18n()
 // **********************************************子版清單***
 const board = inject('board')
 const parent = inject('parent')
+const article = inject('article')
 const articles = inject('articles')
+const articleMsg = inject('articleMsg')
+const viewArticleState = inject('viewArticleState')
 const editArticleState = inject('editArticleState')
 const editArticleContent = inject('editArticleContent')
 const langWord = inject('langWord')
@@ -124,12 +127,12 @@ const showUserInfo = (title, scoreSum, amount, datas) => {
 }
 // 文章留言 Dialog
 const msgState = ref(false)
-const article = reactive({ datas: [], _id: '', isSelf: false })
+
 const showMsgInfo = (it) => {
-  article._id = it._id
-  article.isSelf = it.user.nickName === 'you'
-  article.datas.length = 0
-  if (it.msg1?.list) article.datas.push(...it.msg1?.list)
+  articleMsg._id = it._id
+  articleMsg.isSelf = it.user.nickName === 'you'
+  articleMsg.datas.length = 0
+  if (it.msg1?.list) articleMsg.datas.push(...it.msg1?.list)
   msgState.value = true
 }
 const banArticle = async (id) => {
@@ -154,6 +157,13 @@ const editArticle = async (content) => {
   for (const k in editArticleContent) delete editArticleContent[k]
   Object.assign(editArticleContent, content)
   editArticleState.value = true
+}
+
+const viewArticle = (a) => {
+  for (const k in article) delete article[k]
+  Object.assign(article, a)
+  console.log(article)
+  viewArticleState.value = true
 }
 // --
 const columns = computed(() => [
@@ -187,7 +197,7 @@ const columns = computed(() => [
 ])
 
 // 要去母版看規則
-provide('article', article)
+provide('articleMsg', articleMsg)
 provide('articles', articles)
 </script>
 <style lang="sass" scoped>
@@ -275,9 +285,9 @@ provide('articles', articles)
   display: -webkit-box
   -webkit-line-clamp: 8
   -webkit-box-orient: vertical
-  &:deep(p)
+  &:deep(*)
     margin: 0
-.openBtn
+.openViewBtn
   max-width: calc(200px + 20vw)
   border: none
   background: transparent

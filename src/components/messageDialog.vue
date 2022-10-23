@@ -5,7 +5,7 @@
       title
     </q-card-section> -->
 
-    <q-card-section v-if="article.datas.length > 0" class="q-pa-none" style="max-height:70vh;overflow-y:scroll;">
+    <q-card-section v-if="articleMsg.datas.length > 0" class="q-pa-none" style="max-height:70vh;overflow-y:scroll;">
       <!-- <q-table :rows="p.form.datas" :columns="columns" row-key="id" virtual-scroll=true separator="none" hide-header
         flat hide-pagination>
         <template v-slot:body="props">
@@ -24,7 +24,7 @@
         </template>
       </q-table> -->
       <q-list ref="msgBox">
-        <q-item v-for="msg in article.datas" :key="msg.createdAt">
+        <q-item v-for="msg in articleMsg.datas" :key="msg.createdAt">
           <q-item-section avatar v-if="msg.state===1">
             <q-avatar rounded>
               <q-icon v-if="msg.user.nickName === 'originalPoster'" name="home" />
@@ -74,7 +74,7 @@
     </q-card-section>
     <hr>
     <q-card-section class="q-pt-none">
-      <q-select v-if="!article.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense
+      <q-select v-if="!articleMsg.isSelf" borderless v-model="form.privacy" :options="privacyOptions" dense
         style="width:150px">
         <template v-slot:before>
           <p style="font-size: 0.8rem;color: black; margin: 0"> {{ t('privacy') }}:</p>
@@ -102,7 +102,7 @@ import { useI18n } from 'vue-i18n'
 const msgBox = ref(null)
 const loginState = inject('loginState')
 const { t } = useI18n()
-const article = inject('article')
+const articleMsg = inject('articleMsg')
 const articles = inject('articles')
 const editingId = ref(undefined)
 const editContent = reactive({ privacy: 0, content: '' })
@@ -123,9 +123,9 @@ const send = async function () {
   if (form.content === '') return
   const submit = { content: form.content, privacy: form.privacy.value }
   try {
-    const { data } = await apiAuth.post('/article/msg/create/' + article._id, submit)
-    article.datas = data.result.msg1.list
-    const idx = articles.findIndex(it => it._id === article._id)
+    const { data } = await apiAuth.post('/article/msg/create/' + articleMsg._id, submit)
+    articleMsg.datas = data.result.msg1.list
+    const idx = articles.findIndex(it => it._id === articleMsg._id)
     if (idx >= 0) {
       // console.log(article)
       articles[idx] = data.result
@@ -141,10 +141,10 @@ const send = async function () {
 
 const deleteMsg = async function (msgId) {
   try {
-    const { data } = await apiAuth.post('/article/msg/delete/' + article._id, { id: msgId })
+    const { data } = await apiAuth.post('/article/msg/delete/' + articleMsg._id, { id: msgId })
     if (data.success) {
-      const articleIdx = article.datas.findIndex(it => it.id === msgId)
-      article.datas.splice(articleIdx, 1)
+      const articleIdx = articleMsg.datas.findIndex(it => it.id === msgId)
+      articleMsg.datas.splice(articleIdx, 1)
     }
   } catch (error) {
     console.log(error)
@@ -152,9 +152,9 @@ const deleteMsg = async function (msgId) {
 }
 const banMsg = async function (msgId) {
   try {
-    const { data } = await apiAuth.post('/article/msg/ban/' + article._id, { id: msgId })
+    const { data } = await apiAuth.post('/article/msg/ban/' + articleMsg._id, { id: msgId })
     if (data.success) {
-      article.datas[article.datas.findIndex(it => it.id === msgId)].state = 0
+      articleMsg.datas[articleMsg.datas.findIndex(it => it.id === msgId)].state = 0
     }
   } catch (error) {
     console.log(error)
@@ -169,9 +169,9 @@ const updateMsg = async function () {
   if (editContent.content === '') return
   const submit = { id: editingId.value, content: editContent.content }
   try {
-    const { data } = await apiAuth.post('/article/msg/edit/' + article._id, submit)
+    const { data } = await apiAuth.post('/article/msg/edit/' + articleMsg._id, submit)
     if (data.success) {
-      article.datas[article.datas.findIndex(it => it.id === editingId.value)].content = editContent.content
+      articleMsg.datas[articleMsg.datas.findIndex(it => it.id === editingId.value)].content = editContent.content
       cancelEdit()
     }
   } catch (error) {

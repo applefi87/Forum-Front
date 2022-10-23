@@ -32,7 +32,7 @@
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div>
                 <div v-if="col.value <= 0"></div>
-                <q-icon v-else name="star" color="warning" v-for="it of ([].length = col.value) " :key="it" />
+                <q-rating v-else v-model="col.value" size="1em" color="grey" color-selected="warning" readonly />
               </div>
             </router-link>
           </q-td>

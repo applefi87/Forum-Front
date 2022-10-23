@@ -1,13 +1,13 @@
 <template >
   <q-dialog v-model="editArticleState" persistent v-if="categoryList.length > 0">
-    <div>
+    <div v-if="category">
       <q-form class="q-gutter-md" ref="formRef">
         <h5>{{t('editing')+'"'+ ((category.c === 1)? t('review'):category.n[langWord.value])+'"'+t('your articles')}}
         </h5>
         <h6>
           {{uniqueInfo }}
         </h6>
-        <table v-if="category">
+        <table>
           <tr>
             <td>{{ t('privacy') }}</td>
             <td>
@@ -92,7 +92,7 @@ const editArticleContent = inject('editArticleContent')
 // 版有unique資料
 const board = inject('board')
 // 母版有能留言的規則
-const article = inject('article')
+const articleRule = inject('articleRule')
 // ************************************************************
 const formRef = ref(null)
 // 選單用特殊格式******
@@ -111,9 +111,9 @@ const uniqueInfo = computed(() => {
 const init = () => {
   console.log('init adit')
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
-  if (article?.category?.length > 0) {
+  if (articleRule?.category?.length > 0) {
     categoryList.length = 0
-    categoryList.push(...article.category)
+    categoryList.push(...articleRule.category)
     if (editArticleContent?.privacy !== undefined) {
       privacy.value.value = editArticleContent.privacy
       privacy.value.label = privacyList.value.find(p => p.value === editArticleContent.privacy).label

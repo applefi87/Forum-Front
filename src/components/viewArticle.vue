@@ -1,53 +1,30 @@
 <template >
-  <q-dialog v-model="publishArticleState" persistent v-if="categoryList.length > 0">
-    <div v-if="category">
+  <q-dialog v-model="viewArticleState" persistent v-if="categoryList.length > 0">
+    <div v-if="article">
       <q-form class="q-gutter-md" ref="formRef">
         <table>
-          <tr>
-            <td>{{ t('privacy') }}</td>
-            <td>
-              <q-select outlined v-model="privacy" :options="privacyList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
-            </td>
-          </tr>
-          <tr>
-            <td>{{ t('articleCategory') }}</td>
-            <td>
-              <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
-            </td>
-          </tr>
-          <tr>
-            <td>{{ t('semester') }}</td>
-            <td>
-              <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
-                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
-            </td>
-          </tr>
-
-          <!-- 評分 -->
-          <tr v-if="category && category.c === 1">
-            <td>{{ t('rate') }}</td>
-            <td>
-              <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" :max="5" />
-            </td>
-          </tr>
-          <!-- tag -->
-          <tr v-if="category.tagOption">
-            <td>{{ t('tags') }}</td>
-            <td>
-              <!-- <q-option-group :options="category.tagOption.map(o => { return { label: o[langWord], value: o.c } })" -->
-              <q-option-group
-                :options="Object.keys(category.tagOption).map(k => { return { label: category.tagOption[k][langWord], value: k } })"
-                type="checkbox" v-model="form['f' + selectCat.value].tags" />
-            </td>
-          </tr>
           <!-- 標題 -->
           <tr>
             <td>{{ t('title') }}</td>
             <td>
-              <q-input v-model="form['f' + selectCat.value].title" :rules="titleVal">
-              </q-input>
+              {{article.title}}
+            </td>
+          </tr>
+          <!-- 評分 -->
+          <tr v-if="article.category === 1">
+            <td>{{ t('rate') }}</td>
+            <td>
+              <q-rating v-model="article.score" size="1.5em" color="grey" color-selected="warning" readonly />
+            </td>
+          </tr>
+          <!-- tag -->
+          <tr v-if="article.tags?.length>0">
+            <td>{{ t('tags') }}</td>
+            <td>
+              <p class="tag" v-for="t in (article.tags )" :tag="t" :key="t">
+                {{ parent.childBoard.article.category[0].tagOption
+                [t][langWord] }}
+              </p>
             </td>
           </tr>
           <!-- 其他col -->
@@ -63,15 +40,14 @@
             <td style="vertical-align:text-top ; padding-top: 30px">{{
             category.contentCol[langWord] }}</td>
             <td style=" padding-top: 20px">
-              <QuillEditor class="editor" toolbar="essential" theme="snow"
-                v-model:content="form['f' + selectCat.value].content" contentType="html" />
+              <div class="htmlContent" v-html="article.content"></div>
             </td>
           </tr>
           <tr>
             <td></td>
             <td>
               <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing"></q-btn>
-              <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click="publishArticleState = false" />
+              <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click="viewArticleState = false" />
             </td>
           </tr>
         </table>
@@ -82,7 +58,6 @@
 
 <script setup >
 import repNotify from 'src/utils/repNotify'
-import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { ref, reactive, inject, watch, computed } from 'vue'
 import notify from 'src/utils/notify'
@@ -97,8 +72,9 @@ const { t } = useI18n()
 // const articles = useArticleStore()
 // 初始變數
 const langWord = inject('langWord')
-const publishArticleState = inject('publishArticleState')
-// 版有unique資料
+const viewArticleState = inject('viewArticleState')
+const parent = inject('parent')
+const article = inject('article')
 const board = inject('board')
 // 母版有能留言的規則
 const articleRule = inject('articleRule')
@@ -170,8 +146,8 @@ const init = () => {
   }
 }
 // 當開啟編輯文章介面再更新介面
-watch(publishArticleState, () => {
-  if (publishArticleState.value === true) {
+watch(viewArticleState, () => {
+  if (viewArticleState.value === true) {
     init()
   }
 })
@@ -198,7 +174,7 @@ const publish = () => {
         const { data } = await apiAuth.post('/article/create/' + route.params.id, submit)
         repNotify(data)
         console.log(data.result)
-        publishArticleState.value = false
+        viewArticleState.value = false
         // 自動重整才能看到評分
         router.go()
       } catch (error) {
@@ -212,6 +188,14 @@ const publish = () => {
 </script>
 
 <style lang="sass" scoped>
+.tag
+  display: inline-block
+  width: 30px
+  margin: 0 2px
+  text-align: center
+  color: white
+  background: green
+  border-radius: 50px
 .q-dialog__inner--minimized > div
   max-width: 800px
   overflow-x: hidden
@@ -241,4 +225,10 @@ tr:deep(.editor)
   height: 200px
 .editor
   width: 100%
+.htmlContent
+  text-align: left
+  text-overflow: ellipsis
+  &:deep(*)
+    margin: 0
+    word-wrap: break-word
 </style>

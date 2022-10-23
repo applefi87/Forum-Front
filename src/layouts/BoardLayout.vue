@@ -117,8 +117,12 @@ const hasArticle = ref(false)
 const board = reactive({})
 const boards = reactive([])
 const parent = reactive({})
-const article = reactive({})
+const articleRule = reactive({})
+const article = reactive([])
 const articles = reactive([])
+// 給articlePage用的
+const articleMsg = reactive({ datas: [], _id: '', isSelf: false })
+const viewArticleState = ref(false)
 const filterC0 = ref('')
 const filterAll = ref(false)
 const filterOptions = shallowRef([])
@@ -168,10 +172,10 @@ const init = async () => {
             const { data } = await api.get('/board/' + parentID)
             for (const k in parent) delete parent[k]
             Object.assign(parent, data.result)
-            for (const k in article) delete article[k]
-            Object.assign(article, parent.childBoard?.article)
+            for (const k in articleRule) delete articleRule[k]
+            Object.assign(articleRule, parent.childBoard?.article)
             // 母版要開放文章
-            if (article.active) {
+            if (articleRule.active) {
               // console.log('有文章區')
               hasArticle.value = true
               findArticle = true
@@ -180,8 +184,8 @@ const init = async () => {
           if (!findArticle) {
             // 不然就清空不顯示
             hasArticle.value = false
-            for (const k in article) {
-              delete article[k]
+            for (const k in articleRule) {
+              delete articleRule[k]
             }
           }
         } catch (error) {
@@ -282,9 +286,12 @@ provide('board', readonly(board))
 provide('boards', readonly(boards))
 provide('parent', readonly(parent))
 provide('articles', articles)
+provide('article', article)
+provide('articleMsg', articleMsg)
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
-provide('article', readonly(article))
+provide('articleRule', readonly(articleRule))
+provide('viewArticleState', viewArticleState)
 provide('editArticleContent', editArticleContent)
 provide('editArticleState', editArticleState)
 // *********************************************子文章************************
