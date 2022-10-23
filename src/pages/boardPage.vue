@@ -1,7 +1,7 @@
 <template>
   <q-page v-if="boards.length > 0">
-    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" v-model:pagination="pagination" auto-width
-      separator="none" :rows-per-page-options="[15, 30, 50]">
+    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" v-model:pagination="pagination" separator="none"
+      :rows-per-page-options="[15, 30, 50]">
       <template v-slot:header="props">
         <q-tr>
           <q-td colspan="8" class="searchTd">
@@ -22,7 +22,7 @@
       <template v-slot:body="props">
         <q-tr :props="props" class="colTR" no-hover>
           <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
-            :key="col.name" :props="props">
+            :key="col.name" :props="props" auto-width="false">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div> {{ col.value }}</div>
             </router-link>
@@ -37,7 +37,7 @@
             </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
-            :props="props" target="_blank">
+            :props="props" target="_blank" auto-width>
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div> {{ (col.value >= 0 ? col.value : '') }}</div>
             </router-link>
@@ -126,6 +126,7 @@ const columns = computed(() => [
 
 </script>
 <style lang="sass" scoped>
+
 .q-table
   .q-table__top,
   .q-table__bottom,
@@ -136,6 +137,7 @@ const columns = computed(() => [
       position: sticky
       z-index: 1
       padding: 5px
+      font-weight: 700
     tr:first-child th
       top: 0
   tbody .q-tr:hover>td
@@ -144,9 +146,9 @@ const columns = computed(() => [
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
-
 .q-td
   padding: 0 5px !important
+  min-width: 60px
 .tag
   display: inline-block
   height: 20px
@@ -159,27 +161,28 @@ const columns = computed(() => [
   border-radius: 50px
 .colTR
   height: 10px
-
-.q-tr:nth-child(2n+1) td
-  background: #f5f5f5
-.q-tr td:nth-child(4) button
-  text-align: left
+// .q-tr:nth-child(2n+1) td
+//   background: #f5f5f5
+.q-tr td:nth-child(4) a
+  display: inline-block
+  max-width: calc(300px + 10vw)
+  min-width: 200px
+  width: calc(60vw - 200px)
 .q-tr td.searchTd
   background: #fff
-td:nth-child(4)
-  max-width: 200px
-td:nth-child(5)
-  max-width: 100px
 .btnLink
   width: 100%
   height: 100%
   background: transparent
   border: none
   cursor: pointer
-  overflow: hidden
   &>div
     height: 100%
     line-height: 48px
+    // max-width: 300px
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
 a
   text-decoration: none
 </style>

@@ -28,17 +28,16 @@
           <q-item-section avatar v-if="msg.state===1">
             <q-avatar rounded>
               <q-icon v-if="msg.user.nickName === 'originalPoster'" name="home" />
-              <img v-else :src="'https://source.boringavatars.com/beam/120/' + msg.user.nickName">
+              <img v-else :src="'https://source.boringavatars.com/beam/120/' + (msg.user.nickName||'you')">
             </q-avatar>
           </q-item-section>
           <q-item-section v-if="editingId!==msg.id &&msg.state===1">
-            <b> {{ msg.user.nickName === 'originalPoster' ? t('originalPoster') :msg.user.nickName === 'you' ?
-            t('you'):
-            (msg.user.nickName || t('anonymous')) }}</b>
+            <b> {{ msg.user.nickName === 'originalPoster' ? t('originalPoster') :(msg.user.nickName ===
+            'you'||msg.user.nickName ===undefined) ?t('you'):(msg.user.nickName || t('anonymous')) }}</b>
             {{ msg.content }}
           </q-item-section>
           <q-item-section v-if="msg.state===0">
-            <div class="q-ml-lg">此文章已經被版主屏蔽</div>
+            <div class="q-ml-lg">{{t('articleBanned')}}</div>
           </q-item-section>
           <div v-if="msg.state===1">
             <div v-if="editingId!==msg.id">
@@ -144,7 +143,8 @@ const deleteMsg = async function (msgId) {
   try {
     const { data } = await apiAuth.post('/article/msg/delete/' + article._id, { id: msgId })
     if (data.success) {
-      article.datas.splice(article.datas.findIndex(it => it.id === msgId), 1)
+      const articleIdx = article.datas.findIndex(it => it.id === msgId)
+      article.datas.splice(articleIdx, 1)
     }
   } catch (error) {
     console.log(error)
@@ -194,7 +194,7 @@ const cancelEdit = () => {
 //   userInfoState.value = true
 // }
 </script>
-
+dialog
 <style lang="sass" scoped>
 .q-card
   min-width:300px

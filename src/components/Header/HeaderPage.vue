@@ -103,6 +103,7 @@ const login = async () => {
       loginForm.account = ''
       loginForm.password = ''
       loginForm.keepLogin = false
+      router.go(0)
     }
   } catch (error) {
     console.log(error.response.data)
@@ -117,6 +118,7 @@ const logout = async () => {
     notify(error.response.data)
     console.log(error)
   }
+  router.go(0)
 }
 
 provide('registerState', registerState)

@@ -6,7 +6,7 @@
     <!-- ******************************************************** -->
     <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
       :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
-      <h6 class="q-my-lg q-mx-md muitiline" style="-webkit-line-clamp: 3;">{{ title }}
+      <h6 class="q-my-lg q-mx-md title">{{ title }}
       </h6>
       <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange" align="justify"
         :breakpoint="0" class="bg-orange-8 text-grey-5 " dense mobile-arrows v-if="users.role === 0">
@@ -52,19 +52,18 @@
     <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>
       <q-select v-model="locale" :options="localeOptions" label="Language:" borderless emit-value map-options />
     </q-drawer>
-    <q-page-container>
-      <div class="q-pa-lg">
-        <boardPage v-if="tab === 'boards'" class="wh100">
-        </boardPage>
-        <articlePage v-if="tab === 'articles'" class="wh100">
-        </articlePage>
-        <uploadBoardPage v-if="tab === 'edit'" class="wh100">
-        </uploadBoardPage>
-      </div>
+    <q-page-container style="height: calc(100% - 48px) !important">
+      <boardPage v-if="tab === 'boards'" class="wh100 q-pa-lg">
+      </boardPage>
+      <articlePage v-if="tab === 'articles'" class="wh100 q-pa-lg">
+      </articlePage>
+      <uploadBoardPage v-if="tab === 'edit'" class="wh100 q-pa-lg">
+      </uploadBoardPage>
     </q-page-container>
     <!--****************** 彈出視窗 ------>
     <!-- 發布文章框 -->
     <publishArticle></publishArticle>
+    <viewArticle></viewArticle>
     <editArticlePage></editArticlePage>
   </q-layout>
 </template>
@@ -77,6 +76,7 @@ import headerPage from 'components/Header/HeaderPage.vue'
 import chartInfo from 'components/chartInfo.vue'
 import { ref, reactive, watch, computed, shallowRef, provide, readonly, inject } from 'vue'
 import publishArticle from 'src/components/publishArticle.vue'
+import viewArticle from 'src/components/viewArticle.vue'
 import editArticlePage from 'src/components/editArticlePage.vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
@@ -307,4 +307,10 @@ provide('editArticleState', editArticleState)
 .wh100
   width: 100%
   height: 100%
+.title
+  overflow: hidden
+  text-overflow: ellipsis
+  display: -webkit-box
+  -webkit-line-clamp: 3
+  -webkit-box-orient: vertical
 </style>

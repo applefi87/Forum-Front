@@ -15,9 +15,10 @@
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button v-if="col.name === 'user'" class="cellBTN"
               @click="showUserInfo(col.value, props.row.user.record.toBoard.scoreSum, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
-              <img :src="'https://source.boringavatars.com/beam/30/' + col.value">
+              <img :src="'https://source.boringavatars.com/beam/30/' + (col.value||'you')">
               <br>
-              <b> {{ col.value === 'originalPoster' ? t('originalPoster') :col.value === 'you' ? t('you'):
+              <b> {{ col.value === 'originalPoster' ? t('originalPoster') :(col.value === 'you'||col.value ===undefined)
+              ? t('you'):
               (col.value || t('anonymous')) }}</b></button>
             <div v-else-if="col.name === 'review'">
               <q-icon name="star" color="warning" />
@@ -29,15 +30,17 @@
                 [t][langWord] }}
               </p>
             </div>
-            <div v-else-if="col.name === 'title'">
+            <div v-else-if="col.name === 'title'" class="title">
               {{ col.value }}
             </div>
-            <div v-else-if="col.name === 'semester'" style="text-align: left;">
+            <div v-else-if="col.name === 'semester'">
               {{ col.value }}
             </div>
             <div v-else-if="col.name === 'content'" class="content"
               style="text-align: left; display:flex;justify-content: space-between; height:100%">
-              <div v-html="col.value"></div>
+              <button class="openBtn">
+                <div class="htmlContent" v-html="col.value"></div>
+              </button>
               <div>
                 <q-btn square color="primary" icon="message" flat style="height:100% " @click="showMsgInfo(props.row)">
                   <q-badge v-if="props.row.msg1?.amount" rounded>
@@ -48,7 +51,7 @@
                   @click="editArticle(props.row)">
                 </q-btn>
                 <q-btn v-if="props.row.owner" square color="red" flat icon="delete" style="height:100% "
-                  @click="deleteArticle(props.row._id)">
+                  @click="deleteId=props.row._id;confirmDelete = true">
                 </q-btn>
                 <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
                   @click="banArticle(props.row._id)">
@@ -58,7 +61,7 @@
           </q-td>
         </q-tr>
         <q-tr v-else no-hover>
-          <q-td colspan="6" class="q-ml-lg">此文章已經被版主屏蔽</q-td>
+          <q-td colspan="6" class="q-ml-lg">{{t('articleBanned')}}</q-td>
         </q-tr>
       </template>
     </q-table>
@@ -68,13 +71,26 @@
     <q-dialog v-model="msgState">
       <messageDialog />
     </q-dialog>
+    <q-dialog v-model="confirmDelete" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-icon name="warning" color="warning" size="4rem" />
+          <p class="alertTitle">{{t('beware')}}</p>
+          <p class="alertMsg" bclass="q-ml-sm">{{t('deleteLeaveRate')}}</p>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn :label="t('cancel')" color="primary" v-close-popup />
+          <q-btn flat :label="t('delete')" @click="deleteArticle()" color="negative" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
   <q-page v-else>
     <h6 style="margin-left: calc(5vw);">{{ t('noReview') }}</h6>
   </q-page>
 </template>
 
-<script setup scoped>
+<script setup>
 import { apiAuth } from 'src/boot/axios'
 import { useUserStore } from 'src/stores/user'
 import chartInfo from 'components/chartInfo.vue'
@@ -93,6 +109,8 @@ const langWord = inject('langWord')
 const users = useUserStore()
 
 const pagination = ref({ rowsPerPage: 20 })
+const confirmDelete = ref(false)
+const deleteId = ref()
 // 使用者資訊Dialog
 const userInfoState = ref(false)
 const userInfoForm = reactive({ titleCol: 'user', title: '', averageTitle: 'averageGiveScore', chartTitle: 'ratingChart', scoreSum: 0, amount: 0, datas: [] })
@@ -123,11 +141,11 @@ const banArticle = async (id) => {
     articles[idx] = data.result
   }
 }
-const deleteArticle = async (id) => {
-  const { data } = await apiAuth.delete('/article/' + id)
+const deleteArticle = async () => {
+  const { data } = await apiAuth.post('/article/', { _id: deleteId.value })
   if (data.success) {
     console.log('delete ok')
-    articles.splice(articles.findIndex(it => it._id === id), 1)
+    articles.splice(articles.findIndex(it => it._id === deleteId.value), 1)
   }
 }
 // --
@@ -236,9 +254,31 @@ provide('articles', articles)
   padding: 0 5px
 .content
   width: 100%
-  // max-width: 30vw
+.title
+  max-width: 150px
+  overflow: hidden
+  white-space: nowrap
+  text-overflow: ellipsis
+.alertTitle
+  margin: 20px 10px
+  color: red
+  font-size: 30px
+  font-weight: 700
+.alertMsg
+  font-size: 20px
+  font-weight: 600
+.htmlContent
+  text-align: left
   max-height: 200px
-  &:deep(> div)
-    max-width: calc(200px + 10vw)
-    overflow: hidden
+  overflow: hidden
+  text-overflow: ellipsis
+  display: -webkit-box
+  -webkit-line-clamp: 8
+  -webkit-box-orient: vertical
+  &:deep(p)
+    margin: 0
+.openBtn
+  max-width: calc(200px + 20vw)
+  border: none
+  background: transparent
 </style>
