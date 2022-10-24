@@ -22,7 +22,7 @@
       <template v-slot:body="props">
         <q-tr :props="props" class="colTR" no-hover>
           <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
-            :key="col.name" :props="props" auto-width="false">
+            :key="col.name" :props="props" :auto-width="false">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div> {{ col.value }}</div>
             </router-link>
