@@ -65,9 +65,6 @@
         </q-tr>
       </template>
     </q-table>
-    <q-dialog v-model="userInfoState">
-      <chartInfo :form="userInfoForm" />
-    </q-dialog>
     <q-dialog v-model="msgState">
       <messageDialog />
     </q-dialog>
@@ -93,12 +90,11 @@
 <script setup>
 import { apiAuth } from 'src/boot/axios'
 import { useUserStore } from 'src/stores/user'
-import chartInfo from 'components/chartInfo.vue'
 import messageDialog from 'components/messageDialog.vue'
-import { ref, reactive, inject, computed, provide } from 'vue'
+import { ref, inject, computed, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
-
+const users = useUserStore()
 // **********************************************子版清單***
 const board = inject('board')
 const parent = inject('parent')
@@ -109,15 +105,17 @@ const viewArticleState = inject('viewArticleState')
 const editArticleState = inject('editArticleState')
 const editArticleContent = inject('editArticleContent')
 const langWord = inject('langWord')
-const users = useUserStore()
+const userInfoState = inject('userInfoState')
+const userInfoForm = inject('userInfoForm')
 
 const pagination = ref({ rowsPerPage: 20 })
 const confirmDelete = ref(false)
 const deleteId = ref()
 // 使用者資訊Dialog
-const userInfoState = ref(false)
-const userInfoForm = reactive({ titleCol: 'user', title: '', averageTitle: 'averageGiveScore', chartTitle: 'ratingChart', scoreSum: 0, amount: 0, datas: [] })
+
 const showUserInfo = (title, scoreSum, amount, datas) => {
+  userInfoForm.titleCol = 'user'
+  userInfoForm.chartTitle = 'ratingChart'
   userInfoForm.title = title
   userInfoForm.scoreSum = scoreSum
   userInfoForm.amount = amount
@@ -162,8 +160,20 @@ const editArticle = async (content) => {
 const viewArticle = (a) => {
   for (const k in article) delete article[k]
   Object.assign(article, a)
-  console.log(article)
   viewArticleState.value = true
+  // 加載使用者資訊介面
+  userInfoForm.titleCol = ''
+  userInfoForm.chartTitle = ''
+  userInfoForm.title = ''
+  userInfoForm.scoreSum = a.user.record.toBoard.scoreSum
+  userInfoForm.amount = a.user.record.toBoard.amount
+  userInfoForm.datas.length = 0
+  userInfoForm.datas.push(...a.user.record.toBoard.scoreChart)
+  //    加載留言介面資訊
+  articleMsg._id = a._id
+  articleMsg.isSelf = a.user.nickName === 'you'
+  articleMsg.datas.length = 0
+  if (a.msg1?.list) articleMsg.datas.push(...a.msg1?.list)
 }
 // --
 const columns = computed(() => [

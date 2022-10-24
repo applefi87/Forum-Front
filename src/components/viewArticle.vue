@@ -3,6 +3,16 @@
     <div v-if="article">
       <q-form class="q-gutter-md" ref="formRef">
         <table>
+          <!-- 個人資訊 -->
+          <tr>
+            <img :src="'https://source.boringavatars.com/beam/30/' + (article.user.nickName||'you')">
+            <b> {{ article.user.nickName === 'originalPoster' ? t('originalPoster') :(article.user.nickName ===
+            'you'||article.user.nickName ===undefined)
+            ? t('you'):(article.user.nickName || t('anonymous')) }}</b>
+            <td>
+              <chartInfo :form="userInfoForm" class="userChart" />
+            </td>
+          </tr>
           <!-- 標題 -->
           <tr>
             <td>{{ t('title') }}</td>
@@ -52,15 +62,17 @@
           </tr>
         </table>
       </q-form>
+      <messageDialog />
     </div>
   </q-dialog>
 </template>
 
 <script setup >
-import repNotify from 'src/utils/repNotify'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
-import { ref, reactive, inject, watch, computed } from 'vue'
 import notify from 'src/utils/notify'
+import repNotify from 'src/utils/repNotify'
+import chartInfo from 'components/chartInfo.vue'
+import messageDialog from 'components/messageDialog.vue'
+import { ref, reactive, inject, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
@@ -75,9 +87,10 @@ const langWord = inject('langWord')
 const viewArticleState = inject('viewArticleState')
 const parent = inject('parent')
 const article = inject('article')
-const board = inject('board')
-// 母版有能留言的規則
 const articleRule = inject('articleRule')
+const board = inject('board')
+const userInfoState = inject('userInfoState')
+const userInfoForm = inject('userInfoForm')
 // ************************************************************
 
 // 有3個板，就產生3個表單 totalForm.f1 2 3
@@ -151,13 +164,7 @@ watch(viewArticleState, () => {
     init()
   }
 })
-//
-const titleVal = [
-  val => (val && val.length >= 5 && val.length <= 30) || '需5~30字之間'
-]
 
-const uniqueVal = [val => (val) || '必須選學期,上課時間']
-const mustHaveVal = [val => (val) || '必填']
 // ****************發布****
 const publishing = ref(false)
 const publish = () => {
@@ -231,4 +238,12 @@ tr:deep(.editor)
   &:deep(*)
     margin: 0
     word-wrap: break-word
+.cellBTN
+  height: 100%
+  background: transparent
+  border: none
+  cursor: pointer
+.userChart
+  width: 200px
+  min-width: 0
 </style>

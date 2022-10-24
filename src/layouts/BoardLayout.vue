@@ -65,6 +65,9 @@
     <publishArticle></publishArticle>
     <viewArticle></viewArticle>
     <editArticlePage></editArticlePage>
+    <q-dialog v-model="userInfoState">
+      <chartInfo :form="userInfoForm" />
+    </q-dialog>
   </q-layout>
 </template>
 
@@ -84,6 +87,10 @@ import { useUserStore } from 'src/stores/user'
 // import { useBoardStore } from 'src/stores/board'
 import { useRoute, useRouter } from 'vue-router'
 import { api, apiAuth } from 'src/boot/axios'
+const route = useRoute()
+const router = useRouter()
+const users = useUserStore()
+//
 const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
 const loginState = inject('loginState')
@@ -93,9 +100,8 @@ const leftDrawerActive = true
 const publishArticleState = ref(false)
 const editArticleState = ref(false)
 const editArticleContent = reactive({})
-const route = useRoute()
-const router = useRouter()
-const users = useUserStore()
+const userInfoState = ref(false)
+const userInfoForm = reactive({ titleCol: '', title: '', averageTitle: 'averageGiveScore', chartTitle: '', scoreSum: 0, amount: 0, datas: [] })
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
 const localeOptions = [
@@ -294,6 +300,8 @@ provide('articleRule', readonly(articleRule))
 provide('viewArticleState', viewArticleState)
 provide('editArticleContent', editArticleContent)
 provide('editArticleState', editArticleState)
+provide('userInfoState', userInfoState)
+provide('userInfoForm', userInfoForm)
 // *********************************************子文章************************
 </script>
 <style lang="sass" scoped >

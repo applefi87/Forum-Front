@@ -9,7 +9,7 @@
     </q-card-section>
     <q-card-section v-if="p.form.datas" class="q-pt-none">
       <div v-if="p.form.chartTitle" class="text-h6 text-weight-bold text-center">{{ t(p.form.chartTitle) }}</div>
-      <vue3-chart-js v-bind="{ ...chartOptions }" class="q-pa-md"></vue3-chart-js>
+      <vue3-chart-js v-bind="{ ...chartOptions }" class="q-pa-none"></vue3-chart-js>
     </q-card-section>
   </q-card>
 </template>
@@ -51,6 +51,7 @@ const chartOptions = {
 </script>
 
 <style lang="sass" scoped>
+
 .q-card
   min-width:300px
 </style>
