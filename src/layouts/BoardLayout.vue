@@ -101,7 +101,7 @@ const publishArticleState = ref(false)
 const editArticleState = ref(false)
 const editArticleContent = reactive({})
 const userInfoState = ref(false)
-const userInfoForm = reactive({ titleCol: '', title: '', averageTitle: 'averageGiveScore', chartTitle: '', scoreSum: 0, amount: 0, datas: [] })
+const userInfoForm = reactive({ titleTitle: '', title: '', averageTitle: 'averageGiveScore', chartTitle: '', scoreSum: 0, amount: 0, datas: [] })
 // *********************************************************************Header
 // 增加多國語言可選+讀取預設語言
 const localeOptions = [

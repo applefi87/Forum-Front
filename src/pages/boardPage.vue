@@ -1,6 +1,6 @@
 <template>
   <q-page v-if="boards.length > 0">
-    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" v-model:pagination="pagination" separator="none"
+    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" v-model:pagination="pagination"
       :rows-per-page-options="[15, 30, 50]">
       <template v-slot:header="props">
         <q-tr>
@@ -21,12 +21,6 @@
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" class="colTR" no-hover>
-          <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
-            :key="col.name" :props="props" :auto-width="false">
-            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
-              <div> {{ col.value }}</div>
-            </router-link>
-          </q-td>
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
@@ -34,6 +28,12 @@
                 <div v-if="col.value <= 0"></div>
                 <q-rating v-else v-model="col.value" size="1em" color="grey" color-selected="warning" readonly />
               </div>
+            </router-link>
+          </q-td>
+          <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
+            :key="col.name" :props="props" :auto-width="false">
+            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
+              <div> {{ col.value }}</div>
             </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
@@ -81,6 +81,8 @@ const filtedBoards = computed(() => {
 })
 const pagination = ref({ rowsPerPage: 15 })
 const columns = computed(() => [
+  // 分母沒值會報錯，所以先預留1來保底
+  { name: 'review', align: 'left', label: t('score'), field: row => (Math.ceil(row.beScored?.scoreSum / (row.beScored?.amount || 1)) || ''), sortable: true, sortOrder: 'da' },
   {
     name: 'department',
     required: true,
@@ -101,8 +103,7 @@ const columns = computed(() => [
     field: row => row.colData[board.childBoard.rule.titleCol[langWord.value]]
   },
   { name: 'teacher', align: 'left', label: t('teacher'), field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
-  // 分母沒值會報錯，所以先預留1來保底
-  { name: 'review', align: 'left', label: t('score'), field: row => (Math.ceil(row.beScored?.scoreSum / (row.beScored?.amount || 1)) || ''), sortable: true, sortOrder: 'da' },
+
   { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
   {
     name: 'tag',
@@ -163,7 +164,7 @@ const columns = computed(() => [
   height: 10px
 // .q-tr:nth-child(2n+1) td
 //   background: #f5f5f5
-.q-tr td:nth-child(4) a
+.q-tr td:nth-child(5) a
   display: inline-block
   max-width: calc(300px + 10vw)
   min-width: 200px

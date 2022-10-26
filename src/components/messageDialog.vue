@@ -184,7 +184,7 @@ const cancelEdit = () => {
   editingId.value = undefined
 }
 // const userInfoState = ref(false)
-// const userInfoForm = reactive({ titleCol: '用戶', title: '', averageTitle: '給評平均', chartTitle: '評分總覽', score: 0, amount: 0, datas: [] })
+// const userInfoForm = reactive({ title: '用戶', title: '', averageTitle: '給評平均', chartTitle: '評分總覽', score: 0, amount: 0, datas: [] })
 // const showUserInfo = (title, score, amount, datas) => {
 //   userInfoForm.title = title
 //   userInfoForm.score = score

@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex flex-center" v-if="articles.length > 0">
     <q-table :rows="articles" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
-      v-model:pagination="pagination" :no-data-label="t('noFound')"
-      :rows-per-page-options="[0, 10, 15, 20, 30, 40, 50, 80, 100]" separator="none">
+      v-model:pagination="pagination" :no-data-label="t('noFound')" :rows-per-page-options="[10, 20,40, 80]"
+      separator="none">
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
@@ -11,33 +11,42 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" auto-width v-if="props.row.state != 0">
+        <q-tr :props="props" v-if="props.row.state != 0" no-hover class="a">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <button v-if="col.name === 'user'" class="cellBTN"
-              @click="showUserInfo(col.value, props.row.user.record.toBoard.scoreSum, props.row.user.record.toBoard.amount, props.row.user.record.toBoard.scoreChart)">
-              <img :src="'https://source.boringavatars.com/beam/30/' + (col.value||'you')">
+            <button v-if="col.name === 'user'" class="cellBTN" @click="showUserInfo(props.row)">
+              <img :src="'https://source.boringavatars.com/beam/30/' + (col.value||'you')" class="profileImg"
+                :style="props.row.user.record.toBoard.amount>3?{'box-shadow': '0 0 0 8px '+ (props.row.user.record.toBoard.amount>20?'#ffc700':props.row.user.record.toBoard.amount>10?'#D6D8EA':'#B87333')}:''">
               <br>
               <b> {{ col.value === 'originalPoster' ? t('originalPoster') :(col.value === 'you'||col.value ===undefined)
               ? t('you'):
-              (col.value || t('anonymous')) }}</b></button>
+              (col.value || t('anonymous')) }}</b>
+            </button>
             <div v-else-if="col.name === 'review'">
-              <q-icon name="star" color="warning" />
-              {{ col.value }}
+              <button class="openViewBtn" @click="viewArticle(props.row)">
+                <q-icon name="star" color="warning" />
+                {{ col.value }}
+              </button>
             </div>
             <div v-else-if="col.name === 'tags'">
-              <p class="tag" v-for="t in (col.value )" :tag="t" :key="t">
-                {{ parent.childBoard.article.category[0].tagOption
-                [t][langWord] }}
-              </p>
+              <button class="openViewBtn" @click="viewArticle(props.row)">
+                <p class="tag" v-for="t in (col.value )" :tag="t" :key="t">
+                  {{ parent.childBoard.article.category[0].tagOption
+                  [t][langWord] }}
+                </p>
+              </button>
+
             </div>
-            <div v-else-if="col.name === 'title'" class="title">
+            <button v-else-if="col.name === 'title'" class="openViewBtn title" @click="viewArticle(props.row)">
               {{ col.value }}
-            </div>
+            </button>
             <div v-else-if="col.name === 'semester'">
-              {{ col.value }}
+              <button class="openViewBtn" @click="viewArticle(props.row)">
+                {{ col.value }}
+              </button>
+
             </div>
             <div v-else-if="col.name === 'content'" class="content"
-              style="text-align: left; display:flex;justify-content: space-between; height:100%">
+              style="text-align: left; display:flex; justify-content: space-between; height:100%">
               <button class="openViewBtn" @click="viewArticle(props.row)">
                 <div class="htmlContent" v-html="col.value"></div>
               </button>
@@ -73,7 +82,7 @@
         <q-card-section class="row items-center">
           <q-icon name="warning" color="warning" size="4rem" />
           <p class="alertTitle">{{t('beware')}}</p>
-          <p class="alertMsg" bclass="q-ml-sm">{{t('deleteLeaveRate')}}</p>
+          <p class="alertMsg q-ml-sm">{{t('deleteLeaveRate')}}</p>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn :label="t('cancel')" color="primary" v-close-popup />
@@ -98,6 +107,7 @@ const users = useUserStore()
 // **********************************************子版清單***
 const board = inject('board')
 const parent = inject('parent')
+// 記得article 裡面的user資訊只抓有用到的，新增項目要去後台getArticles增加
 const article = inject('article')
 const articles = inject('articles')
 const articleMsg = inject('articleMsg')
@@ -113,14 +123,15 @@ const confirmDelete = ref(false)
 const deleteId = ref()
 // 使用者資訊Dialog
 
-const showUserInfo = (title, scoreSum, amount, datas) => {
-  userInfoForm.titleCol = 'user'
+const showUserInfo = (a) => {
+  userInfoForm.titleTitle = 'user'
   userInfoForm.chartTitle = 'ratingChart'
-  userInfoForm.title = title
-  userInfoForm.scoreSum = scoreSum
-  userInfoForm.amount = amount
+  userInfoForm.title = a.title
+  userInfoForm.scoreSum = a.user.record.toBoard.scoreSum
+  userInfoForm.amount = a.user.record.toBoard.amount
+  userInfoForm.bannedAmount = a.user.record.toBoard.bannedAmount
   userInfoForm.datas.length = 0
-  userInfoForm.datas.push(...datas)
+  userInfoForm.datas.push(...a.user.record.toBoard.scoreChart)
   userInfoState.value = true
 }
 // 文章留言 Dialog
@@ -162,11 +173,12 @@ const viewArticle = (a) => {
   Object.assign(article, a)
   viewArticleState.value = true
   // 加載使用者資訊介面
-  userInfoForm.titleCol = ''
+  userInfoForm.titleTitle = ''
   userInfoForm.chartTitle = ''
   userInfoForm.title = ''
   userInfoForm.scoreSum = a.user.record.toBoard.scoreSum
   userInfoForm.amount = a.user.record.toBoard.amount
+  userInfoForm.bannedAmount = a.user.record.toBoard.bannedAmount
   userInfoForm.datas.length = 0
   userInfoForm.datas.push(...a.user.record.toBoard.scoreChart)
   //    加載留言介面資訊
@@ -232,12 +244,17 @@ provide('articles', articles)
     padding-left: 8px
   thead tr:first-child th
     top: 0
+  tbody .q-tr.a:hover>td
+    background: #f0f0f0
+    cursor: pointer
   /* this is when the loading indicator appears */
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
 .q-td
   padding: 0
+  div
+    height: 100%
   // 舊style
 // .q-tr:nth-child(4n+1) td:nth-child(n+2)
 //   background: #f8f8f8
@@ -269,15 +286,13 @@ provide('articles', articles)
   height: 100%
   background: transparent
   border: none
-  cursor: pointer
 .q-btn
   padding: 0 5px
 .content
   width: 100%
 .title
-  max-width: 150px
+  max-width: 200px
   overflow: hidden
-  white-space: nowrap
   text-overflow: ellipsis
 .alertTitle
   margin: 20px 10px
@@ -298,7 +313,20 @@ provide('articles', articles)
   &:deep(*)
     margin: 0
 .openViewBtn
-  max-width: calc(200px + 20vw)
+  width: 100%
+  height: 100%
+  text-align: left
   border: none
   background: transparent
+  cursor: pointer
+.profileImg
+  border-radius: 50%
+  // #ffc700
+  // #D6D8EA
+  // #B87333
+  // content: ''
+  // width: 100px
+  // height: 100px
+  // background: red
+  // border-raidius: 50%
 </style>

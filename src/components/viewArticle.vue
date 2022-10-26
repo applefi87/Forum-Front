@@ -1,62 +1,59 @@
 <template >
   <q-dialog v-model="viewArticleState" v-if="categoryList.length > 0">
     <div v-if="article">
-      <q-form class="q-gutter-md" ref="formRef">
-        <table>
-          <!-- 個人資訊 -->
-          <tr>
-            <td> <img :src="'https://source.boringavatars.com/beam/30/' + (article.user.nickName||'you')">
-              <b> {{ article.user.nickName === 'originalPoster' ? t('originalPoster') :(article.user.nickName ===
-              'you'||article.user.nickName ===undefined)
-              ? t('you'):(article.user.nickName || t('anonymous')) }}</b>
-            </td>
-            <td>
-              <chartInfo :form="userInfoForm" class="userChart" />
-            </td>
-          </tr>
-          <!-- 標題 -->
-          <tr>
-            <td>{{ t('title') }}</td>
-            <td>
-              {{article.title}}
-            </td>
-          </tr>
-          <!-- 評分 -->
-          <tr v-if="article.category === 1">
-            <td>{{ t('rate') }}</td>
-            <td>
-              <q-rating v-model="article.score" size="1.5em" color="grey" color-selected="warning" readonly />
-            </td>
-          </tr>
-          <!-- tag -->
-          <tr v-if="article.tags?.length>0">
-            <td>{{ t('tags') }}</td>
-            <td>
-              <p class="tag" v-for="t in (article.tags )" :tag="t" :key="t">
-                {{ parent.childBoard.article.category[0].tagOption
-                [t][langWord] }}
-              </p>
-            </td>
-          </tr>
-          <!-- 其他col -->
-          <!-- <tr v-for="col in (category.cols?.length > 0 ? category.cols : [])" :key="col">
+      <table>
+        <!-- 個人資訊 -->
+        <tr>
+          <td> <img :src="'https://source.boringavatars.com/beam/30/' + (article.user.nickName||'you')"><br>
+            <b> {{ article.user.nickName === 'originalPoster' ? t('originalPoster') :(article.user.nickName ===
+            'you'||article.user.nickName ===undefined)
+            ? t('you'):(article.user.nickName || t('anonymous')) }}</b>
+          </td>
+          <td>
+            <chartInfo :form="userInfoForm" class="userChart" />
+          </td>
+        </tr>
+        <!-- 標題 -->
+        <tr>
+          <td>{{ t('title') }}</td>
+          <td>
+            {{article.title}}
+          </td>
+        </tr>
+        <!-- 評分 -->
+        <tr v-if="article.category === 1">
+          <td>{{ t('rate') }}</td>
+          <td>
+            <q-rating v-model="article.score" size="1.5em" color="grey" color-selected="warning" readonly />
+          </td>
+        </tr>
+        <!-- tag -->
+        <tr v-if="article.tags?.length>0">
+          <td>{{ t('tags') }}</td>
+          <td>
+            <p class="tag" v-for="t in (article.tags )" :tag="t" :key="t">
+              {{ parent.childBoard.article.category[0].tagOption
+              [t][langWord] }}
+            </p>
+          </td>
+        </tr>
+        <!-- 其他col -->
+        <!-- <tr v-for="col in (category.cols?.length > 0 ? category.cols : [])" :key="col">
             <td>{{ t(col.n) }}</td>
             <td>
               <q-input v-model="form['f' + selectCat.value].cols[col.n]" placeholder="選填">
               </q-input>
             </td>
           </tr> -->
-          <!-- content(放最後) ****************************-->
-          <tr>
-            <td style="vertical-align:text-top ; padding-top: 30px">{{
-            category.contentCol[langWord] }}</td>
-            <td style=" padding-top: 20px">
-              <div class="htmlContent" v-html="article.content"></div>
-            </td>
-          </tr>
-        </table>
-      </q-form>
-      <hr>
+        <!-- content(放最後) ****************************-->
+        <tr>
+          <td style="vertical-align:text-top ; padding-top: 30px">{{
+          category.contentCol[langWord] }}</td>
+          <td style=" padding-top: 20px">
+            <div class="htmlContent" v-html="article.content"></div>
+          </td>
+        </tr>
+      </table>
       <messageDialog />
     </div>
   </q-dialog>
@@ -80,10 +77,7 @@ const userInfoForm = inject('userInfoForm')
 // 用for 建置 加上讀取規則自動產生
 // 如果換版>watch，把原本全清除for[key]，重新建
 const form = reactive({})
-const formRef = ref(null)
 const selectCat = ref(null)
-const privacyList = computed(() => { return [{ label: t('showAll'), value: 1 }, { label: t('anonymous'), value: 0 }] })
-const privacy = ref({})
 // 先抓取文章分類+設個預設的
 const categoryList = reactive([])
 const categoryCodeList = computed(() =>
@@ -121,8 +115,6 @@ const init = () => {
         formIn.tags = []
       }
     })
-    privacy.value.value = privacyList.value[0].value
-    privacy.value.label = privacyList.value[0].label
     // 預設第一個
     selectCat.value = categoryCodeList.value[0]
   }
@@ -147,10 +139,11 @@ watch(viewArticleState, () => {
 .q-dialog__inner--minimized > div
   max-width: 800px
   overflow-x: hidden
-.q-form
-  width: 800px
+table
+  width: 600px
   background: white
   padding: 50px 30px 20px 40px
+  border-bottom: 3px solid #888
   tr
     min-height: 40px
   td:first-child

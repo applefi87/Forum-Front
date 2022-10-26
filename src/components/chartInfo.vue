@@ -2,9 +2,12 @@
 <template>
   <q-card>
     <q-card-section>
-      <div v-if="p.form.titleCol" class="text-h6 text-weight-bold">{{ t(p.form.titleCol) }}: {{ p.form.title }}</div>
+      <div v-if="p.form.title" class="text-h6 text-weight-bold">{{ t(p.form.titleTitle) }}: {{ p.form.title }}</div>
       <div v-if="p.form.amount" class="text-weight-bold">{{ t(p.form.averageTitle) }}: {{
       Math.ceil(p.form.scoreSum/p.form.amount)
+      }}</div>
+      <div v-if="p.form.bannedAmount>0" class="text-weight-bold">{{ t('bannedTitle') }}: {{
+      p.form.bannedAmount
       }}</div>
     </q-card-section>
     <q-card-section v-if="p.form.datas" class="q-pt-none">
