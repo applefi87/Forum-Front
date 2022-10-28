@@ -11,6 +11,10 @@ const routes = [
     ]
   },
   {
+    path: '/home',
+    redirect: '/board/' + process.env.HOME_ID
+  },
+  {
     path: '/board/:id',
     name: 'boards',
     displayName: 'board',
