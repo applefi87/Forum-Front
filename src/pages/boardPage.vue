@@ -76,7 +76,7 @@ const reviewRule = computed(() => board.childBoard.article.category.find(i => i.
 const filter = ref('')
 const filtedBoards = computed(() => {
   return boards.filter((s) => {
-    return s.colData.c40.match(RegExp('.*' + filter.value + '.*', 'i'))
+    return RegExp('.*' + filter.value + '.*', 'i').test(s.colData.c40)
   })
 })
 const pagination = ref({ rowsPerPage: 15 })

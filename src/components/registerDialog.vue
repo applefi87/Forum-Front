@@ -14,8 +14,8 @@
           <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
             <q-card-section class="q-pt-none">
               <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("email")'
-                :rules="emailVal(false)" />
-              <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(false)" label="寄驗證信">
+                :rules="emailVal(true)" />
+              <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(true)" label="寄驗證信">
                 <template v-slot:loading>
                   <q-spinner-radio />
                 </template>
@@ -36,6 +36,7 @@
                 </template></q-input>
               <q-input filled v-model="registerForm.nickName" :label='t("nickname")' :rules="nickNameVal"
                 ref=nickNameValid />
+              <!-- :hint="t('nickNameRules')" -->
               <p class="gender">Gender:</p>
               <div class="q-gutter-sm">
                 <q-radio v-model="registerForm.gender" val=1 :label='t("male")' />
@@ -106,12 +107,14 @@ const emailVal = (isSchool) => {
   if (isSchool) {
     rule.push(
       // @後方必須含 .edu.
+      // val => val.match(/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/) || '格式錯誤/必須為學校信箱')
+      // 初期限制要有".edu.tw"結尾才行
       // eslint-disable-next-line no-useless-escape
-      val => val.match(/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/) || '格式錯誤，必須為學校信箱')
+      val => (/^[a-z0-9]+@[a-z0-9\.]+\.edu\.tw$/).test(val) || '格式錯誤，僅可含英小寫、數、@、./必須為學校信箱')
   } else {
     rule.push(
       // eslint-disable-next-line no-useless-escape
-      val => val.match(/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/) || '格式錯誤，僅可含英小寫、數、@、.'
+      val => (/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/).test(val) || '格式錯誤，僅可含英小寫、數、@、.'
     )
   }
   return rule
@@ -141,20 +144,21 @@ const accountVal = [
   val => (val && val.length >= 4 && val.length <= 30) || '長度需介於4~30字之間',
   // 簡易版
   // val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
-  val => val.match(/^[a-z0-9]+$/) || '只能輸入英文小寫與數字'
+  val => (/^[a-z0-9]+$/).test(val) || '只能輸入英文小寫與數字'
 ]
 const passwordVal = [
   val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
   // 先改成簡易密碼 必須有英數就好
-  val => (val.match(/[a-zA-Z]/) && val.match(/[0-9]/)) || '必須含英文與數字',
+  val => ((/[a-zA-Z]/).test(val) && (/[0-9]/).test(val)) || '必須含英文與數字',
   val => true || '預留給有同名使用，名稱重複會把這行換成不能等於原本帳號'
 ]
 const nickNameVal = [
   val => (val && val.length >= 4 && val.length <= 20) || '長度需介於4~20字之間',
+  val => (['originalPoster', 'you', 'admin'].includes(val)) || '該暱稱不可使用',
   val => true || '預留給有同名使用'
 ]
 const mailCodeVal = [
-  val => (val.length === 6 && val.match(/^[0-9]+$/)) || '為六位數字'
+  val => (val.length === 6 && (/^[0-9]+$/).test(val)) || '為六位數字'
 ]
 const register = async () => {
   try {
@@ -179,9 +183,9 @@ const register = async () => {
       accountVal[2] = val => true || ''
     }
     if (rep.NickNameOccupied) {
-      nickNameVal[1] = val => val !== rep.nickName || '已經有相同名稱'
+      nickNameVal[2] = val => val !== rep.nickName || '已經有相同名稱'
     } else {
-      nickNameVal[1] = val => true || ''
+      nickNameVal[2] = val => true || ''
     }
     accountValid.value.validate()
     nickNameValid.value.validate()

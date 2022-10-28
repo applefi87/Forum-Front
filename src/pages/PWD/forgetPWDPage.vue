@@ -50,17 +50,17 @@ const emailVal = (isSchool) => {
     rule.push(
       // @後方必須含 .edu.
       // eslint-disable-next-line no-useless-escape
-      val => val.match(/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/) || '格式錯誤，必須為學校信箱')
+      val => (/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/).test(val) || '格式錯誤，必須為學校信箱')
   } else {
     rule.push(
       // eslint-disable-next-line no-useless-escape
-      val => val.match(/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/) || '格式錯誤，僅可含英小寫、數、@、.'
+      val => (/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/).test(val) || '格式錯誤，僅可含英小寫、數、@、.'
     )
   }
   return rule
 }
 const mailCodeVal = reactive([
-  val => (val.length === 10 && val.match(/^[0-9]+$/)) || '為十位數字',
+  val => (val.length === 10 && (/^[0-9]+$/.test(val))) || '為十位數字',
   val => true || '預留給有同名使用'
 ])
 
