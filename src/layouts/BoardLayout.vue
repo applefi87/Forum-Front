@@ -159,17 +159,12 @@ const init = async () => {
           boardInfoForm.amount = undefined
         }
         // *****有子板?，顯示都有的UniqueOptions、filterOptions
-        if (data.result.childBoard.active) {
-          hasChild.value = true
-          filterOptions.value = data.result.childBoard.rule.display.filter?.dataCols?.c0 || [0]
-          filterUniqueOptions.value = data.result.childBoard.rule.display.filter?.uniqueCols?.c80 || [0]
-          filterUnique.value = filterUniqueOptions.value[0]
-        } else {
-          // 不然就清空不顯示
-          filterOptions.value = []
-          filterUniqueOptions.value = []
-          hasChild.value = false
-        }
+        const filter = data.result.childBoard.rule?.display?.filter
+        hasChild.value = data.result.childBoard.active
+        filterOptions.value = filter?.dataCols?.c0?.l || ['']
+        filterC0.value = filterOptions.value.includes(filter?.dataCols?.c0?.d) ? filter?.dataCols?.c0?.d : (filterOptions.value[0] || '')
+        filterUniqueOptions.value = filter?.uniqueCols?.c80?.l || ['']
+        filterUnique.value = filterUniqueOptions.value.includes(filter?.uniqueCols?.c80?.d) ? filter?.uniqueCols?.c80?.d : (filterUniqueOptions.value[0] || '')
         // *****有文章?(他的母版-開放他有文章區)
         try {
           let findArticle = false
@@ -210,9 +205,6 @@ const init = async () => {
     } else {
       boardInfoForm.score = null
     }
-    // 判斷是否有版/文章 微調
-    filterC0.value = filterOptions.value[0]
-    //
   } catch (error) {
     console.log(error)
     router.push('/404')
