@@ -15,7 +15,7 @@
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button v-if="col.name === 'user'" class="cellBTN" @click="showUserInfo(props.row)">
               <img :src="'https://source.boringavatars.com/beam/30/' + (col.value||'you')" class="profileImg"
-                :style="props.row.user.record.toBoard.amount>3?{'box-shadow': '0 0 0 8px '+ (props.row.user.record.toBoard.amount>20?'#ffc700':props.row.user.record.toBoard.amount>10?'#D6D8EA':'#B87333')}:''">
+                :style="props.row.user?.record?.toBoard?.amount>3?{'box-shadow': '0 0 0 8px '+ (props.row.user.record.toBoard.amount>20?'#ffc700':props.row.user.record.toBoard.amount>10?'#D6D8EA':'#B87333')}:''">
               <br>
               <b> {{ col.value === 'originalPoster' ? t('originalPoster') :(col.value === 'you'||col.value ===undefined)
               ? t('you'):
@@ -51,7 +51,7 @@
                 <div class="htmlContent" v-html="col.value"></div>
               </button>
               <div>
-                <q-btn square color="primary" icon="message" flat style="height:100% " @click="showMsgInfo(props.row)">
+                <q-btn square color="primary" icon="message" flat style="height:100% " @click="viewArticle(props.row)">
                   <q-badge v-if="props.row.msg1?.amount" rounded>
                     {{ props.row.msg1.amount }}
                   </q-badge>
@@ -74,9 +74,6 @@
         </q-tr>
       </template>
     </q-table>
-    <q-dialog v-model="msgState">
-      <messageDialog />
-    </q-dialog>
     <q-dialog v-model="confirmDelete" persistent>
       <q-card>
         <q-card-section class="row items-center">
@@ -99,7 +96,6 @@
 <script setup>
 import { apiAuth } from 'src/boot/axios'
 import { useUserStore } from 'src/stores/user'
-import messageDialog from 'components/messageDialog.vue'
 import { ref, inject, computed, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -107,7 +103,7 @@ const users = useUserStore()
 // **********************************************子版清單***
 const board = inject('board')
 const parent = inject('parent')
-// 記得article 裡面的user資訊只抓有用到的，新增項目要去後台getArticles增加
+// 記得article 裡面的user資訊只抓有用到的，新增項目要去後台getArticles增加iconbutton
 const article = inject('article')
 const articles = inject('articles')
 const articleMsg = inject('articleMsg')
@@ -134,16 +130,7 @@ const showUserInfo = (a) => {
   userInfoForm.datas.push(...a.user.record.toBoard.scoreChart)
   userInfoState.value = true
 }
-// 文章留言 Dialog
-const msgState = ref(false)
 
-const showMsgInfo = (it) => {
-  articleMsg._id = it._id
-  articleMsg.isSelf = it.user.nickName === 'you'
-  articleMsg.datas.length = 0
-  if (it.msg1?.list) articleMsg.datas.push(...it.msg1?.list)
-  msgState.value = true
-}
 const banArticle = async (id) => {
   // console.log(id)
   const { data } = await apiAuth.delete('/article/banArticle/' + id)
@@ -253,7 +240,7 @@ provide('articles', articles)
     top: 48px
 .q-td
   padding: 0
-  div
+  &>div
     height: 100%
   // 舊style
 // .q-tr:nth-child(4n+1) td:nth-child(n+2)
