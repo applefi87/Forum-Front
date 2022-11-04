@@ -14,7 +14,7 @@
           <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
             <q-card-section class="q-pt-none">
               <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("email")'
-                :rules="emailVal(true)" :hint="t('emailRule')+ ' applefi87@gmail.com'" />
+                :rules="emailVal(true)" :hint="t('emailRule') + ' applefi87@gmail.com'" />
               <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(true)" label="寄驗證信">
                 <template v-slot:loading>
                   <q-spinner-radio />
@@ -154,7 +154,7 @@ const passwordVal = [
 ]
 const nickNameVal = [
   val => (val && val.length >= 4 && val.length <= 20) || '長度需介於4~20字之間',
-  val => (!['originalPoster', 'you', 'admin'].includes(val)) || '該暱稱不可使用',
+  val => (!['owner', 'you', 'youHide', 'admin'].includes(val)) || '該暱稱不可使用',
   val => true || '預留給有同名使用'
 ]
 const mailCodeVal = [

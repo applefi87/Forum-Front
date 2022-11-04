@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center" v-if="articles.length > 0">
     <q-table :rows="articles" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
-      v-model:pagination="pagination" :no-data-label="t('noFound')" :rows-per-page-options="[10, 20,40, 80]"
+      v-model:pagination="pagination" :no-data-label="t('noFound')" :rows-per-page-options="[10, 20, 40, 80]"
       separator="none">
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -14,12 +14,12 @@
         <q-tr :props="props" v-if="props.row.state != 0" no-hover class="a">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button v-if="col.name === 'user'" class="cellBTN" @click="showUserInfo(props.row)">
-              <img :src="'https://source.boringavatars.com/beam/30/' + (col.value||'you')" class="profileImg"
-                :style="props.row.user?.record?.toBoard?.amount>3?{'box-shadow': '0 0 0 8px '+ (props.row.user.record.toBoard.amount>20?'#ffc700':props.row.user.record.toBoard.amount>10?'#D6D8EA':'#B87333')}:''">
+              <img :src="'https://source.boringavatars.com/beam/30/' + (col.value || 'you')" class="profileImg"
+                :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 8px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''">
               <br>
-              <b> {{ col.value === 'originalPoster' ? t('originalPoster') :(col.value === 'you'||col.value ===undefined)
-              ? t('you'):
-              (col.value || t('anonymous')) }}</b>
+              <b> {{ col.value === 'owner' ? t('owner') : col.value === 'you' ? t('you') : col.value === 'youHide' ?
+                  t('youHide') : (col.value || t('anonymous'))
+              }}</b>
             </button>
             <div v-else-if="col.name === 'review'">
               <button class="openViewBtn" @click="viewArticle(props.row)">
@@ -29,12 +29,12 @@
             </div>
             <div v-else-if="col.name === 'tags'">
               <button class="openViewBtn" @click="viewArticle(props.row)">
-                <p class="tag" v-for="t in (col.value )" :tag="t" :key="t">
+                <p class="tag" v-for="t in (col.value)" :tag="t" :key="t">
                   {{ parent.childBoard.article.category[0].tagOption
-                  [t][langWord] }}
+                    [t][langWord]
+                  }}
                 </p>
               </button>
-
             </div>
             <button v-else-if="col.name === 'title'" class="openViewBtn title" @click="viewArticle(props.row)">
               {{ col.value }}
@@ -43,7 +43,6 @@
               <button class="openViewBtn" @click="viewArticle(props.row)">
                 {{ col.value }}
               </button>
-
             </div>
             <div v-else-if="col.name === 'content'" class="content"
               style="text-align: left; display:flex; justify-content: space-between; height:100%">
@@ -60,7 +59,7 @@
                   @click="editArticle(props.row)">
                 </q-btn>
                 <q-btn v-if="props.row.owner" square color="red" flat icon="delete" style="height:100% "
-                  @click="deleteId=props.row._id;confirmDelete = true">
+                  @click="deleteId = props.row._id; confirmDelete = true">
                 </q-btn>
                 <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
                   @click="banArticle(props.row._id)">
@@ -70,7 +69,7 @@
           </q-td>
         </q-tr>
         <q-tr v-else no-hover>
-          <q-td colspan="6" class="q-ml-lg">{{t('articleBanned')}}</q-td>
+          <q-td colspan="6" class="q-ml-lg">{{ t('articleBanned') }}</q-td>
         </q-tr>
       </template>
     </q-table>
@@ -78,8 +77,8 @@
       <q-card>
         <q-card-section class="row items-center">
           <q-icon name="warning" color="warning" size="4rem" />
-          <p class="alertTitle">{{t('beware')}}</p>
-          <p class="alertMsg q-ml-sm">{{t('deleteLeaveRate')}}</p>
+          <p class="alertTitle">{{ t('beware') }}</p>
+          <p class="alertMsg q-ml-sm">{{ t('deleteLeaveRate') }}</p>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn :label="t('cancel')" color="primary" v-close-popup />
@@ -143,6 +142,7 @@ const banArticle = async (id) => {
 const deleteArticle = async () => {
   const { data } = await apiAuth.post('/article/', { _id: deleteId.value })
   if (data.success) {
+    confirmDelete.value = false
     console.log('delete ok')
     articles.splice(articles.findIndex(it => it._id === deleteId.value), 1)
   }

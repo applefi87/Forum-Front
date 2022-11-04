@@ -24,24 +24,25 @@
       </q-table> -->
       <q-list ref="msgBox">
         <q-item v-for="msg in articleMsg.datas" :key="msg.createdAt">
-          <q-item-section avatar v-if="msg.state===1">
+          <q-item-section avatar v-if="msg.state === 1">
             <q-avatar rounded>
-              <q-icon v-if="msg.user.nickName === 'originalPoster'" name="home" />
-              <img v-else :src="'https://source.boringavatars.com/beam/120/' + (msg.user.nickName||'you')">
+              <q-icon v-if="msg.user.nickName === 'owner'" name="home" />
+              <img v-else :src="'https://source.boringavatars.com/beam/120/' + (msg.user.nickName || 'you')">
             </q-avatar>
           </q-item-section>
-          <q-item-section v-if="editingId!==msg.id &&msg.state===1" class="msgContent">
-            <b> {{ msg.user.nickName === 'originalPoster' ? t('originalPoster') :(msg.user.nickName ===
-            'you'||msg.user.nickName ===undefined) ?t('you'):(msg.user.nickName || t('anonymous')) }}</b>
+          <q-item-section v-if="editingId !== msg.id && msg.state === 1" class="msgContent">
+            <b> {{ msg.user.nickName === 'owner' ? t('owner') : (msg.user.nickName ===
+                'you' || msg.user.nickName === undefined) ? t('you') : (msg.user.nickName || t('anonymous'))
+            }}</b>
             {{ msg.content }}
           </q-item-section>
-          <q-item-section v-if="msg.state===0">
-            <div class="q-ml-lg">{{t('articleBanned')}}</div>
+          <q-item-section v-if="msg.state === 0">
+            <div class="q-ml-lg">{{ t('articleBanned') }}</div>
           </q-item-section>
-          <div v-if="msg.state===1">
-            <div v-if="editingId!==msg.id">
+          <div v-if="msg.state === 1">
+            <div v-if="editingId !== msg.id">
               <q-btn v-if="msg.owner" square color="primary" flat icon="edit" style="height:100% "
-                @click="editMsg(msg.id,msg.content,msg.privacy)">
+                @click="editMsg(msg.id, msg.content, msg.privacy)">
               </q-btn>
               <q-btn v-if="msg.owner" square color="red" flat icon="delete" style="height:100% "
                 @click="deleteMsg(msg.id)">
