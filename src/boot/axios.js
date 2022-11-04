@@ -15,11 +15,12 @@ const apiAuth = axios.create({
   withCredentials: true
 })
 // axios ---> axios 攔截請求 --> API SERVER --> axios 攔截回應 --> 呼叫的地方
-apiAuth.interceptors.request.use(config => {
-  const user = useUserStore()
-  config.headers.authorization = `Bearer ${user.token}`
-  return config
-})
+// 因為改cookie 不用beartoken
+// apiAuth.interceptors.request.use(config => {
+//   const user = useUserStore()
+//   config.headers.authorization = `Bearer ${user.token}`
+//   return config
+// })
 
 apiAuth.interceptors.response.use(res => {
   return res

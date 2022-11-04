@@ -14,7 +14,7 @@
         <q-tab name="articles" :label="t('articles')" v-if="hasArticle" />
         <q-tab name="edit" :label="t('edit')" v-if="users.role === 0" />
       </q-tabs>
-      <chartInfo v-if="boardInfoForm.amount>0 " :form="boardInfoForm" />
+      <chartInfo v-if="boardInfoForm.amount > 0" :form="boardInfoForm" />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
           <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
@@ -142,6 +142,8 @@ const init = async () => {
   try {
     boards.length = 0
     const { data } = await api.get('/board/' + route.params.id)
+    // 初始化就檢測JWTcookie決定是否有登陸(只有後端能讀cookie),並更新整個也面的登錄判斷點(token
+    users.token = data?.login === true
     if (data.result) {
       // 左方該版資訊
       const createLeftDrawer = async () => {

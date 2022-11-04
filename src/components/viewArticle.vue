@@ -7,9 +7,8 @@
           <td> <img :src="'https://source.boringavatars.com/beam/30/' + (article.user.nickName || 'you')"><br>
           </td>
           <td>
-            <b> {{ article.user.nickName === 'owner' ? t('owner') : (article.user.nickName ===
-                'you' || article.user.nickName === undefined)
-                ? t('you') : (article.user.nickName || t('anonymous'))
+            <b> {{ article.user.nickName === 'owner' ? t('owner') : article.user.nickName === 'you' ? t('you') :
+                article.user.nickName === 'youHide' ? t('youHide') : (article.user.nickName || t('anonymous'))
             }}</b>
           </td>
         </tr>
