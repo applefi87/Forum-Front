@@ -7,10 +7,12 @@ import { useUserStore } from 'src/stores/user'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: process.env.SERVER_URL
+  baseURL: process.env.SERVER_URL,
+  withCredentials: true
 })
 const apiAuth = axios.create({
-  baseURL: process.env.SERVER_URL
+  baseURL: process.env.SERVER_URL,
+  withCredentials: true
 })
 // axios ---> axios 攔截請求 --> API SERVER --> axios 攔截回應 --> 呼叫的地方
 apiAuth.interceptors.request.use(config => {
@@ -32,11 +34,12 @@ apiAuth.interceptors.response.use(res => {
         // 傳送延長請求
         const user = useUserStore()
         try {
-          const { data } = await apiAuth.post('/user/extend', {})
-          // 更新 JWT
-          user.token = data.result
-          // 使用新的 JWT 再次嘗試原始請求
-          error.config.headers.authorization = `Bearer ${user.token}`
+          const { data } = await apiAuth.post('/user/extend', { keepLogin: user.keepLogin })
+          // 後台偵測到就直接換新cookie 所以不用改
+          // // 更新 JWT
+          user.token = data.success
+          // // 使用新的 JWT 再次嘗試原始請求
+          // error.config.headers.authorization = `Bearer ${user.token}`
           return await axios(error.config)
         } catch (err) {
           console.log('boot/axios Error')

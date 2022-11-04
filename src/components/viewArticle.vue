@@ -4,19 +4,20 @@
       <table>
         <!-- 個人資訊 -->
         <tr>
-          <td> <img :src="'https://source.boringavatars.com/beam/30/' + (article.user.nickName||'you')"><br>
+          <td> <img :src="'https://source.boringavatars.com/beam/30/' + (article.user.nickName || 'you')"><br>
           </td>
           <td>
-            <b> {{ article.user.nickName === 'originalPoster' ? t('originalPoster') :(article.user.nickName ===
-            'you'||article.user.nickName ===undefined)
-            ? t('you'):(article.user.nickName || t('anonymous')) }}</b>
+            <b> {{ article.user.nickName === 'owner' ? t('owner') : (article.user.nickName ===
+                'you' || article.user.nickName === undefined)
+                ? t('you') : (article.user.nickName || t('anonymous'))
+            }}</b>
           </td>
         </tr>
         <!-- 標題 -->
         <tr>
           <td>{{ t('title') }}</td>
           <td>
-            {{article.title}}
+            {{ article.title }}
           </td>
         </tr>
         <!-- 評分 -->
@@ -27,12 +28,13 @@
           </td>
         </tr>
         <!-- tag -->
-        <tr v-if="article.tags?.length>0">
+        <tr v-if="article.tags?.length > 0">
           <td>{{ t('tags') }}</td>
           <td>
-            <p class="tag" v-for="t in (article.tags )" :tag="t" :key="t">
+            <p class="tag" v-for="t in (article.tags)" :tag="t" :key="t">
               {{ parent.childBoard.article.category[0].tagOption
-              [t][langWord] }}
+                [t][langWord]
+              }}
             </p>
           </td>
         </tr>
@@ -47,7 +49,8 @@
         <!-- content(放最後) ****************************-->
         <tr>
           <td style="vertical-align:text-top ; padding-top: 30px">{{
-          category.contentCol[langWord] }}</td>
+              category.contentCol[langWord]
+          }}</td>
           <td style=" padding-top: 20px">
             <div class="htmlContent" v-html="article.content"></div>
           </td>
@@ -57,7 +60,7 @@
         <!-- <q-card-section class="q-pb-none">
       title
     </q-card-section> -->
-        <q-card-section v-if="articleMsg.datas.length > 0" class="q-pa-none" style="max-height:70vh;overflow-y:scroll;">
+        <q-card-section v-if="articleMsg.datas.length > 0" class="q-pa-none" style="max-height:30vh;overflow-y:auto;">
           <!-- <q-table :rows="p.form.datas" :columns="columns" row-key="id" virtual-scroll=true separator="none" hide-header
         flat hide-pagination>
         <template v-slot:body="props">
@@ -77,24 +80,29 @@
       </q-table> -->
           <q-list ref="msgBox">
             <q-item v-for="msg in articleMsg.datas" :key="msg.createdAt">
-              <q-item-section avatar v-if="msg.state===1">
+              <q-item-section avatar v-if="msg.state === 1">
                 <q-avatar rounded>
-                  <q-icon v-if="msg.user.nickName === 'originalPoster'" name="home" />
-                  <img v-else :src="'https://source.boringavatars.com/beam/120/' + (msg.user.nickName||'you')">
+                  <q-icon v-if="msg.user.nickName === 'owner'" name="home" />
+                  <img v-else :src="'https://source.boringavatars.com/beam/120/' + (msg.user.nickName || 'you')">
                 </q-avatar>
               </q-item-section>
-              <q-item-section v-if="editingId!==msg.id &&msg.state===1" class="msgContent">
-                <b> {{ msg.user.nickName === 'originalPoster' ? t('originalPoster') :(msg.user.nickName ===
-                'you'||msg.user.nickName ===undefined) ?t('you'):(msg.user.nickName || t('anonymous')) }}</b>
+              <q-item-section v-if="editingId !== msg.id && msg.state === 1" class="msgContent">
+                <b>
+                  {{ msg.user.nickName === 'owner' ? t('owner') : (msg.user.nickName === 'you' || (msg.user.nickName
+                      === undefined && msg.privacy === 1)) ? t('you') : (msg.user.nickName === 'youHide' ||
+                        (msg.user.nickName === undefined && msg.privacy === 0)) ? t('youHide') : (msg.user.nickName ||
+                          t('anonymous'))
+                  }}
+                </b>
                 {{ msg.content }}
               </q-item-section>
-              <q-item-section v-if="msg.state===0">
-                <div class="q-ml-lg">{{t('articleBanned')}}</div>
+              <q-item-section v-if="msg.state === 0">
+                <div class="q-ml-lg">{{ t('articleBanned') }}</div>
               </q-item-section>
-              <div v-if="msg.state===1">
-                <div v-if="editingId!==msg.id">
+              <div v-if="msg.state === 1">
+                <div v-if="editingId !== msg.id">
                   <q-btn v-if="msg.owner" square color="primary" flat icon="edit" style="height:100% "
-                    @click="editMsg(msg.id,msg.content,msg.privacy)">
+                    @click="editMsg(msg.id, msg.content, msg.privacy)">
                   </q-btn>
                   <q-btn v-if="msg.owner" square color="red" flat icon="delete" style="height:100% "
                     @click="deleteMsg(msg.id)">
@@ -142,6 +150,7 @@
 import { useUserStore } from 'src/stores/user'
 import { ref, reactive, inject, watch, computed, nextTick } from 'vue'
 import { apiAuth } from 'src/boot/axios'
+import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 // 初始變數
@@ -233,15 +242,16 @@ const sendMsg = async function () {
   try {
     const { data } = await apiAuth.post('/article/msg/create/' + articleMsg._id, submit)
     articleMsg.datas = data.result.msg1.list
+    notify({ title: t('msgSended'), success: true })
     const idx = articles.findIndex(it => it._id === articleMsg._id)
     if (idx >= 0) {
       // console.log(article)
       articles[idx] = data.result
     }
     msgForm.content = ''
-    nextTick(() => {
-      msgBox.value.$el.scrollIntoView(false, { behavior: 'smooth' })
-    })
+    // nextTick(() => {
+    //   msgBox.value.$el.scrollIntoView(false, { behavior: 'smooth' })
+    // })
   } catch (error) {
     console.log(error)
   }
@@ -296,7 +306,7 @@ const cancelEdit = () => {
 
 <style lang="sass" scoped>
 .content
-  width:800px
+  width: 800px
   display: relative
 .tag
   display: inline-block
@@ -354,7 +364,7 @@ tr:deep(.editor)
 .q-btn
   padding: 0 5px
 .q-card
-  min-width:300px
+  min-width: 300px
   .q-list
     padding-top: 10px
   #msg td
@@ -374,7 +384,7 @@ tr:deep(.editor)
   .msgContent
     display: inline-block
     max-width: 100%
-    word-wrap:break-all
+    word-wrap: break-all
     overflow: hidden
     text-overflow: ellipsis
 .msgInput
