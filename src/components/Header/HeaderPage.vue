@@ -99,7 +99,7 @@ const login = async () => {
     const rep = await users.login(loginForm)
     notify(rep)
     if (rep.success) {
-      // router.go(0)
+      router.go(0)
       loginForm.account = ''
       loginForm.password = ''
       loginForm.keepLogin = false
