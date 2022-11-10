@@ -140,8 +140,9 @@ const filterUniqueOptions = shallowRef([])
 const init = async () => {
   console.log('init')
   // 如果沒logincookie就把頁面變登出外觀(修補未登出直接關機的唯一破綻)
+  console.log(document.cookie)
   if (!document.cookie.includes('loginCookie=')) {
-    users.loginState = false
+    // users.loginState = false
   }
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
