@@ -7,13 +7,13 @@ import { useUserStore } from 'src/stores/user'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: process.env.SERVER_URL,
-  withCredentials: true
+  baseURL: process.env.SERVER_URL
+  // withCredentials: true
   // headers: { 'X-H': 'OK' }
 })
 const apiAuth = axios.create({
-  baseURL: process.env.SERVER_URL,
-  withCredentials: true
+  baseURL: process.env.SERVER_URL
+  // withCredentials: true
   // headers: { 'X-H': 'OK' }
 })
 // axios ---> axios 攔截請求 --> API SERVER --> axios 攔截回應 --> 呼叫的地方
