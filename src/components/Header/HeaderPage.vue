@@ -99,10 +99,10 @@ const login = async () => {
     const rep = await users.login(loginForm)
     notify(rep)
     if (rep.success) {
+      // router.go(0)
       loginForm.account = ''
       loginForm.password = ''
       loginForm.keepLogin = false
-      router.go(0)
     }
   } catch (error) {
     console.log(error.response?.data)
