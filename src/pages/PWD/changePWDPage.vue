@@ -31,6 +31,7 @@ import notify from 'src/utils/notify'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import valList from 'src/utils/data/valList'
 const router = useRouter()
 const { t } = useI18n({ useScope: 'global' })
 const pwdChanged = ref(false)
@@ -41,15 +42,11 @@ const form = reactive({ password: '', newPWD: '' })
 const account = ref('')
 
 // ***********rule val區******************************
-const passwordVal = reactive([
-  val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
-  val => ((/[a-z]/).test(val) && (/[0-9]/).test(val)) || '必須含英文與數字',
-  // val => (val.match(/[A-Z]/) && val.match(/[a-z]/) && val.match(/[0-9]/)) || '必須含英文大、小寫與數字',
-  val => true || '預留給有同名使用'
-])
+const passwordVal = valList.password
 
 const changePWD = async () => {
   try {
+    if (form.password === form.newPWD) return notify({ title: '新舊密碼不可相同' })
     pwdVerifying.value = true
     const rep = await users.changePWD(form)
     notify(rep)

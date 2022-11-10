@@ -36,41 +36,21 @@ import { ref, reactive } from 'vue'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import notify from 'src/utils/notify'
+import valList from 'src/utils/data/valList'
 const { t } = useI18n({ useScope: 'global' })
 const users = useUserStore()
 const getTempPWD = ref(false)
-const form = reactive({ email: 'test@ntnuy.edu.tw', account: 'werrtyyui', code: '' })
+const form = reactive({ email: '', account: '', code: '' })
 const emailFormatValid = ref(null)
 const accountFormatValid = ref(null)
 const mailSending = ref(false)
 const identifier = ref(null)
 const account = ref('')
 // ***********rule val區******************************
-const emailVal = (isSchool) => {
-  const rule = [
-    val => val.length <= 60 || '必須 60 個字以下'
-  ]
-  if (isSchool) {
-    rule.push(
-      // @後方必須含 .edu.
-      // eslint-disable-next-line no-useless-escape
-      val => (/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/).test(val) || '格式錯誤，必須為學校信箱')
-  } else {
-    rule.push(
-      // eslint-disable-next-line no-useless-escape
-      val => (/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/).test(val) || '格式錯誤，僅可含英小寫、數、@、.'
-    )
-  }
-  return rule
-}
-const accountVal = [
-  val => val.length >= 6 || '必須 6 個字以上',
-  val => val.length <= 30 || '必須 30 個字以下'
-]
-const mailCodeVal = reactive([
-  val => (val.length === 10 && (/^[a-zA-Z0-9]+$/.test(val))) || '為十位英數',
-  val => true || '預留給有同名使用'
-])
+const emailVal = valList.mail
+
+const accountVal = valList.account
+const mailCodeVal = valList.tenCode
 
 const sendForgetPWDMail = async () => {
   try {
