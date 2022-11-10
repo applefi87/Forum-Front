@@ -2,11 +2,11 @@
   <q-page class="flex flex-center">
     <q-form>
       <q-card-section v-if="!pwdChanged" class="q-pt-none">
-        <q-input filled v-model="form.password" :label='t("password")' :hint='t("pwdRule")'
+        <q-input filled v-model="form.password" :label='t("password")' :hint='t("easyRule")'
           :type="isPwd ? 'password' : 'text'" :rules="passwordVal" autocomplete="password"><template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template></q-input>
-        <q-input filled v-model="form.newPWD" :label='t("newPWD")' :hint='t("pwdRule")'
+        <q-input filled v-model="form.newPWD" :label='t("newPWD")' :hint='t("easyRule")'
           :type="isPwd ? 'password' : 'text'" :rules="passwordVal" autocomplete="new-password"><template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template></q-input>
@@ -54,7 +54,7 @@ const changePWD = async () => {
     const rep = await users.changePWD(form)
     notify(rep)
     pwdVerifying.value = false
-    users.token = ''
+    users.loginState = false
     users.account = ''
     users.role = 0
     router.push('/')
@@ -64,7 +64,7 @@ const changePWD = async () => {
   }
 }
 const init = () => {
-  if (!users.token) router.push('/')
+  if (!users.loginState) router.push('/')
 }
 init()
 </script>

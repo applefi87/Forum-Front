@@ -34,7 +34,7 @@ const users = useUserStore()
 // 增加多國語言可選+讀取預設語言
 const { t } = useI18n({ useScope: 'global' })
 const isPwd = ref(true)
-if (users.token) {
+if (users.loginState) {
   notify({ title: '已登入', text: '請先登出' })
   router.push('/')
 }

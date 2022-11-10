@@ -14,7 +14,8 @@
         <q-tr :props="props" v-if="props.row.state != 0" no-hover class="a">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             <button v-if="col.name === 'user'" class="cellBTN" @click="showUserInfo(props.row)">
-              <img :src="'https://source.boringavatars.com/beam/30/' + (col.value || 'you')" class="profileImg"
+              <img :src="'https://source.boringavatars.com/beam/30/' + (col.value === 'youHide' ? 'you' : col.value)"
+                class="profileImg"
                 :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''">
               <br>
               <b> {{ col.value === 'owner' ? t('owner') : col.value === 'you' ? t('you') : col.value === 'youHide' ?

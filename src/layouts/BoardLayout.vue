@@ -39,7 +39,7 @@
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
           <br>
-          <q-btn v-if="users.token" @click="publishArticleState = true" color="primary" :label="t('review')" />
+          <q-btn v-if="users.loginState" @click="publishArticleState = true" color="primary" :label="t('review')" />
           <q-btn v-else @click="loginState = true" color="primary" :label="t('review')" />
         </q-tab-panel>
         <q-tab-panel name="edit" v-if="users.role === 0">
@@ -114,6 +114,7 @@ locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
 })
+
 const boardInfoForm = reactive({ chartTitle: 'scoreChart', averageTitle: 'averageScore', scoreSum: 0, amount: 0, datas: [] })
 // *********************************************左側介面+子版清單************************
 // #透過網址，取得版的資訊+過濾功能
@@ -138,12 +139,15 @@ const filterUniqueOptions = shallowRef([])
 // 每次進到新版統一的步驟
 const init = async () => {
   console.log('init')
+  // 如果沒logincookie就把頁面變登出外觀(修補未登出直接關機的唯一破綻)
+  if (!document.cookie.includes('loginCookie=')) {
+    users.loginState = false
+  }
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
     boards.length = 0
     const { data } = await api.get('/board/' + route.params.id)
     // 初始化就檢測JWTcookie決定是否有登陸(只有後端能讀cookie),並更新整個也面的登錄判斷點(token
-    users.token = data?.login === true
     if (data.result) {
       // 左方該版資訊
       const createLeftDrawer = async () => {

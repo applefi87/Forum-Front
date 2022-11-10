@@ -1,0 +1,35 @@
+Required:
+1.Selectable temp login (when shoutdown will logout)
+2.When Internet down still can just press logout and go away. 
+
+I know OAuth1.0/2.0 solution,but I think sending JWT by cookie faster and more secure.
+What's the shortcuts?
+
+---
+The following is what running for a forum.
+
+# Login: Back-End(B-End) store the JWT(with userId,random-key) in User's loginRecord DB.
+1. Using set-cookie :
+-"JWT"(set HttpOnly+secure+sameSite:'lax'. When select keepLogin the cookie will have 1 month maxage, or be session cookie delete after shoutDown. )
+-"Login-Cookie"(set HttpOnly=false. Has random-key same as in JWT.)
+2. Response some basic userInfo to store in LocalStorage let Vue to render(With a login=true in LocalStorage JS for can't detect JWT).
+
+# Doing any login-need action: B-End will check:
+1. JWT vaild (If expired will go to DB check recorded and update to the new one.)
+2. Check Login-Cookie's random-key are match in JWT. If (not match(prevent try)/undefined(logout)){auto logout}else{ keep go without check DB}
+
+# Just cut off power(Jump window.onbeforeunload) when login:(For those not select keepLogin)
+1. Session cookie deleted (We faced F-End can't detect this for HttpOnly,so new user will saw what's lastTime login despite can't do login-action.)
+2. When open new website/tabs always connect B-End to get some Info, so using that moment to let B-End check JWT(Cookie) is still exist. 
+If not, response to F-End localStorage's login=false, then user will not see any login info.(Or you can just clear all, depend on how you detect login.)
+
+# When Internet down:
+For usual way HttpOnly can't be delete by F-End, they can't logout.
+Now logout will delete Login-Cookie& All LocalStorage, so user will not seen and no one can use remaining JWT to do anything.
+
+# Only 2 situation need to check User's loginRecord DB
+1. JWT will expired within 3 hours, then B-end will auto check DB is recoreded then update a new JWT & Login-Cookie.
+2. When some crutial action,likes: Change password etc.
+
+
+(If need OAuth2.0 just set different cookie domain etc.)

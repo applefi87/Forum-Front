@@ -82,7 +82,8 @@
               <q-item-section avatar v-if="msg.state === 1">
                 <q-avatar rounded>
                   <q-icon v-if="msg.user.nickName === 'owner'" name="home" />
-                  <img v-else :src="'https://source.boringavatars.com/beam/120/' + (msg.user.nickName || 'you')">
+                  <img v-else
+                    :src="'https://source.boringavatars.com/beam/120/' + (msg.user.nickName === 'youHide' ? 'you' : (msg.user.nickName || 'you'))">
                 </q-avatar>
               </q-item-section>
               <q-item-section v-if="editingId !== msg.id && msg.state === 1" class="msgContent">
@@ -134,9 +135,9 @@
           </template>
         </q-select>
         <q-input filled v-model="msgForm.content" :placeholder="t('writeAComment')" dense
-          @keydown.enter="users.token ? sendMsg() : loginState = true" type="textarea">
+          @keydown.enter="users.loginState ? sendMsg() : loginState = true" type="textarea">
           <template v-slot:after>
-            <q-btn v-if="users.token" @click="sendMsg" round dense flat icon="send" :loading="sendingMsg" />
+            <q-btn v-if="users.loginState" @click="sendMsg" round dense flat icon="send" :loading="sendingMsg" />
             <q-btn v-else @click="loginState = true" round dense flat icon="send" />
           </template>
         </q-input>

@@ -33,12 +33,12 @@ apiAuth.interceptors.response.use(res => {
       // 確認原始請求的網址不是延長登入，才重新登入
       if (error.config.url !== '/user/extend' && error.config.url !== '/user/logout') {
         // 傳送延長請求
-        const user = useUserStore()
+        const users = useUserStore()
         try {
-          const { data } = await apiAuth.post('/user/extend', { keepLogin: user.keepLogin })
+          const { data } = await apiAuth.post('/user/extend', {})
           // 後台偵測到就直接換新cookie 所以不用改
           // // 更新 JWT
-          user.token = data.success
+          users.loginState = data.success
           // // 使用新的 JWT 再次嘗試原始請求
           // error.config.headers.authorization = `Bearer ${user.token}`
           return await axios(error.config)
@@ -46,10 +46,14 @@ apiAuth.interceptors.response.use(res => {
           console.log('boot/axios Error')
           console.log(err)
           // 重新登入失敗，強制登出
-          user.logout()
+          users.logout()
           return await Promise.reject(error)
         }
       }
+    } else if (error.response.status === 410) {
+      const users = useUserStore()
+      users.loginState = false
+      // cookie後臺會處理
     }
   }
   return Promise.reject(error)

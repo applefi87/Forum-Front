@@ -12,7 +12,7 @@
     <q-select class="langSelect gt-md" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
       map-options />
     <!-- https://quasar.dev/vue-components/button-dropdown -->
-    <q-btn-dropdown v-if="users.token" class="info " dense flat :label='t("userInfo")' no-caps>
+    <q-btn-dropdown v-if="users.loginState" class="info " dense flat :label='t("userInfo")' no-caps>
       <div class="row no-wrap q-pa-md">
         <q-btn :label='t("changePassword")' color="primary" flat class="q-ml-sm" to="/changePWD" />
       </div>
@@ -36,8 +36,8 @@
               </template>
             </q-input>
             <div>
-              <div style="height:50px">
-                <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
+              <div style="height:30px">
+                <!-- <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" /> -->
                 <q-btn :label="t('forgetPWD')" type="submit" color="primary" class="f-r" flat to="/forgetPWD" />
               </div>
               <q-btn :label='t("login")' type="submit" color="primary" />
@@ -61,7 +61,6 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import { useRouter } from 'vue-router'
-const homeID = process.env.HOME_ID
 const router = useRouter()
 const users = useUserStore()
 // ****
@@ -93,7 +92,7 @@ const toggleRightDrawer = () => {
   rightDrawerState.value = !rightDrawerState.value
 }
 // ********************
-const loginForm = reactive({ account: '', password: '', keepLogin: false })
+const loginForm = reactive({ account: '', password: '', keepLogin: true })
 // ****************登陸****
 const login = async () => {
   try {
@@ -106,7 +105,7 @@ const login = async () => {
       router.go(0)
     }
   } catch (error) {
-    console.log(error.response.data)
+    console.log(error.response?.data)
   }
 }
 //* ***************登出****
@@ -115,9 +114,11 @@ const logout = async () => {
     const rep = await users.logout()
     notify(rep)
   } catch (error) {
-    notify(error.response.data)
     console.log(error)
   }
+  // 加path聽說有些瀏覽器要加才能刪除，最後刪因為這樣後端才能移除登入資訊
+  document.cookie = 'loginCookie=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;'
+  console.log('del')
   router.go(0)
 }
 
