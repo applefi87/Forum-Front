@@ -8,13 +8,13 @@ import { useUserStore } from 'src/stores/user'
 // for each client)
 const api = axios.create({
   baseURL: process.env.SERVER_URL,
-  withCredentials: true,
-  headers: { 'X-H': 'OK' }
+  withCredentials: true
+  // headers: { 'X-H': 'OK' }
 })
 const apiAuth = axios.create({
   baseURL: process.env.SERVER_URL,
-  withCredentials: true,
-  headers: { 'X-H': 'OK' }
+  withCredentials: true
+  // headers: { 'X-H': 'OK' }
 })
 // axios ---> axios 攔截請求 --> API SERVER --> axios 攔截回應 --> 呼叫的地方
 // 因為改cookie 不用beartoken
