@@ -10,12 +10,11 @@ export const useUserStore = defineStore('user', {
   id: 'user',
   state() {
     return {
-      loginState: false,
+      token: null,
       _id: null,
       account: null,
       role: null,
       score: 0,
-      keepLogin: false,
       local: null,
       tab: 'boards'
     }
@@ -33,12 +32,12 @@ export const useUserStore = defineStore('user', {
       try {
         const { data } = await api.post('/user/login', form)
         // 使用者資訊存起來
-        this.loginState = true
+        this.token = data.result.token
+        console.log(this.token)
         this._id = data.result._id
         this.account = data.result.account
         this.role = data.result.role
         this.score = data.result.score
-        this.keepLogin = form.keepLogin
         return reply(data)
       } catch (error) {
         return reply(error.response?.data)
@@ -46,21 +45,29 @@ export const useUserStore = defineStore('user', {
     },
     async logout() {
       try {
-        // apiAuth預帶抓users.loginState (boot裡)
-        this.loginState = false
-        this._id = null
-        this.role = null
-        this.account = ''
-        this.role = null
+        // apiAuth預帶抓users.token (boot裡)
         const { data } = await apiAuth.delete('/user/logout')
         return reply(data)
       } catch (error) {
         return reply(error?.response?.data)
+      } finally {
+        this.token = null
+        this._id = null
+        this.role = null
+        this.account = ''
+        this.role = null
       }
     },
     async changePWD(form) {
       try {
         const { data } = await apiAuth.post('/user/changePWD', form)
+        if (data.success) {
+          this.token = null
+          this._id = null
+          this.role = null
+          this.account = ''
+          this.role = null
+        }
         return reply(data)
       } catch (error) {
         return reply(error?.response?.data)

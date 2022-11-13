@@ -50,10 +50,6 @@ const changePWD = async () => {
     pwdVerifying.value = true
     const rep = await users.changePWD(form)
     notify(rep)
-    pwdVerifying.value = false
-    users.loginState = false
-    users.account = ''
-    users.role = 0
     router.push('/')
   } catch (error) {
     notify(error.response.data)
@@ -61,7 +57,7 @@ const changePWD = async () => {
   }
 }
 const init = () => {
-  if (!users.loginState) router.push('/')
+  if (!users.token) router.push('/')
 }
 init()
 </script>

@@ -135,9 +135,9 @@
           </template>
         </q-select>
         <q-input filled v-model="msgForm.content" :placeholder="t('writeAComment')" dense
-          @keydown.enter="users.loginState ? sendMsg() : loginState = true" type="textarea">
+          @keydown.enter="users.token ? sendMsg() : loginState = true" type="textarea">
           <template v-slot:after>
-            <q-btn v-if="users.loginState" @click="sendMsg" round dense flat icon="send" :loading="sendingMsg" />
+            <q-btn v-if="users.token" @click="sendMsg" round dense flat icon="send" :loading="sendingMsg" />
             <q-btn v-else @click="loginState = true" round dense flat icon="send" />
           </template>
         </q-input>

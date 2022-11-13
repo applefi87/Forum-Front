@@ -14,8 +14,8 @@
           <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
             <q-card-section class="q-pt-none">
               <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("email")'
-                :rules="emailVal(true)" :hint="t('emailRule') + ' applefi87@gmail.com'" />
-              <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(true)" label="寄驗證信">
+                :rules="emailVal(false)" :hint="t('emailRule') + ' applefi87@gmail.com'" />
+              <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(false)" label="寄驗證信">
                 <template v-slot:loading>
                   <q-spinner-radio />
                 </template>

@@ -39,7 +39,7 @@
           :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
         <q-checkbox v-model="filterAll" label="全部系所" /> -->
           <br>
-          <q-btn v-if="users.loginState" @click="publishArticleState = true" color="primary" :label="t('review')" />
+          <q-btn v-if="users.token" @click="publishArticleState = true" color="primary" :label="t('review')" />
           <q-btn v-else @click="loginState = true" color="primary" :label="t('review')" />
         </q-tab-panel>
         <q-tab-panel name="edit" v-if="users.role === 0">
@@ -139,11 +139,6 @@ const filterUniqueOptions = shallowRef([])
 // 每次進到新版統一的步驟
 const init = async () => {
   console.log('init')
-  // 如果沒logincookie就把頁面變登出外觀(修補未登出直接關機的唯一破綻)
-  console.log(document.cookie)
-  if (!document.cookie.includes('loginCookie=')) {
-    // users.loginState = false
-  }
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
     boards.length = 0

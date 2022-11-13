@@ -18,11 +18,11 @@ const apiAuth = axios.create({
 })
 // axios ---> axios 攔截請求 --> API SERVER --> axios 攔截回應 --> 呼叫的地方
 // 因為改cookie 不用beartoken
-// apiAuth.interceptors.request.use(config => {
-//   const user = useUserStore()
-//   config.headers.authorization = `Bearer ${user.token}`
-//   return config
-// })
+apiAuth.interceptors.request.use(config => {
+  const user = useUserStore()
+  config.headers.authorization = `Bearer ${user.token}`
+  return config
+})
 
 apiAuth.interceptors.response.use(res => {
   return res
@@ -40,9 +40,9 @@ apiAuth.interceptors.response.use(res => {
           const { data } = await apiAuth.post('/user/extend', {})
           // 後台偵測到就直接換新cookie 所以不用改
           // // 更新 JWT
-          users.loginState = data.success
+          users.token = data.result
           // // 使用新的 JWT 再次嘗試原始請求
-          // error.config.headers.authorization = `Bearer ${user.token}`
+          error.config.headers.authorization = `Bearer ${users.token}`
           return await axios(error.config)
         } catch (err) {
           console.log('boot/axios Error')
@@ -52,10 +52,6 @@ apiAuth.interceptors.response.use(res => {
           return await Promise.reject(error)
         }
       }
-    } else if (error.response.status === 410) {
-      const users = useUserStore()
-      users.loginState = false
-      // cookie後臺會處理
     }
   }
   return Promise.reject(error)
