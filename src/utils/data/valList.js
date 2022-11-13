@@ -5,7 +5,7 @@ export default {
   ],
   password: [
     val => (val && val.length >= 8 && val.length <= 40) || '長度需介於8~40字之間',
-    val => ((/[a-z]/).test(val) && (/[0-9]/).test(val)) || '必須含英文與數字'
+    val => ((/[a-zA-Z]/).test(val) && (/[0-9]/).test(val)) || '必須含英文與數字'
   ],
   nickName: [
     val => (val && val.length >= 6 && val.length <= 30) || '長度需介於6~30字之間',
