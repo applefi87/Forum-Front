@@ -27,7 +27,7 @@
   </q-page>
 </template>
 
-<script setup></script>
+<script setup>
 // 忘記密碼:
 // 確認有申請>臨時code也有hash過>提供新密碼>自己重設
 
