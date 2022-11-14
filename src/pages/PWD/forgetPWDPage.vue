@@ -22,13 +22,12 @@
       </q-form>
     </q-card-section>
     <q-card-section v-else class="q-pt-none">
-      <h5><b>{{ account }}您好</b></h5>
-      <p>密碼重設成功，請至email查看新密碼</p>
+      <h5><b>密碼重設成功，請至email查看新密碼</b></h5>
     </q-card-section>
   </q-page>
 </template>
 
-<script setup>
+<script setup></script>
 // 忘記密碼:
 // 確認有申請>臨時code也有hash過>提供新密碼>自己重設
 
@@ -45,7 +44,6 @@ const emailFormatValid = ref(null)
 const accountFormatValid = ref(null)
 const mailSending = ref(false)
 const identifier = ref(null)
-const account = ref('')
 // ***********rule val區******************************
 const emailVal = valList.mail
 
@@ -78,7 +76,6 @@ const verifyForgetPWDCode = async () => {
     notify(rep)
     if (!rep.success) throw new Error(rep.title)
     getTempPWD.value = true
-    account.value = rep.result.account
   } catch (error) {
     // notify(error.response.data)
     console.log(error)

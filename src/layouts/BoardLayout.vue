@@ -1,11 +1,11 @@
 <template >
-  <q-layout view="hHh lpR fff" id="m">taba
+  <q-layout view="hHh lpR fff" id="m">
     <q-header elevated class="bg-primary text-white">
       <headerPage :leftDrawerActive="leftDrawerActive"></headerPage>
     </q-header>
     <!-- ******************************************************** -->
-    <q-drawer v-model='leftDrawerState' side="left" persistent bordered no-swipe-open no-swipe-close show-if-above
-      :breakpoint="767" style="height: 100% ;display:flex;flex-direction: column">
+    <q-drawer v-model='leftDrawerState' side="left" persistent bordered show-if-above :breakpoint="768"
+      style="height: 100% ;display:flex;flex-direction: column">
       <h6 class="q-my-lg q-mx-md title">{{ title }}
       </h6>
       <q-tabs v-model="tab" indicator-color="transparent" active-color="white" active-bg-color="orange" align="justify"
@@ -53,7 +53,9 @@
       <q-select v-model="locale" :options="localeOptions" label="Language:" borderless emit-value map-options />
     </q-drawer>
     <q-page-container style="height: calc(100% - 48px) !important">
-      <boardPage v-if="tab === 'boards'" class="wh100 q-pa-lg">
+      <boardPage v-if="tab === 'boards'" class="wh100 q-pa-lg gt-sm">
+      </boardPage>
+      <boardPage v-if="tab === 'boards'" class="wh100 lt-md">
       </boardPage>
       <articlePage v-if="tab === 'articles'" class="wh100 q-pa-lg">
       </articlePage>

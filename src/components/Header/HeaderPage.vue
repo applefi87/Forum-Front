@@ -36,7 +36,7 @@
               </template>
             </q-input>
             <div>
-              <div style="height:30px">
+              <div style="height:40px">
                 <!-- <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" /> -->
                 <q-btn :label="t('forgetPWD')" type="submit" color="primary" class="f-r" flat to="/forgetPWD" />
               </div>

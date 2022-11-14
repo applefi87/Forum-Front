@@ -14,8 +14,8 @@
           <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
             <q-card-section class="q-pt-none">
               <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("email")'
-                :rules="emailVal(false)" :hint="t('emailRule') + ' applefi87@gmail.com'" />
-              <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(false)" label="寄驗證信">
+                :rules="emailVal" :hint="t('emailRule') + ' applefi87@gmail.com'" />
+              <q-btn dense color="secondary" :loading="mailSending" @click="sendMail()" label="寄驗證信">
                 <template v-slot:loading>
                   <q-spinner-radio />
                 </template>
@@ -70,6 +70,7 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import notify from '../utils/notify'
 import valList from '../utils/data/valList'
+const mustSchool = true
 const isPwd = ref(true)
 const { t } = useI18n()
 const users = useUserStore()
@@ -82,11 +83,11 @@ const nickNameValid = ref(null)
 // 寄email
 const emailFormatValid = ref(null)
 const mailSending = ref(false)
-const sendMail = async (isSchool) => {
+const sendMail = async () => {
   try {
     if (!emailFormatValid.value.validate()) return
     mailSending.value = true
-    const rep = await users.sendMail(registerForm.schoolEmail, isSchool)
+    const rep = await users.sendMail(registerForm.schoolEmail, mustSchool)
     notify(rep)
     mailSending.value = false
   } catch (error) {
@@ -100,7 +101,7 @@ const stepper = ref(null)
 const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 //
-const emailVal = valList.mail
+const emailVal = valList.mail(mustSchool)
 const nextPage = async () => {
   try {
     if (step.value === 2) {
