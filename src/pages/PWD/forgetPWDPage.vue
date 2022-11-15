@@ -35,7 +35,7 @@ import { ref, reactive } from 'vue'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import notify from 'src/utils/notify'
-import valList from 'src/utils/data/valList'
+import { accountVal, emailVal, mailCodeVal } from 'src/utils/data/valList.js'
 const { t } = useI18n({ useScope: 'global' })
 const users = useUserStore()
 const getTempPWD = ref(false)
@@ -45,10 +45,6 @@ const accountFormatValid = ref(null)
 const mailSending = ref(false)
 const identifier = ref(null)
 // ***********rule val區******************************
-const emailVal = valList.mail
-
-const accountVal = valList.account
-const mailCodeVal = valList.tenCode
 
 const sendForgetPWDMail = async () => {
   try {

@@ -31,7 +31,7 @@ import notify from 'src/utils/notify'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import valList from 'src/utils/data/valList'
+import { passwordVal } from 'src/utils/data/valList.js'
 const router = useRouter()
 const { t } = useI18n({ useScope: 'global' })
 const pwdChanged = ref(false)
@@ -40,9 +40,6 @@ const isPwd = ref(true)
 const users = useUserStore()
 const form = reactive({ password: '', newPWD: '' })
 const account = ref('')
-
-// ***********rule val區******************************
-const passwordVal = valList.password
 
 const changePWD = async () => {
   try {

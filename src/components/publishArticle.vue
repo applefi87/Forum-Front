@@ -7,21 +7,21 @@
             <td>{{ t('privacy') }}</td>
             <td>
               <q-select outlined v-model="privacy" :options="privacyList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
             </td>
           </tr>
           <tr>
             <td>{{ t('articleCategory') }}</td>
             <td>
               <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
             </td>
           </tr>
           <tr>
             <td>{{ t('semester') }}</td>
             <td>
               <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
-                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="uniqueVal" />
+                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
             </td>
           </tr>
 
@@ -61,9 +61,10 @@
           <!-- content(放最後) ****************************-->
           <tr>
             <td style="vertical-align:text-top ; padding-top: 30px">{{
-            category.contentCol[langWord] }}</td>
+                category.contentCol[langWord]
+            }}</td>
             <td style=" padding-top: 20px">
-              <QuillEditor class="editor" toolbar="essential" theme="snow"
+              <QuillEditor class="editor" toolbar="essential" theme="snow" ref="quill"
                 v-model:content="form['f' + selectCat.value].content" contentType="html" />
             </td>
           </tr>
@@ -89,6 +90,8 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
+import { titleVal, mustSelectVal } from 'src/utils/data/valList.js'
+
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -109,6 +112,7 @@ const articleRule = inject('articleRule')
 // 如果換版>watch，把原本全清除for[key]，重新建
 const form = reactive({})
 const formRef = ref(null)
+const quill = ref(null)
 // const uniqueList = reactive([])
 const selectCat = ref(null)
 const privacyList = computed(() => { return [{ label: t('showAll'), value: 1 }, { label: t('anonymous'), value: 0 }] })
@@ -176,17 +180,13 @@ watch(publishArticleState, () => {
   }
 })
 //
-const titleVal = [
-  val => (val && val.length >= 5 && val.length <= 30) || '需5~30字之間'
-]
 
-const uniqueVal = [val => (val) || '必須選學期,上課時間']
-const mustHaveVal = [val => (val) || '必填']
 // ****************發布****
 const publishing = ref(false)
 const publish = () => {
   formRef.value.validate().then(async success => {
     if (!success) return notify({ title: '請檢查欄位' })
+    if (quill.value.getText().length < 10 || quill.value.getText().length > 3000) return notify({ title: t('articleContentLengthErr') })
     //
     if (route.params.id) {
       publishing.value = true

@@ -5,14 +5,14 @@
         <!-- <h5>{{t('editing')+'"'+ ((category.c === 1)? t('review'):category.n[langWord.value])+'"'+t('your articles')}} -->
         <!-- </h5> -->
         <h6>
-          {{uniqueInfo }}
+          {{ uniqueInfo }}
         </h6>
         <table>
           <tr>
             <td>{{ t('privacy') }}</td>
             <td>
               <q-select outlined v-model="privacy" :options="privacyList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustHaveVal" />
+                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
             </td>
           </tr>
           <!-- 評分 -->
@@ -51,10 +51,11 @@
           <!-- content(放最後) ****************************-->
           <tr>
             <td style="vertical-align:text-top ; padding-top: 30px">{{
-            category.contentCol[langWord] }}</td>
+                category.contentCol[langWord]
+            }}</td>
             <td style=" padding-top: 20px">
               <QuillEditor class="editor" toolbar="essential" theme="snow" v-model:content="editArticleContent.content"
-                contentType="html" />
+                ref="quill" contentType="html" />
             </td>
           </tr>
           <tr>
@@ -79,6 +80,7 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
 import { useRoute, useRouter } from 'vue-router'
+import { titleVal, mustSelectVal } from 'src/utils/data/valList.js'
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -95,6 +97,7 @@ const board = inject('board')
 const articleRule = inject('articleRule')
 // ************************************************************
 const formRef = ref(null)
+const quill = ref(null)
 // 選單用特殊格式******
 const privacyList = computed(() => { return [{ label: t('showAll'), value: 1 }, { label: t('anonymous'), value: 0 }] })
 const privacy = ref({})
@@ -133,14 +136,13 @@ watch(editArticleState, () => {
     init()
   }
 })
-//
-const titleVal = [val => (val && val.length >= 5 && val.length <= 30) || '需5~30字之間']
-const mustHaveVal = [val => (val) || '必填']
+
 // ****************發布****
 const updating = ref(false)
 const update = () => {
   formRef.value.validate().then(async success => {
     if (!success) return notify({ title: '請檢查欄位' })
+    if (quill.value.getText().length < 10 || quill.value.getText().length > 3000) return notify({ title: t('articleContentLengthErr') })
     //
     if (route.params.id) {
       updating.value = true

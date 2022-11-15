@@ -25,11 +25,10 @@
       <div class="row no-wrap q-pa-md">
         <div class="column">
           <q-form @submit.prevent="login" class="q-gutter-xs">
-            <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
-              :rules="[val => val && val.length > 0 || t('cantNull')]" autocomplete="username" />
-            <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
-              :rules="[val => val && val.length > 0 || t('cantNull')]" :type="isPwd ? 'password' : 'text'"
-              autocomplete="password">
+            <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules :rules="accountVal"
+              autocomplete="username" />
+            <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules :rules="passwordVal"
+              :type="isPwd ? 'password' : 'text'" autocomplete="password">
               <template v-slot:append>
                 <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                   @click="isPwd = !isPwd" />
@@ -61,6 +60,7 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import { useRouter } from 'vue-router'
+import { accountVal, passwordVal } from 'src/utils/data/valList.js'
 const router = useRouter()
 const users = useUserStore()
 // ****

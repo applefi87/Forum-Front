@@ -14,7 +14,7 @@
           <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
             <q-card-section class="q-pt-none">
               <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("email")'
-                :rules="emailVal" :hint="t('emailRule') + ' applefi87@gmail.com'" />
+                :rules="emailVal(mustSchool)" :hint="t('emailRule') + ' applefi87@gmail.com'" />
               <q-btn dense color="secondary" :loading="mailSending" @click="sendMail()" label="寄驗證信">
                 <template v-slot:loading>
                   <q-spinner-radio />
@@ -30,7 +30,7 @@
               <q-input filled v-model="registerForm.account" :label='t("account")' :rules="accountVal"
                 ref=accountValid />
               <q-input filled v-model="registerForm.password" :label='t("password")' :type="isPwd ? 'password' : 'text'"
-                :rules="passwordVal"><template v-slot:append>
+                ref=passwordValid :rules="passwordVal"><template v-slot:append>
                   <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                     @click="isPwd = !isPwd" />
                 </template></q-input>
@@ -69,7 +69,7 @@ import { ref, reactive, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import notify from '../utils/notify'
-import valList from '../utils/data/valList'
+import { accountVal, passwordVal, nickNameVal, mailCodeVal, emailVal } from 'src/utils/data/valList.js'
 const mustSchool = true
 const isPwd = ref(true)
 const { t } = useI18n()
@@ -79,6 +79,7 @@ const registerState = inject('registerState')
 const loginState = inject('loginState')
 // ****************註冊****
 const accountValid = ref(null)
+const passwordValid = ref(null)
 const nickNameValid = ref(null)
 // 寄email
 const emailFormatValid = ref(null)
@@ -101,7 +102,6 @@ const stepper = ref(null)
 const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 //
-const emailVal = valList.mail(mustSchool)
 const nextPage = async () => {
   try {
     if (step.value === 2) {
@@ -121,12 +121,6 @@ const nextPage = async () => {
 // ********************
 
 const registerForm = reactive({ schoolEmail: '', schoolEmailCode: '', account: '', password: '', nickName: '', gender: '0' })
-
-// ***********rule val區******************************
-const accountVal = valList.account
-const passwordVal = valList.password
-const nickNameVal = valList.nickName
-const mailCodeVal = valList.tenCode
 
 const register = async () => {
   try {
