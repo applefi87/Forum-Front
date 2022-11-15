@@ -159,7 +159,6 @@ const editArticle = async (content) => {
 const viewArticle = (a) => {
   for (const k in article) delete article[k]
   Object.assign(article, a)
-  viewArticleState.value = true
   // 加載使用者資訊介面
   userInfoForm.titleTitle = ''
   userInfoForm.chartTitle = ''
@@ -174,6 +173,7 @@ const viewArticle = (a) => {
   articleMsg.isSelf = a.user.nickName === 'you'
   articleMsg.datas.length = 0
   if (a.msg1?.list) articleMsg.datas.push(...a.msg1?.list)
+  viewArticleState.value = true
 }
 // --
 const columns = computed(() => [
@@ -182,9 +182,9 @@ const columns = computed(() => [
     align: 'left',
     label: t('semester'),
     field: row => {
-      const unique = board.uniqueData.find(i => i._id === row.uniqueId)
-      // console.log(board.uniqueData)
-      return unique.c80
+      const unique = board?.uniqueData?.find(i => i._id === row.uniqueId)
+      // 極少數會讀不道uniqueData
+      return unique?.c80 || ''
     },
     sortable: true,
     sortOrder: 'da',

@@ -1,7 +1,7 @@
 <template >
-  <q-dialog v-model="publishArticleState" persistent v-if="categoryList.length > 0">
+  <q-dialog v-model="publishArticleState" persistent v-if="categoryList.length > 0" maximized>
     <div v-if="category">
-      <q-form class="q-gutter-md" ref="formRef">
+      <q-form ref="formRef" style="position:relative;">
         <table>
           <tr>
             <td>{{ t('privacy') }}</td>
@@ -68,14 +68,11 @@
                 v-model:content="form['f' + selectCat.value].content" contentType="html" />
             </td>
           </tr>
-          <tr>
-            <td></td>
-            <td>
-              <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing"></q-btn>
-              <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click="publishArticleState = false" />
-            </td>
-          </tr>
         </table>
+        <div style="position:sticky; bottom:0;background:white; padding:5px">
+          <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing"></q-btn>
+          <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click="publishArticleState = false" />
+        </div>
       </q-form>
     </div>
   </q-dialog>
@@ -153,7 +150,7 @@ const init = () => {
     categoryList.push(...articleRule.category)
     // 對應加上form.fx
     categoryList?.forEach(f => {
-      form['f' + f.c] = { title: '', content: '' }
+      form['f' + f.c] = { title: '', content: f.contentTemplate[0] || '' }
       const formIn = form['f' + f.c]
       if (f.c === 1) formIn.score = 5
       if (f.tagActive) {
@@ -212,9 +209,9 @@ const publish = () => {
 </script>
 
 <style lang="sass" scoped>
-.q-dialog__inner--minimized > div
-  max-width: 800px
-  overflow-x: hidden
+.q-dialog__inner--minimized>div
+    max-width: 800px
+    overflow-x: hidden
 .q-form
   width: 800px
   background: white

@@ -57,7 +57,9 @@
       </boardPage>
       <boardPage v-if="tab === 'boards'" class="wh100 lt-md">
       </boardPage>
-      <articlePage v-if="tab === 'articles'" class="wh100 q-pa-lg">
+      <articlePage v-if="tab === 'articles'" class="wh100 q-pa-lg gt-sm">
+      </articlePage>
+      <articlePage v-if="tab === 'articles'" class="wh100 lt-md">
       </articlePage>
       <uploadBoardPage v-if="tab === 'edit'" class="wh100 q-pa-lg">
       </uploadBoardPage>

@@ -1,5 +1,5 @@
 <template >
-  <q-dialog v-model="editArticleState" persistent v-if="categoryList.length > 0">
+  <q-dialog v-model="editArticleState" persistent v-if="categoryList.length > 0" maximized>
     <div v-if="category">
       <q-form class="q-gutter-md" ref="formRef">
         <!-- <h5>{{t('editing')+'"'+ ((category.c === 1)? t('review'):category.n[langWord.value])+'"'+t('your articles')}} -->
