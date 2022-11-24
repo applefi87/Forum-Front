@@ -134,8 +134,7 @@
             <p style="font-size: 0.8rem;color: black; margin: 0"> {{ t('privacy') }}:</p>
           </template>
         </q-select>
-        <q-input filled v-model="msgForm.content" :placeholder="t('writeAComment')" dense
-          @keydown.enter="users.token ? sendMsg() : loginState = true" type="textarea">
+        <q-input filled v-model="msgForm.content" :placeholder="t('writeAComment')" dense type="textarea">
           <template v-slot:after>
             <q-btn v-if="users.token" @click="sendMsg" round dense flat icon="send" :loading="sendingMsg" />
             <q-btn v-else @click="loginState = true" round dense flat icon="send" />

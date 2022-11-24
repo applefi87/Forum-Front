@@ -1,80 +1,88 @@
 <template >
-  <q-dialog v-model="publishArticleState" persistent v-if="categoryList.length > 0" maximized>
-    <div v-if="category">
-      <q-form ref="formRef" style="position:relative;">
-        <table>
-          <tr>
-            <td>{{ t('privacy') }}</td>
-            <td>
-              <q-select outlined v-model="privacy" :options="privacyList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
-            </td>
-          </tr>
-          <tr>
-            <td>{{ t('articleCategory') }}</td>
-            <td>
-              <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
-                :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
-            </td>
-          </tr>
-          <tr>
-            <td>{{ t('semester') }}</td>
-            <td>
-              <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
-                options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
-            </td>
-          </tr>
+  <q-dialog v-model="publishArticleState" persistent v-if="categoryList.length > 0">
+    <q-card v-if="category" style="position:relative;">
+      <q-card-section class="row items-center q-pb-none">
+        <q-space />
+        <q-btn icon=" close" flat round dense v-close-popup />
+      </q-card-section>
+      <q-card-section class="scroll">
+        <q-form ref="formRef">
+          <table>
+            <tr>
+              <td>{{ t('privacy') }}</td>
+              <td>
+                <q-select outlined v-model="privacy" :options="privacyList" dense options-dense
+                  :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
+              </td>
+            </tr>
+            <tr>
+              <td>{{ t('articleCategory') }}</td>
+              <td>
+                <q-select outlined v-model="selectCat" :options="categoryCodeList" dense options-dense
+                  :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
+              </td>
+            </tr>
+            <tr>
+              <td>{{ t('semester') }}</td>
+              <td>
+                <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
+                  options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
+              </td>
+            </tr>
 
-          <!-- 評分 -->
-          <tr v-if="category && category.c === 1">
-            <td>{{ t('rate') }}</td>
-            <td>
-              <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" :max="5" />
-            </td>
-          </tr>
-          <!-- tag -->
-          <tr v-if="category.tagOption">
-            <td>{{ t('tags') }}</td>
-            <td>
-              <!-- <q-option-group :options="category.tagOption.map(o => { return { label: o[langWord], value: o.c } })" -->
-              <q-option-group
-                :options="Object.keys(category.tagOption).map(k => { return { label: category.tagOption[k][langWord], value: k } })"
-                type="checkbox" v-model="form['f' + selectCat.value].tags" />
-            </td>
-          </tr>
-          <!-- 標題 -->
-          <tr>
-            <td>{{ t('title') }}</td>
-            <td>
-              <q-input v-model="form['f' + selectCat.value].title" :rules="titleVal">
-              </q-input>
-            </td>
-          </tr>
-          <!-- 其他col -->
-          <!-- <tr v-for="col in (category.cols?.length > 0 ? category.cols : [])" :key="col">
+            <!-- 評分 -->
+            <tr v-if="category && category.c === 1">
+              <td>{{ t('rate') }}</td>
+              <td>
+                <q-rating v-model="form.f1.score" size="2em" color="grey" color-selected="yellow" :max="5" />
+              </td>
+            </tr>
+            <!-- tag -->
+            <tr v-if="category.tagOption">
+              <td>{{ t('tags') }}</td>
+              <td>
+                <!-- <q-option-group :options="category.tagOption.map(o => { return { label: o[langWord], value: o.c } })" -->
+                <q-option-group
+                  :options="Object.keys(category.tagOption).map(k => { return { label: category.tagOption[k][langWord], value: k } })"
+                  type="checkbox" v-model="form['f' + selectCat.value].tags" />
+              </td>
+            </tr>
+            <!-- 標題 -->
+            <tr>
+              <td>{{ t('title') }}</td>
+              <td>
+                <q-input v-model="form['f' + selectCat.value].title" :rules="titleVal">
+                </q-input>
+              </td>
+            </tr>
+            <!-- 其他col -->
+            <!-- <tr v-for="col in (category.cols?.length > 0 ? category.cols : [])" :key="col">
             <td>{{ t(col.n) }}</td>
             <td>
               <q-input v-model="form['f' + selectCat.value].cols[col.n]" placeholder="選填">
               </q-input>
             </td>
           </tr> -->
-          <!-- content(放最後) ****************************-->
-          <tr>
-            <td style="vertical-align:text-top ; padding-top: 30px">{{
-                category.contentCol[langWord]
-            }}</td>
-            <td style=" padding-top: 20px">
-              <QuillEditor class="editor" toolbar="essential" theme="snow" ref="quill"
-                v-model:content="form['f' + selectCat.value].content" contentType="html" />
-            </td>
-          </tr>
-        </table>
-        <div style="position:sticky; bottom:0;background:white; padding:5px">
-          <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing"></q-btn>
-          <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click="publishArticleState = false" />
-        </div>
-      </q-form>
-    </div>
+            <!-- content(放最後) ****************************-->
+            <tr>
+              <td style="vertical-align:text-top ; padding-top: 30px">{{
+                  category.contentCol[langWord]
+              }}</td>
+              <td style=" padding-top: 20px">
+                <QuillEditor class="editor" toolbar="essential" theme="snow" ref="quill"
+                  v-model:content="form['f' + selectCat.value].content" contentType="html" />
+              </td>
+            </tr>
+          </table>
+
+        </q-form>
+      </q-card-section>
+      <q-card-section class="row items-center q-pb-none" style="padding:5px">
+        <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing" class="q-ma-sm">
+        </q-btn>
+        <q-btn :label="t('close')" flat class="q-ma-sm close-register" @click="publishArticleState = false" />
+      </q-card-section>
+    </q-card>
   </q-dialog>
 </template>
 
@@ -211,11 +219,20 @@ const publish = () => {
 <style lang="sass" scoped>
 .q-dialog__inner--minimized>div
     max-width: 800px
+    width: 98%
     overflow-x: hidden
+.q-card
+  overflow: hidden
+  &:deep(.q-card__section)
+    background: white
+table
+  width: 100%
+td:first-child
+  width: 50px
 .q-form
-  width: 800px
+  width: 100%
   background: white
-  padding: 50px 30px 20px 40px
+  padding: 0
   tr
     min-height: 40px
   td:first-child
@@ -235,7 +252,7 @@ const publish = () => {
 .ql-snow
   width: 600px
 tr:deep(.editor)
-  height: 200px
-.editor
-  width: 100%
+  min-height: 200px
+.scroll
+  max-height: 80vh
 </style>

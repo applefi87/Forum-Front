@@ -47,7 +47,8 @@
           </q-step>
           <template v-slot:navigation>
             <q-stepper-navigation>
-              <q-btn v-if="step < 3" @click="nextPage()" color="primary" label="Continue" :loading="mailVerifying">
+              <q-btn v-if="step < 3" @click="nextPage()" color="primary" :label="t('continue')"
+                :loading="mailVerifying">
                 <template v-slot:loading>
                   <q-spinner-radio />
                 </template>
