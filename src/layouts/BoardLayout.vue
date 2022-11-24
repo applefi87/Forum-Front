@@ -52,7 +52,7 @@
     <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>
       <q-select v-model="locale" :options="localeOptions" label="Language:" borderless emit-value map-options />
     </q-drawer>
-    <q-page-container style="height: calc(100% - 48px) !important">
+    <q-page-container style="height: 100% !important">
       <boardPage v-if="tab === 'boards'" class="wh100 q-pa-lg gt-sm">
       </boardPage>
       <boardPage v-if="tab === 'boards'" class="wh100 lt-md">

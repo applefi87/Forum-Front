@@ -29,7 +29,6 @@
                   options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
               </td>
             </tr>
-
             <!-- 評分 -->
             <tr v-if="category && category.c === 1">
               <td>{{ t('rate') }}</td>
@@ -77,10 +76,10 @@
 
         </q-form>
       </q-card-section>
-      <q-card-section class="row items-center q-pb-none" style="padding:5px">
-        <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing" class="q-ma-sm">
+      <q-card-section class="row items-center q-pb-none" style="padding:5px ">
+        <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing" class="q-mx-sm">
         </q-btn>
-        <q-btn :label="t('close')" flat class="q-ma-sm close-register" @click="publishArticleState = false" />
+        <q-btn :label="t('close')" flat class="q-mx-sm close-register" @click="publishArticleState = false" />
       </q-card-section>
     </q-card>
   </q-dialog>
