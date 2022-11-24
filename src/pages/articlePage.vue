@@ -232,12 +232,14 @@ provide('articles', articles)
     padding-left: 8px
   thead tr:first-child th
     top: 0
-  tbody .q-tr.a:hover>td
-    background: #f0f0f0
-    cursor: pointer
+  tbody
+    td
+      height: auto
+    .q-tr.a:hover>td
+      background: #f0f0f0
+      cursor: pointer
   /* this is when the loading indicator appears */
   &.q-table--loading thead tr:last-child th
-    /* height of all previous header rows */
     top: 48px
 .q-td
   padding: 0

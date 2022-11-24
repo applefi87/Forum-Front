@@ -141,8 +141,11 @@ const columns = computed(() => [
       font-weight: 700
     tr:first-child th
       top: 0
-  tbody .q-tr:hover>td
-    background: #f0f0f0
+    tbody
+      td
+        height: auto
+      .q-tr.a:hover>td
+        background: #f0f0f0
   /* this is when the loading indicator appears */
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
