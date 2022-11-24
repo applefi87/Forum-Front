@@ -5,7 +5,7 @@
       <template v-slot:header="props">
         <q-tr>
           <q-td colspan="8" class="searchTd">
-            <q-input borderless dense debounce="300" v-model="filter" :placeholder="t('search')" outlined
+            <q-input borderless dense debounce="999999" v-model="filter" :placeholder="t('search')" outlined
               style="width:300px; max-width:80%;display:inline-block;float:right ;margin:0 10px 0 10px">
               <template v-slot:append>
                 <q-icon name="search" />
