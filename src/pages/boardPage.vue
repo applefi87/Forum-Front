@@ -20,7 +20,7 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="colTR" no-hover>
+        <q-tr :props="props" class="colTR">
           <q-td v-for="col in props.cols.filter((c) => (['review'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
@@ -139,6 +139,9 @@ const columns = computed(() => [
       z-index: 1
       padding: 5px
       font-weight: 700
+      color: blue
+      &:hover
+        background: rgb(255,245,240)
     tr:first-child th
       top: 0
     tbody
@@ -167,6 +170,8 @@ const columns = computed(() => [
   height: 10px
 // .q-tr:nth-child(2n+1) td
 //   background: #f5f5f5
+.q-tr:nth-child(2n+1) td
+  background: #fafaff
 .q-tr td:nth-child(5) a
   display: inline-block
   max-width: calc(300px + 10vw)

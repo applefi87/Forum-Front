@@ -11,15 +11,17 @@
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" v-if="props.row.state != 0" no-hover class="a">
+        <q-tr :props="props" v-if="props.row.state != 0">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <button v-if="col.name === 'user'" class="cellBTN" @click="showUserInfo(props.row)">
+            <button v-if="col.name === 'user'" class="openViewBtn userBTN" @click="showUserInfo(props.row)">
               <img :src="'https://source.boringavatars.com/beam/30/' + (col.value === 'youHide' ? 'you' : col.value)"
                 class="profileImg"
                 :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''">
               <br>
-              <b> {{ col.value === 'owner' ? t('owner') : col.value === 'you' ? t('you') : col.value === 'youHide' ?
-                  t('youHide') : (col.value || t('anonymous'))
+              <b> {{ col.value === 'owner' ? t('owner') :
+                  col.value === 'you' ? t('you') :
+                    col.value === 'youHide' ?
+                      t('youHide') : (col.value || t('anonymous'))
               }}</b>
             </button>
             <div v-else-if="col.name === 'review'">
@@ -29,7 +31,8 @@
               </button>
             </div>
             <div v-else-if="col.name === 'tags'">
-              <button class="openViewBtn" @click="viewArticle(props.row)">
+              <button class="openViewBtn" @click="viewArticle(props.row)"
+                style="max-width:120px;display:flex;flex-wrap:wrap;align-content: center;">
                 <p class="tag" v-for="t in (col.value)" :tag="t" :key="t">
                   {{ parent.childBoard.article.category[0].tagOption
                     [t][langWord]
@@ -201,7 +204,7 @@ const columns = computed(() => [
     headerClasses: 'q-table--col-auto-width'
   },
   { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
-  { name: 'tags', align: 'left', label: t('tags'), field: row => row.tags, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
+  { name: 'tags', align: 'left', label: t('tags'), field: row => row.tags, sortable: true, sortOrder: 'da' },
   { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' },
   { name: 'content', align: 'left', label: parent?.childBoard?.article?.category[0]?.contentCol[langWord.value], field: row => row.content, sortOrder: 'da' }
 ])
@@ -225,26 +228,28 @@ provide('articles', articles)
     position: sticky
     z-index: 1
     padding: 0 0 0 10px
-  tr
+    color: blue
+    &:hover
+      background: rgb(255,245,240)
+  tbody tr
     max-height: 200px !important
     overflow: hidden
+    height: 100%
+  td
+    padding: 0
+    height: 100%
+    &>div
+      height: 100%
   td:first-child
     padding-left: 8px
   thead tr:first-child th
     top: 0
   tbody
-    td
-      height: auto
     .q-tr.a:hover>td
-      background: #f0f0f0
       cursor: pointer
   /* this is when the loading indicator appears */
   &.q-table--loading thead tr:last-child th
     top: 48px
-.q-td
-  padding: 0
-  &>div
-    height: 100%
   // 舊style
 // .q-tr:nth-child(4n+1) td:nth-child(n+2)
 //   background: #f8f8f8
@@ -260,26 +265,23 @@ provide('articles', articles)
 // 新
 // 奇偶行不同顏色
 .q-tr:nth-child(2n+1) td
-  background: #f5f5f5
+  background: #fafaff
 .q-tr td:nth-child(4) button
   text-align: left
 .tag
   display: inline-block
   width: 30px
-  margin: 0 2px
+  margin: 2px
   text-align: center
   color: white
   background: green
-  border-radius: 50px
-.cellBTN
-  width: 100%
-  height: 100%
-  background: transparent
-  border: none
+  border-radius: 8px
+  height: fit-content
 .q-btn
   padding: 0 5px
 .content
   width: 100%
+  max-height: 200px
 .title
   max-width: 200px
   overflow: hidden
@@ -294,7 +296,6 @@ provide('articles', articles)
   font-weight: 600
 .htmlContent
   text-align: left
-  max-height: 200px
   overflow: hidden
   text-overflow: ellipsis
   display: -webkit-box
@@ -309,6 +310,15 @@ provide('articles', articles)
   border: none
   background: transparent
   cursor: pointer
+  display: inline-block
+.userBTN
+  font-size: 12px
+  padding: 6px 0 0 0
+  max-width: 80px
+  overflow: hidden
+  text-align: center
+  &:hover
+    background: rgba(100,200,255,0.1)
 .profileImg
   border-radius: 50%
   // #ffc700
