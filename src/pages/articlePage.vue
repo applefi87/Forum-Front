@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center" v-if="articles.length > 0">
+  <q-page class="flex flex-center" v-if="articles.length > 0" style="height:100%">
     <q-table :rows="articles" :columns="columns" row-key="_id" :virtual-scroll="pagination.rowsPerPage === 0"
       v-model:pagination="pagination" :no-data-label="t('noFound')" :rows-per-page-options="[10, 20, 40, 80]"
       separator="none">
@@ -13,7 +13,7 @@
       <template v-slot:body="props">
         <q-tr :props="props" v-if="props.row.state != 0">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <button v-if="col.name === 'user'" class="openViewBtn userBTN" @click="showUserInfo(props.row)">
+            <div v-if="col.name === 'user'" class=" userBTN" @click="showUserInfo(props.row)">
               <img :src="'https://source.boringavatars.com/beam/30/' + (col.value === 'youHide' ? 'you' : col.value)"
                 class="profileImg"
                 :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''">
@@ -23,36 +23,28 @@
                     col.value === 'youHide' ?
                       t('youHide') : (col.value || t('anonymous'))
               }}</b>
-            </button>
-            <div v-else-if="col.name === 'review'">
-              <button class="openViewBtn" @click="viewArticle(props.row)">
-                <q-icon name="star" color="warning" />
-                {{ col.value }}
-              </button>
             </div>
-            <div v-else-if="col.name === 'tags'">
-              <button class="openViewBtn" @click="viewArticle(props.row)"
-                style="max-width:120px;display:flex;flex-wrap:wrap;align-content: center;">
-                <p class="tag" v-for="t in (col.value)" :tag="t" :key="t">
-                  {{ parent.childBoard.article.category[0].tagOption
-                    [t][langWord]
-                  }}
-                </p>
-              </button>
-            </div>
-            <button v-else-if="col.name === 'title'" class="openViewBtn title" @click="viewArticle(props.row)">
+            <div v-else-if="col.name === 'review'" @click="viewArticle(props.row)">
+              <q-icon name="star" color="warning" />
               {{ col.value }}
-            </button>
-            <div v-else-if="col.name === 'semester'">
-              <button class="openViewBtn" @click="viewArticle(props.row)">
-                {{ col.value }}
-              </button>
+            </div>
+            <div v-else-if="col.name === 'tags'" @click="viewArticle(props.row)"
+              style="max-width:120px;display:flex;flex-wrap:wrap;align-content: center;">
+              <p class="tag" v-for="t in (col.value)" :tag="t" :key="t">
+                {{ parent.childBoard.article.category[0].tagOption
+                  [t][langWord]
+                }}
+              </p>
+            </div>
+            <div v-else-if="col.name === 'title'" class=" title" @click="viewArticle(props.row)">
+              {{ col.value }}
+            </div>
+            <div v-else-if="col.name === 'semester'" @click="viewArticle(props.row)">
+              {{ col.value }}
             </div>
             <div v-else-if="col.name === 'content'" class="content"
-              style="text-align: left; display:flex; justify-content: space-between; height:100%">
-              <button class="openViewBtn" @click="viewArticle(props.row)">
-                <div class="htmlContent" v-html="col.value"></div>
-              </button>
+              style="text-align: left; display:flex; justify-content: space-between">
+              <div class="htmlContent" v-html="col.value" @click="viewArticle(props.row)"></div>
               <div>
                 <q-btn square color="primary" icon="message" flat style="height:100% " @click="viewArticle(props.row)">
                   <q-badge v-if="props.row.msg1?.amount" rounded>
@@ -218,28 +210,47 @@ provide('articles', articles)
 //   min-height: 0 !important
 //   box-sizing: border-box
 //   height: 100%
+:deep(.q-table)
+  height: fit-content
+
 .q-table
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
     /* bg color is important for th; just specify one */
     background-color: #fff
+  tbody
+    height: 100%
   thead tr th
+    height: 40px
+    text-align: center
     position: sticky
     z-index: 1
     padding: 0 0 0 10px
     color: blue
     &:hover
       background: rgb(255,245,240)
-  tbody tr
-    max-height: 200px !important
-    overflow: hidden
+  tr
     height: 100%
-  td
+  .q-td
     padding: 0
     height: 100%
     &>div
+      background: rgba(255,255,180,0.5)
       height: 100%
+      margin-top: auto
+      margin-bottom: auto
+.htmlContent
+  max-height: 200px
+  height: 100%
+  overflow: hidden
+  text-align: left
+  text-overflow: ellipsis
+  display: -webkit-box
+  -webkit-line-clamp: 8
+  -webkit-box-orient: vertical
+  &:deep(*)
+    margin: 0
   td:first-child
     padding-left: 8px
   thead tr:first-child th
@@ -279,9 +290,6 @@ provide('articles', articles)
   height: fit-content
 .q-btn
   padding: 0 5px
-.content
-  width: 100%
-  max-height: 200px
 .title
   max-width: 200px
   overflow: hidden
@@ -294,23 +302,7 @@ provide('articles', articles)
 .alertMsg
   font-size: 20px
   font-weight: 600
-.htmlContent
-  text-align: left
-  overflow: hidden
-  text-overflow: ellipsis
-  display: -webkit-box
-  -webkit-line-clamp: 8
-  -webkit-box-orient: vertical
-  &:deep(*)
-    margin: 0
-.openViewBtn
-  width: 100%
-  height: 100%
-  text-align: left
-  border: none
-  background: transparent
-  cursor: pointer
-  display: inline-block
+
 .userBTN
   font-size: 12px
   padding: 6px 0 0 0
