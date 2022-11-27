@@ -142,7 +142,6 @@ const columns = computed(() => [
       background: rgba(15, 145, 250, 1)
       th
         font-size: 0.9rem
-        position: sticky
         z-index: 1
         padding: 0
         color: #fff
@@ -153,7 +152,8 @@ const columns = computed(() => [
         &.searchTd label
           background: #fff
           border-radius: 6px
-    tr:first-child th
+    tr:nth-child(2) th
+      position: sticky
       top: 0
   tbody
     td
