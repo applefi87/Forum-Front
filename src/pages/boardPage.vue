@@ -4,14 +4,14 @@
       :rows-per-page-options="[15, 30, 50]">
       <template v-slot:header="props">
         <q-tr>
-          <q-td colspan="8" class="searchTd">
+          <q-th colspan="8" class="searchTd">
             <q-input borderless dense debounce="999999" v-model="filter" :placeholder="t('search')" outlined
               style="width:300px; max-width:80%;display:inline-block;float:right ;margin:0 10px 0 10px">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
             </q-input>
-          </q-td>
+          </q-th>
         </q-tr>
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !([].find((n) => n === c.name)))" :key="col.name" :props="props">
@@ -30,10 +30,17 @@
               </div>
             </router-link>
           </q-td>
-          <q-td v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber'].find((n) => n === c.name))) "
+          <q-td
+            v-for="col in props.cols.filter((c) => !(['tag', 'review', 'rewiewNumber', 'title', 'teacher'].find((n) => n === c.name))) "
             :key="col.name" :props="props" :auto-width="false">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
               <div> {{ col.value }}</div>
+            </router-link>
+          </q-td>
+          <q-td v-for="col in props.cols.filter((c) => (['title', 'teacher'].find((n) => n === c.name))) "
+            :key="col.name" :props="props" :auto-width="false">
+            <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
+              <div style="text-align:left"> {{ col.value }}</div>
             </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
@@ -45,7 +52,8 @@
           <q-td v-for="col in   props.cols.filter((c) => (['tag'].find((n) => n === c.name)))" :key="col.name"
             :props="props">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
-              <div v-if="col.value">
+              <div v-if="col.value"
+                style="width:80px;display:flex;flex-wrap:wrap;align-content: center;justify-content: center;">
                 <div class="tag" v-for="k in (Object.keys(col.value))" :key="k">
                   <!-- {{board.childBoard.article.category}} -->
                   {{ reviewRule.tagOption[k][langWord] }}
@@ -104,7 +112,7 @@ const columns = computed(() => [
   },
   { name: 'teacher', align: 'left', label: t('teacher'), field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
 
-  { name: 'rewiewNumber', align: 'left', label: t('rewiewNumber'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
+  { name: 'rewiewNumber', align: 'left', label: t('review'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
   {
     name: 'tag',
     align: 'left',
@@ -129,26 +137,33 @@ const columns = computed(() => [
 <style lang="sass" scoped>
 
 .q-table
-  .q-table__top,
-  .q-table__bottom,
   thead
-    tr:first-child th    /* bg color is important for th; just specify one */
-      background-color: #fff
-    tr th
-      position: sticky
-      z-index: 1
-      padding: 5px
-      font-weight: 700
-      color: blue
-      &:hover
-        background: rgb(255,245,240)
+    tr
+      background: rgba(15, 145, 250, 1)
+      th
+        font-size: 0.9rem
+        position: sticky
+        z-index: 1
+        padding: 0
+        color: #fff
+        text-align: center
+        border-bottom: 0
+        &:nth-child(2):hover
+          background: rgba(25, 155, 255, 1)
+        &.searchTd label
+          background: #fff
+          border-radius: 6px
     tr:first-child th
       top: 0
-    tbody
-      td
-        height: auto
-      .q-tr.a:hover>td
-        background: #f0f0f0
+  tbody
+    td
+      height: auto
+      background: rgba(231, 255,255, 1)
+      font-size: 0.9rem
+    .q-tr.a:hover>td
+      background: #f0f0f0
+    .q-tr:nth-child(2n+1) td
+      background: rgba(255,255,255,1)
   /* this is when the loading indicator appears */
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
@@ -170,28 +185,30 @@ const columns = computed(() => [
   height: 10px
 // .q-tr:nth-child(2n+1) td
 //   background: #f5f5f5
-.q-tr:nth-child(2n+1) td
-  background: #fafaff
+
 .q-tr td:nth-child(5) a
   display: inline-block
   max-width: calc(300px + 10vw)
   min-width: 200px
   width: calc(60vw - 200px)
-.q-tr td.searchTd
-  background: #fff
 .btnLink
   width: 100%
   height: 100%
   background: transparent
   border: none
   cursor: pointer
+  &:link
+    color: rgb(0, 102, 204)
+  &:visited
+    color: rgb(80, 42, 124)
   &>div
     height: 100%
     line-height: 48px
-    // max-width: 300px
+    max-width: 120px
     overflow: hidden
     white-space: nowrap
     text-overflow: ellipsis
+    text-align: center
 a
   text-decoration: none
 </style>

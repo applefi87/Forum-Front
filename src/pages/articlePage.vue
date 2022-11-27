@@ -5,31 +5,36 @@
       separator="none">
       <template v-slot:header="props">
         <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
+          <q-th v-for="col in props.cols.filter(d => d.name !== 'content')" :key="col.name" :props="props" auto-width>
+            {{ col.label }}
+          </q-th>
+          <q-th v-for="col in props.cols.filter(d => d.name === 'content')" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
         </q-tr>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props" v-if="props.row.state != 0">
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <div v-if="col.name === 'user'" class=" userBTN" @click="showUserInfo(props.row)">
-              <img :src="'https://source.boringavatars.com/beam/30/' + (col.value === 'youHide' ? 'you' : col.value)"
-                class="profileImg"
-                :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''">
-              <br>
-              <b> {{ col.value === 'owner' ? t('owner') :
-                  col.value === 'you' ? t('you') :
-                    col.value === 'youHide' ?
-                      t('youHide') : (col.value || t('anonymous'))
-              }}</b>
+          <q-td v-for="col in props.cols.filter(d => d.name !== 'content')" :key="col.name" :props="props" auto-width>
+            <div v-if="col.name === 'user'" @click="showUserInfo(props.row)">
+              <div class=" userBTN"><img
+                  :src="'https://source.boringavatars.com/beam/30/' + (col.value === 'youHide' ? 'you' : col.value)"
+                  class="profileImg"
+                  :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''">
+                <br>
+                <b> {{ col.value === 'owner' ? t('owner') :
+                    col.value === 'you' ? t('you') :
+                      col.value === 'youHide' ?
+                        t('youHide') : (col.value || t('anonymous'))
+                }}</b>
+              </div>
             </div>
             <div v-else-if="col.name === 'review'" @click="viewArticle(props.row)">
               <q-icon name="star" color="warning" />
               {{ col.value }}
             </div>
             <div v-else-if="col.name === 'tags'" @click="viewArticle(props.row)"
-              style="max-width:120px;display:flex;flex-wrap:wrap;align-content: center;">
+              style="width:120px;display:flex;flex-wrap:wrap;align-content: center;justify-content: center;">
               <p class="tag" v-for="t in (col.value)" :tag="t" :key="t">
                 {{ parent.childBoard.article.category[0].tagOption
                   [t][langWord]
@@ -42,11 +47,16 @@
             <div v-else-if="col.name === 'semester'" @click="viewArticle(props.row)">
               {{ col.value }}
             </div>
-            <div v-else-if="col.name === 'content'" class="content"
-              style="text-align: left; display:flex; justify-content: space-between">
+          </q-td>
+          <q-td v-for="col in props.cols.filter(d => d.name === 'content')" :key="col.name" :props="props"
+            class="mainContent">
+            <div class="title">
+              {{ props.row.title }}
+            </div>
+            <div class="content">
               <div class="htmlContent" v-html="col.value" @click="viewArticle(props.row)"></div>
-              <div>
-                <q-btn square color="primary" icon="message" flat style="height:100% " @click="viewArticle(props.row)">
+              <div class="htmlBtn">
+                <q-btn square color="primary" icon="message" flat style="height:100%" @click="viewArticle(props.row)">
                   <q-badge v-if="props.row.msg1?.amount" rounded>
                     {{ props.row.msg1.amount }}
                   </q-badge>
@@ -197,7 +207,6 @@ const columns = computed(() => [
   },
   { name: 'review', align: 'left', label: t('score'), field: row => row.score, sortable: true, sortOrder: 'da', headerClasses: 'q-table--col-auto-width' },
   { name: 'tags', align: 'left', label: t('tags'), field: row => row.tags, sortable: true, sortOrder: 'da' },
-  { name: 'title', align: 'left', label: t('title'), field: row => row.title, sortOrder: 'da' },
   { name: 'content', align: 'left', label: parent?.childBoard?.article?.category[0]?.contentCol[langWord.value], field: row => row.content, sortOrder: 'da' }
 ])
 
@@ -212,55 +221,89 @@ provide('articles', articles)
 //   height: 100%
 :deep(.q-table)
   height: fit-content
-
-.q-table
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: #fff
-  tbody
-    height: 100%
+  background: #ddd
+  //   th
+  //   /* bg color is important for th; just specify one */
+  //   background-color: #ddd
   thead tr th
     height: 40px
     text-align: center
     position: sticky
-    z-index: 1
-    padding: 0 0 0 10px
-    color: blue
+    z-index: 5
+    padding: 0
+    color: #fff
+    font-size: 1rem
+    top: 0
+    background: rgba(15, 145, 250, 1)
     &:hover
-      background: rgb(255,245,240)
-  tr
+      background: rgba(25, 155, 255, 1)
+      // 確定mac正常就拿掉
+  // tr
+  //   height: 100%
+  thead tr th:first-child
+    padding: 0 0 0 8px
+  tbody
     height: 100%
+    .q-tr.a:hover>td
+      cursor: pointer
   .q-td
     padding: 0
     height: 100%
+    cursor: pointer
+    background: rgba(231, 255,255, 1)
     &>div
-      background: rgba(255,255,180,0.5)
+      width: 100%
       height: 100%
-      margin-top: auto
-      margin-bottom: auto
-.htmlContent
-  max-height: 200px
-  height: 100%
-  overflow: hidden
-  text-align: left
-  text-overflow: ellipsis
-  display: -webkit-box
-  -webkit-line-clamp: 8
-  -webkit-box-orient: vertical
-  &:deep(*)
-    margin: 0
-  td:first-child
-    padding-left: 8px
-  thead tr:first-child th
-    top: 0
-  tbody
-    .q-tr.a:hover>td
-      cursor: pointer
-  /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
-    top: 48px
+      display: flex
+      align-items: center
+      justify-content: center
+    &.mainContent
+      max-height: 200px
+      overflow: hidden
+      padding: 10px
+    .title
+      font-weight: 500
+      height: auto
+      width: 100%
+      display: inline-block
+      border-bottom: 3px solid rgba(205, 255,255, 1)
+      font-size: 1.2rem
+      text-align: left
+      margin: 0px 0 0 5px
+    .content
+      height: auto
+      overflow: hidden
+      width: auto
+      margin-left: 6px
+      min-height: 100px
+      text-align: left
+      display: flex
+      justify-content: space-between
+      .htmlBtn
+        flex-shrink: 0
+      .htmlContent
+        align-self: flex-start
+        max-height: 180px
+        max-width: 50vw
+        overflow: hidden
+        // min-width: 10vw
+        height: 100%
+        text-align: left
+        text-overflow: ellipsis
+        display: -webkit-box
+        -webkit-line-clamp: 7
+        -webkit-box-orient: vertical
+        flex-shrink: 1
+        &:deep(*)
+          margin: 0
+        p
+          margin: 0 0 2px 0
+          font-size: 1rem
+          // letter-spacing: 0.3px
+        /* this is when the loading indicator appears */
+        &.q-table--loading thead tr:last-child th
+          top: 48px
+
   // 舊style
 // .q-tr:nth-child(4n+1) td:nth-child(n+2)
 //   background: #f8f8f8
@@ -276,9 +319,7 @@ provide('articles', articles)
 // 新
 // 奇偶行不同顏色
 .q-tr:nth-child(2n+1) td
-  background: #fafaff
-.q-tr td:nth-child(4) button
-  text-align: left
+  background: rgba(255,255,255,1)
 .tag
   display: inline-block
   width: 30px
@@ -290,10 +331,6 @@ provide('articles', articles)
   height: fit-content
 .q-btn
   padding: 0 5px
-.title
-  max-width: 200px
-  overflow: hidden
-  text-overflow: ellipsis
 .alertTitle
   margin: 20px 10px
   color: red
@@ -306,9 +343,10 @@ provide('articles', articles)
 .userBTN
   font-size: 12px
   padding: 6px 0 0 0
-  max-width: 80px
+  width: 80px
   overflow: hidden
   text-align: center
+  flex-grow: 1
   &:hover
     background: rgba(100,200,255,0.1)
 .profileImg
