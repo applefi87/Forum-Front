@@ -24,7 +24,7 @@
       v-model="loginState">
       <div class="row no-wrap q-pa-md">
         <div class="column">
-          <q-form @submit.prevent="login" class="q-gutter-xs">
+          <q-form @submit.prevent="login" class="q-gutter-xs loginBox">
             <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules :rules="accountVal"
               autocomplete="username" />
             <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules :rules="passwordVal"
@@ -135,4 +135,6 @@ provide('registerState', registerState)
 // 避免預設btn變全大寫
 .q-btn:deep( >.q-btn__content >.block)
   text-transform: capitalize
+.loginBox
+  width: 250px
 </style>

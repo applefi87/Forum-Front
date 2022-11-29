@@ -50,27 +50,27 @@
           </q-td>
           <q-td v-for="col in props.cols.filter(d => d.name === 'content')" :key="col.name" :props="props"
             class="mainContent">
-            <div class="title">
-              {{ props.row.title }}
-            </div>
+
             <div class="content">
+              <div class="title">{{ props.row.title }}</div>
               <div class="htmlContent" v-html="col.value" @click="viewArticle(props.row)"></div>
-              <div class="htmlBtn">
-                <q-btn square color="primary" icon="message" flat style="height:100%" @click="viewArticle(props.row)">
-                  <q-badge v-if="props.row.msg1?.amount" rounded>
-                    {{ props.row.msg1.amount }}
-                  </q-badge>
-                </q-btn>
-                <q-btn v-if="props.row.owner" square color="primary" flat icon="edit" style="height:100% "
-                  @click="editArticle(props.row)">
-                </q-btn>
-                <q-btn v-if="props.row.owner" square color="red" flat icon="delete" style="height:100% "
-                  @click="deleteId = props.row._id; confirmDelete = true">
-                </q-btn>
-                <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
-                  @click="banArticle(props.row._id)">
-                </q-btn>
-              </div>
+            </div>
+            <div class="htmlBtn">
+              <q-btn v-if="props.row.owner" square color="primary" flat icon="edit" style="height:100% "
+                @click="editArticle(props.row)">
+              </q-btn>
+              <q-btn square color="primary" icon="message" flat style="height:100%" @click="viewArticle(props.row)">
+                <q-badge v-if="props.row.msg1?.amount" rounded>
+                  {{ props.row.msg1.amount }}
+                </q-badge>
+              </q-btn>
+
+              <q-btn v-if="props.row.owner" square color="red" flat icon="delete" style="height:100% "
+                @click="deleteId = props.row._id; confirmDelete = true">
+              </q-btn>
+              <q-btn v-if="users.role === 0" square color="red" flat icon="cancel" style="height:100% "
+                @click="banArticle(props.row._id)">
+              </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -261,29 +261,39 @@ provide('articles', articles)
       max-height: 200px
       overflow: hidden
       padding: 10px
-    .title
-      font-weight: 500
-      height: auto
-      width: 100%
-      display: inline-block
-      border-bottom: 3px solid rgba(205, 255,255, 1)
-      font-size: 1.2rem
-      text-align: left
-      margin: 0px 0 0 5px
-    .content
-      height: auto
-      overflow: hidden
-      width: auto
-      margin-left: 6px
-      min-height: 100px
-      text-align: left
       display: flex
-      justify-content: space-between
+      .title
+        font-weight: 500
+        height: auto
+        width: 100%
+        display: inline-block
+        border-bottom: 3px solid rgba(205, 255,255, 1)
+        font-size: 1.2rem
+        text-align: left
+        margin: 0px 0 0 5px
+      .content
+        align-self: start
+        flex-grow: 1
+        max-height: 200px
+        height: auto
+        overflow: hidden
+        width: auto
+        margin-left: 6px
+        min-height: 100px
+        text-align: left
+        display: block
       .htmlBtn
-        flex-shrink: 0
+        height: auto
+        align-self: center
+        width: 40px !important
+        display: flex
+        justify-content: center
+        flex-direction: column
+        &>button
+          margin-top: 3px
+          margin-bottom: 3px
       .htmlContent
         align-self: flex-start
-        max-height: 180px
         max-width: 50vw
         overflow: hidden
         // min-width: 10vw
