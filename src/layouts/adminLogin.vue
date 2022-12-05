@@ -46,15 +46,14 @@ const login = async () => {
     const rep = await users.login(loginForm)
     notify(rep)
     if (rep.success) {
-      console.log(document.cookie)
-      // loginForm.account = ''
-      // loginForm.password = ''
-      // loginForm.keepLogin = false
-      // router.push('/')
+      loginForm.account = ''
+      loginForm.password = ''
+      loginForm.keepLogin = false
+      router.push('/home')
     }
   } catch (error) {
     notify(error.response.data)
-    console.log(error.response.data)
+    // console.log(error.response.data)
   }
 }
 // *********************************************子文章************************
