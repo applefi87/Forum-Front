@@ -49,11 +49,11 @@ const login = async () => {
       loginForm.account = ''
       loginForm.password = ''
       loginForm.keepLogin = false
-      router.push('/')
+      router.push('/home')
     }
   } catch (error) {
     notify(error.response.data)
-    console.log(error.response.data)
+    // console.log(error.response.data)
   }
 }
 // *********************************************子文章************************

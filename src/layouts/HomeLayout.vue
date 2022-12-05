@@ -19,8 +19,6 @@ import { ref, watch, inject } from 'vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-// import { useBoardStore } from 'src/stores/board'
-import { useRouter } from 'vue-router'
 const rightDrawerState = inject('rightDrawerState')
 const users = useUserStore()
 const leftDrawerActive = false

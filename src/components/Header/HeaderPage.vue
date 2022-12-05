@@ -2,7 +2,7 @@
   <q-toolbar>
     <q-btn v-if="leftDrawerActive" class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
     <q-toolbar-title class="q-pl-none" style="padding-bottom: 10px">
-      <q-btn flat @click="router.push('/board/'+homeID)">
+      <q-btn flat @click="router.push('/home')">
         <q-avatar class="gt-sm q-mr-sm">
           <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png">
         </q-avatar>
@@ -24,20 +24,19 @@
       v-model="loginState">
       <div class="row no-wrap q-pa-md">
         <div class="column">
-          <q-form @submit.prevent="login" class="q-gutter-xs">
-            <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules
-              :rules="[val => val && val.length > 0 || t('cantNull')]" autocomplete="username" />
-            <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules
-              :rules="[val => val && val.length > 0 || t('cantNull')]" :type="isPwd ? 'password' : 'text'"
-              autocomplete="password">
+          <q-form @submit.prevent="login" class="q-gutter-xs loginBox">
+            <q-input filled v-model="loginForm.account" :label='t("account")' lazy-rules :rules="accountVal"
+              autocomplete="username" />
+            <q-input filled v-model="loginForm.password" :label='t("password")' lazy-rules :rules="passwordVal"
+              :type="isPwd ? 'password' : 'text'" autocomplete="password">
               <template v-slot:append>
                 <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                   @click="isPwd = !isPwd" />
               </template>
             </q-input>
             <div>
-              <div style="height:50px">
-                <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" />
+              <div style="height:40px">
+                <!-- <q-checkbox v-model="loginForm.keepLogin" :label='t("keepLogin")' size="xs" color="green" /> -->
                 <q-btn :label="t('forgetPWD')" type="submit" color="primary" class="f-r" flat to="/forgetPWD" />
               </div>
               <q-btn :label='t("login")' type="submit" color="primary" />
@@ -61,7 +60,7 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import { useRouter } from 'vue-router'
-const homeID = process.env.HOME_ID
+import { accountVal, passwordVal } from 'src/utils/data/valList.js'
 const router = useRouter()
 const users = useUserStore()
 // ****
@@ -93,19 +92,19 @@ const toggleRightDrawer = () => {
   rightDrawerState.value = !rightDrawerState.value
 }
 // ********************
-const loginForm = reactive({ account: '', password: '', keepLogin: false })
+const loginForm = reactive({ account: '', password: '' })
 // ****************登陸****
 const login = async () => {
   try {
     const rep = await users.login(loginForm)
     notify(rep)
     if (rep.success) {
+      router.go(0)
       loginForm.account = ''
       loginForm.password = ''
-      loginForm.keepLogin = false
     }
   } catch (error) {
-    console.log(error.response.data)
+    // console.log(error.response?.data)
   }
 }
 //* ***************登出****
@@ -114,9 +113,10 @@ const logout = async () => {
     const rep = await users.logout()
     notify(rep)
   } catch (error) {
-    notify(error.response.data)
-    console.log(error)
+    // console.log(error)
   }
+  // console.log('del')
+  router.go(0)
 }
 
 provide('registerState', registerState)
@@ -135,4 +135,6 @@ provide('registerState', registerState)
 // 避免預設btn變全大寫
 .q-btn:deep( >.q-btn__content >.block)
   text-transform: capitalize
+.loginBox
+  width: 250px
 </style>

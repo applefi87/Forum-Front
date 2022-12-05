@@ -27,7 +27,7 @@ const route = useRoute()
 
 const file = ref(null)
 const onRejected = (file) => {
-  console.log(file)
+  // console.log(file)
   notify({ title: t('csvMax5MB') })
 }
 const uploading = ref(false)
@@ -48,22 +48,22 @@ watch(file, () => {
 const out = ref('')
 const transform = async () => {
   if (input.value) {
-    console.log('in')
+    // console.log('in')
     uploading.value = true
     // const load = loading({ title: 'Please wait,building.', delay: 100 })
     try {
       const { data } = await apiAuth.post('/board/create/temp/' + route.params.id, { csv: input.value, lang: 'zhTW' })
       notify({ success: data.success, ...data.message })
     } catch (error) {
-      console.log(error)
-      notify(...error.response.data.message)
+      // console.log(error)
+      // notify(...error.response.data.message)
     }
     uploading.value = false
   }
 }
 const uniqueColVal = [
   val => (val !== null && val !== '') || '必填 學年-期 ex: 111-1',
-  val => (val.length === 5 && val.match(/^\d{3}-[1-3]$/)) || '規格錯誤 ex: 111-1'
+  val => (val.length === 5 && (/^\d{3}-[1-3]$/).test(val)) || '規格錯誤 ex: 111-1'
 ]
 
 </script>

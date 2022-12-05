@@ -14,8 +14,8 @@
           <q-step :name="2" title="驗證學校信箱" icon="email" :done="step > 2">
             <q-card-section class="q-pt-none">
               <q-input ref="emailFormatValid" filled v-model="registerForm.schoolEmail" :label='t("email")'
-                :rules="emailVal(false)" />
-              <q-btn dense color="secondary" :loading="mailSending" @click="sendMail(false)" label="寄驗證信">
+                :rules="emailVal(mustSchool)" :hint="t('emailRule') + ' applefi87@gmail.com'" />
+              <q-btn dense color="secondary" :loading="mailSending" @click="sendMail()" label="寄驗證信">
                 <template v-slot:loading>
                   <q-spinner-radio />
                 </template>
@@ -30,12 +30,13 @@
               <q-input filled v-model="registerForm.account" :label='t("account")' :rules="accountVal"
                 ref=accountValid />
               <q-input filled v-model="registerForm.password" :label='t("password")' :type="isPwd ? 'password' : 'text'"
-                :rules="passwordVal"><template v-slot:append>
+                ref=passwordValid :rules="passwordVal"><template v-slot:append>
                   <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                     @click="isPwd = !isPwd" />
                 </template></q-input>
               <q-input filled v-model="registerForm.nickName" :label='t("nickname")' :rules="nickNameVal"
                 ref=nickNameValid />
+              <!-- :hint="t('nickNameRules')" -->
               <p class="gender">Gender:</p>
               <div class="q-gutter-sm">
                 <q-radio v-model="registerForm.gender" val=1 :label='t("male")' />
@@ -46,7 +47,8 @@
           </q-step>
           <template v-slot:navigation>
             <q-stepper-navigation>
-              <q-btn v-if="step < 3" @click="nextPage()" color="primary" label="Continue" :loading="mailVerifying">
+              <q-btn v-if="step < 3" @click="nextPage()" color="primary" :label="t('continue')"
+                :loading="mailVerifying">
                 <template v-slot:loading>
                   <q-spinner-radio />
                 </template>
@@ -68,6 +70,8 @@ import { ref, reactive, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import notify from '../utils/notify'
+import { accountVal, passwordVal, nickNameVal, mailCodeVal, emailVal } from 'src/utils/data/valList.js'
+const mustSchool = true
 const isPwd = ref(true)
 const { t } = useI18n()
 const users = useUserStore()
@@ -76,19 +80,20 @@ const registerState = inject('registerState')
 const loginState = inject('loginState')
 // ****************註冊****
 const accountValid = ref(null)
+const passwordValid = ref(null)
 const nickNameValid = ref(null)
 // 寄email
 const emailFormatValid = ref(null)
 const mailSending = ref(false)
-const sendMail = async (isSchool) => {
+const sendMail = async () => {
   try {
     if (!emailFormatValid.value.validate()) return
     mailSending.value = true
-    const rep = await users.sendMail(registerForm.schoolEmail, isSchool)
+    const rep = await users.sendMail(registerForm.schoolEmail, mustSchool)
     notify(rep)
     mailSending.value = false
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     notify(error.response.data)
   }
 }
@@ -98,24 +103,6 @@ const stepper = ref(null)
 const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 //
-const emailVal = (isSchool) => {
-  const rule = [
-    val => (val !== null && val !== '') || 'Please type your email',
-    val => val.length <= 40 || '必須 40 個字以下'
-  ]
-  if (isSchool) {
-    rule.push(
-      // @後方必須含 .edu.
-      // eslint-disable-next-line no-useless-escape
-      val => val.match(/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/) || '格式錯誤，必須為學校信箱')
-  } else {
-    rule.push(
-      // eslint-disable-next-line no-useless-escape
-      val => val.match(/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/) || '格式錯誤，僅可含英小寫、數、@、.'
-    )
-  }
-  return rule
-}
 const nextPage = async () => {
   try {
     if (step.value === 2) {
@@ -128,7 +115,7 @@ const nextPage = async () => {
     }
     stepper.value.next()
   } catch (error) {
-    console.log(error.response.data)
+    // console.log(error.response.data)
     notify(error.response.data)
   }
 }
@@ -136,26 +123,6 @@ const nextPage = async () => {
 
 const registerForm = reactive({ schoolEmail: '', schoolEmailCode: '', account: '', password: '', nickName: '', gender: '0' })
 
-// ***********rule val區******************************
-const accountVal = [
-  val => (val && val.length >= 4 && val.length <= 30) || '長度需介於4~30字之間',
-  // 簡易版
-  // val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
-  val => val.match(/^[a-z0-9]+$/) || '只能輸入英文小寫與數字'
-]
-const passwordVal = [
-  val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
-  // 先改成簡易密碼 必須有英數就好
-  val => (val.match(/[a-zA-Z]/) && val.match(/[0-9]/)) || '必須含英文與數字',
-  val => true || '預留給有同名使用，名稱重複會把這行換成不能等於原本帳號'
-]
-const nickNameVal = [
-  val => (val && val.length >= 4 && val.length <= 20) || '長度需介於4~20字之間',
-  val => true || '預留給有同名使用'
-]
-const mailCodeVal = [
-  val => (val.length === 6 && val.match(/^[0-9]+$/)) || '為六位數字'
-]
 const register = async () => {
   try {
     const rep = await users.register(registerForm)
@@ -179,15 +146,15 @@ const register = async () => {
       accountVal[2] = val => true || ''
     }
     if (rep.NickNameOccupied) {
-      nickNameVal[1] = val => val !== rep.nickName || '已經有相同名稱'
+      nickNameVal[2] = val => val !== rep.nickName || '已經有相同名稱'
     } else {
-      nickNameVal[1] = val => true || ''
+      nickNameVal[2] = val => true || ''
     }
     accountValid.value.validate()
     nickNameValid.value.validate()
   } catch (error) {
-    console.log(error.response.data)
-    notify(error.response.data)
+    // console.log(error.response.data)
+    // notify(error.response.data)
   }
 }
 

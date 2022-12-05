@@ -2,11 +2,11 @@
   <q-page class="flex flex-center">
     <q-form>
       <q-card-section v-if="!pwdChanged" class="q-pt-none">
-        <q-input filled v-model="form.password" :label='t("password")' :hint='t("pwdRule")'
+        <q-input filled v-model="form.password" :label='t("password")' :hint='t("easyRule")'
           :type="isPwd ? 'password' : 'text'" :rules="passwordVal" autocomplete="password"><template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template></q-input>
-        <q-input filled v-model="form.newPWD" :label='t("newPWD")' :hint='t("pwdRule")'
+        <q-input filled v-model="form.newPWD" :label='t("newPWD")' :hint='t("easyRule")'
           :type="isPwd ? 'password' : 'text'" :rules="passwordVal" autocomplete="new-password"><template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template></q-input>
@@ -31,6 +31,7 @@ import notify from 'src/utils/notify'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { passwordVal } from 'src/utils/data/valList.js'
 const router = useRouter()
 const { t } = useI18n({ useScope: 'global' })
 const pwdChanged = ref(false)
@@ -40,27 +41,16 @@ const users = useUserStore()
 const form = reactive({ password: '', newPWD: '' })
 const account = ref('')
 
-// ***********rule val區******************************
-const passwordVal = reactive([
-  val => (val && val.length >= 8 && val.length <= 30) || '長度需介於8~30字之間',
-  val => (val.match(/[a-z]/) && val.match(/[0-9]/)) || '必須含英文與數字',
-  // val => (val.match(/[A-Z]/) && val.match(/[a-z]/) && val.match(/[0-9]/)) || '必須含英文大、小寫與數字',
-  val => true || '預留給有同名使用'
-])
-
 const changePWD = async () => {
   try {
+    if (form.password === form.newPWD) return notify({ title: '新舊密碼不可相同' })
     pwdVerifying.value = true
     const rep = await users.changePWD(form)
     notify(rep)
-    pwdVerifying.value = false
-    users.token = ''
-    users.account = ''
-    users.role = 0
     router.push('/')
   } catch (error) {
     notify(error.response.data)
-    console.log(error.response.data)
+    // console.log(error.response.data)
   }
 }
 const init = () => {
