@@ -252,7 +252,7 @@ const sendMsg = async function () {
     //   msgBox.value.$el.scrollIntoView(false, { behavior: 'smooth' })
     // })
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
   sendingMsg.value = false
 }
@@ -265,7 +265,7 @@ const deleteMsg = async function (msgId) {
       articleMsg.datas.splice(articleIdx, 1)
     }
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }
 const banMsg = async function (msgId) {
@@ -275,7 +275,7 @@ const banMsg = async function (msgId) {
       articleMsg.datas[articleMsg.datas.findIndex(it => it.id === msgId)].state = 0
     }
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }
 const editMsg = async function (msgId, msg, privacy) {
@@ -293,7 +293,7 @@ const updateMsg = async function () {
       cancelEdit()
     }
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }
 const cancelEdit = () => {

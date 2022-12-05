@@ -93,7 +93,7 @@ const sendMail = async () => {
     notify(rep)
     mailSending.value = false
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     notify(error.response.data)
   }
 }
@@ -115,7 +115,7 @@ const nextPage = async () => {
     }
     stepper.value.next()
   } catch (error) {
-    console.log(error.response.data)
+    // console.log(error.response.data)
     notify(error.response.data)
   }
 }
@@ -153,8 +153,8 @@ const register = async () => {
     accountValid.value.validate()
     nickNameValid.value.validate()
   } catch (error) {
-    console.log(error.response.data)
-    notify(error.response.data)
+    // console.log(error.response.data)
+    // notify(error.response.data)
   }
 }
 

@@ -50,7 +50,7 @@ const changePWD = async () => {
     router.push('/')
   } catch (error) {
     notify(error.response.data)
-    console.log(error.response.data)
+    // console.log(error.response.data)
   }
 }
 const init = () => {

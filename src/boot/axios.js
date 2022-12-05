@@ -27,7 +27,7 @@ apiAuth.interceptors.request.use(config => {
 apiAuth.interceptors.response.use(res => {
   return res
 }, async error => {
-  console.log('in axios Intersepter')
+  // console.log('in axios Intersepter')
   // 如果請求有回應
   if (error.response) {
     // 如果是 401，可能是 JWT 過期
@@ -45,8 +45,8 @@ apiAuth.interceptors.response.use(res => {
           error.config.headers.authorization = `Bearer ${users.token}`
           return await axios(error.config)
         } catch (err) {
-          console.log('boot/axios Error')
-          console.log(err)
+          // console.log('boot/axios Error')
+          // console.log(err)
           // 重新登入失敗，強制登出
           users.logout()
           return await Promise.reject(error)

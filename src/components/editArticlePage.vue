@@ -115,7 +115,7 @@ const uniqueInfo = computed(() => {
 // *********************
 // form 基礎object建立(依照article),並填上原先值
 const init = () => {
-  console.log('init adit')
+  // console.log('init adit')
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
   if (articleRule?.category?.length > 0) {
     categoryList.length = 0
@@ -151,14 +151,14 @@ const update = () => {
       updating.value = true
       try {
         editArticleContent.privacy = privacy.value.value
-        console.log(editArticleContent)
+        // console.log(editArticleContent)
         const { data } = await apiAuth.post('/article/edit/' + route.params.id, editArticleContent)
         repNotify(data)
         editArticleState.value = false
         // 自動重整才能看到評分
         router.go()
       } catch (error) {
-        console.log(error.response.data)
+        // console.log(error.response.data)
         repNotify(error.response.data)
       }
       updating.value = false

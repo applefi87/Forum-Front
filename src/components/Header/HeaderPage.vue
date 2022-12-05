@@ -104,7 +104,7 @@ const login = async () => {
       loginForm.password = ''
     }
   } catch (error) {
-    console.log(error.response?.data)
+    // console.log(error.response?.data)
   }
 }
 //* ***************登出****
@@ -113,9 +113,9 @@ const logout = async () => {
     const rep = await users.logout()
     notify(rep)
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
-  console.log('del')
+  // console.log('del')
   router.go(0)
 }
 

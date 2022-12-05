@@ -149,7 +149,7 @@ const deleteArticle = async () => {
   const { data } = await apiAuth.post('/article/', { _id: deleteId.value })
   if (data.success) {
     confirmDelete.value = false
-    console.log('delete ok')
+    // console.log('delete ok')
     articles.splice(articles.findIndex(it => it._id === deleteId.value), 1)
   }
 }

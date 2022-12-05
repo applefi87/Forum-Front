@@ -33,7 +33,7 @@ export const useUserStore = defineStore('user', {
         const { data } = await api.post('/user/login', form)
         // 使用者資訊存起來
         this.token = data.result.token
-        console.log(this.token)
+        // console.log(this.token)
         this._id = data.result._id
         this.account = data.result.account
         this.role = data.result.role

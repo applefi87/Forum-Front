@@ -55,7 +55,7 @@ const sendForgetPWDMail = async () => {
     notify(rep)
   } catch (error) {
     notify(error.response.data)
-    console.log(error.response.data)
+    // console.log(error.response.data)
   }
   mailSending.value = false
 }
@@ -65,7 +65,7 @@ const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 const verifyForgetPWDCode = async () => {
   try {
-    console.log('in')
+    // console.log('in')
     if (!mailCodeValid.value.validate()) return
     mailVerifying.value = true
     const rep = await users.verifyForgetPWDCode(form)
@@ -74,7 +74,7 @@ const verifyForgetPWDCode = async () => {
     getTempPWD.value = true
   } catch (error) {
     // notify(error.response.data)
-    console.log(error)
+    // console.log(error)
   }
   mailVerifying.value = false
 }

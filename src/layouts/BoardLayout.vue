@@ -142,7 +142,7 @@ const filterUnique = ref('')
 const filterUniqueOptions = shallowRef([])
 // 每次進到新版統一的步驟
 const init = async () => {
-  console.log('init')
+  // console.log('init')
   // id 是為了頁內跳轉，有時網址變了不會觸發init，所以改function
   try {
     boards.length = 0
@@ -196,7 +196,7 @@ const init = async () => {
             }
           }
         } catch (error) {
-          console.log(error.response.data)
+          // console.log(error.response.data)
         }
       }
       await createLeftDrawer()
@@ -212,7 +212,7 @@ const init = async () => {
       boardInfoForm.score = null
     }
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     router.push('/404')
   }
 }
@@ -246,7 +246,7 @@ const getArticles = async () => {
     articles.length = 0
     articles.push(...data.result)
   } catch (error) {
-    console.log(error.response.data)
+    // console.log(error.response.data)
   }
 }
 // 進articles的tab才載入，加快初始速度，同時載入過不重複載入
@@ -281,7 +281,7 @@ const getChildboard = async () => {
     }
     boards.push(...data.result)
   } catch (error) {
-    console.log(error.response.data)
+    // console.log(error.response.data)
   }
   getChildboardLoading.value = false
 }
