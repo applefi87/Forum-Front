@@ -25,6 +25,12 @@
             <q-checkbox v-model="filterAll" :label="t('all')" />
           </div>
           <br>
+          <q-input borderless dense v-model="search" :placeholder="t('search')" outlined>
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+          <br>
           <q-btn :loading="getChildboardLoading" color="primary" @click="getChildboard" :label="t('search')">
             <template v-slot:getChildboardLoading>
               Loading...
@@ -99,7 +105,7 @@ const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
 const loginState = inject('loginState')
 const langWord = inject('langWord')
-
+const search = ref('')
 const leftDrawerActive = true
 const publishArticleState = ref(false)
 const editArticleState = ref(false)
@@ -270,6 +276,10 @@ const getChildboard = async () => {
       filterUnique: [{
         col: 'c80',
         text: filterUnique.value
+      }],
+      search: [{
+        col: 'c40',
+        text: search.value
       }]
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?test=' + encodedFilter)
