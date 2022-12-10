@@ -17,6 +17,11 @@
       <chartInfo v-if="boardInfoForm.amount > 0" :form="boardInfoForm" />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
+          <q-input borderless dense v-model="search" :placeholder="t('search')" outlined>
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
           <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
             :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
           <div>
@@ -25,12 +30,7 @@
             <q-checkbox v-model="filterAll" :label="t('all')" />
           </div>
           <br>
-          <q-input borderless dense v-model="search" :placeholder="t('search')" outlined>
-            <template v-slot:append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-          <br>
+
           <q-btn :loading="getChildboardLoading" color="primary" @click="getChildboard" :label="t('search')">
             <template v-slot:getChildboardLoading>
               Loading...
@@ -316,7 +316,7 @@ provide('userInfoForm', userInfoForm)
 .q-header
   height: 48px
 .searchRows > .row
-  margin-bottom: 30px
+  margin-bottom: 20px
 .q-drawer-container
   &:deep(.q-drawer)
     top: 48px
