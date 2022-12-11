@@ -45,12 +45,10 @@ const login = async () => {
   try {
     const rep = await users.login(loginForm)
     notify(rep)
-    if (rep.success) {
-      loginForm.account = ''
-      loginForm.password = ''
-      loginForm.keepLogin = false
-      router.push('/home')
-    }
+    loginForm.account = ''
+    loginForm.password = ''
+    loginForm.keepLogin = false
+    router.push('/home')
   } catch (error) {
     notify(error.response.data)
     // console.log(error.response.data)

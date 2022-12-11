@@ -17,11 +17,11 @@
       <chartInfo v-if="boardInfoForm.amount > 0" :form="boardInfoForm" />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
-          <q-input borderless dense v-model="search" :placeholder="t('search')" outlined>
+          <!-- <q-input borderless dense v-model="search" :placeholder="t('search')" outlined>
             <template v-slot:append>
               <q-icon name="search" />
             </template>
-          </q-input>
+          </q-input> -->
           <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
             :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
           <div>
@@ -94,7 +94,6 @@ import editArticlePage from 'src/components/editArticlePage.vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-// import { useBoardStore } from 'src/stores/board'
 import { useRoute, useRouter } from 'vue-router'
 import { api, apiAuth } from 'src/boot/axios'
 const route = useRoute()
@@ -105,7 +104,7 @@ const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
 const loginState = inject('loginState')
 const langWord = inject('langWord')
-const search = ref('')
+// const search = ref('')
 const leftDrawerActive = true
 const publishArticleState = ref(false)
 const editArticleState = ref(false)
@@ -267,20 +266,22 @@ const getChildboardLoading = ref(false)
 const getChildboard = async () => {
   try {
     getChildboardLoading.value = true
+    // 順序重要 影響後端index順序
     const encodedFilter = encodeURI(JSON.stringify({
       filterData: [{
         col: 'c0',
         text: filterC0.value,
         all: filterAll.value
       }],
+      // search: [{
+      //   col: 'c40',
+      //   text: search.value
+      // }],
       filterUnique: [{
         col: 'c80',
         text: filterUnique.value
       }],
-      search: [{
-        col: 'c40',
-        text: search.value
-      }]
+      langWord: langWord.value
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?test=' + encodedFilter)
     boards.length = 0

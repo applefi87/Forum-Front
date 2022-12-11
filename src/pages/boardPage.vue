@@ -1,9 +1,9 @@
 <template>
   <q-page v-if="boards.length > 0">
-    <q-table :rows="boards" :columns="columns" row-key="_id" v-model:pagination="pagination"
+    <q-table :rows="filtedBoards" :columns="columns" row-key="_id" v-model:pagination="pagination"
       :rows-per-page-options="[15, 30, 50]">
       <template v-slot:header="props">
-        <!-- <q-tr>
+        <q-tr>
           <q-th colspan="8" class="searchTd">
             <q-input borderless dense debounce="999999" v-model="filter" :placeholder="t('search')" outlined
               style="width:300px; max-width:80%;display:inline-block;float:right ;margin:0 10px 0 10px">
@@ -12,7 +12,7 @@
               </template>
             </q-input>
           </q-th>
-        </q-tr> -->
+        </q-tr>
         <q-tr :props="props">
           <q-th v-for="col in props.cols.filter((c) => !([].find((n) => n === c.name)))" :key="col.name" :props="props">
             {{ col.label }}
@@ -40,7 +40,7 @@
           <q-td v-for="col in props.cols.filter((c) => (['title', 'teacher'].find((n) => n === c.name))) "
             :key="col.name" :props="props" :auto-width="false">
             <router-link :to="'/board/' + props.row._id" class="btnLink" target="_blank">
-              <div style="text-align:left"> {{ col.value }}</div>
+              <div style="text-align:left" :class="col.name === 'title' ? 'title' : ''"> {{ col.value }}</div>
             </router-link>
           </q-td>
           <q-td v-for="col in   props.cols.filter((c) => (['rewiewNumber'].find((n) => n === c.name)))" :key="col.name"
@@ -81,12 +81,12 @@ const langWord = inject('langWord')
 // ----------
 const reviewRule = computed(() => board.childBoard.article.category.find(i => i.c === 1))
 //
-// const filter = ref('')
-// const filtedBoards = computed(() => {
-//   return boards.filter((s) => {
-//     return RegExp('.*' + filter.value + '.*', 'i').test(s.colData.c40)
-//   })
-// })
+const filter = ref('')
+const filtedBoards = computed(() => {
+  return boards.filter((s) => {
+    return RegExp('.*' + filter.value + '.*', 'i').test(s.colData.c40)
+  })
+})
 const pagination = ref({ rowsPerPage: 15 })
 const columns = computed(() => [
   // 分母沒值會報錯，所以先預留1來保底
@@ -152,7 +152,7 @@ const columns = computed(() => [
         &.searchTd label
           background: #fff
           border-radius: 6px
-    tr:nth-child(1) th
+    tr:nth-child(2) th
       position: sticky
       top: 0
   tbody
@@ -209,6 +209,9 @@ const columns = computed(() => [
     white-space: nowrap
     text-overflow: ellipsis
     text-align: center
+    &.title
+      max-width: initial
 a
   text-decoration: none
+
 </style>
