@@ -23,7 +23,7 @@
               </td>
             </tr>
             <tr>
-              <td>{{ t('semester') }}</td>
+              <td>{{ parent.childBoard.rule.transformTable.c80[langWord] }}</td>
               <td>
                 <q-select v-if="uniqueList?.length > 0" outlined v-model="unique" :options="uniqueList" dense
                   options-dense :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" :rules="mustSelectVal" />
@@ -108,7 +108,7 @@ const publishArticleState = inject('publishArticleState')
 // 版有unique資料
 const board = inject('board')
 // 母版有能留言的規則
-const articleRule = inject('articleRule')
+const parent = inject('parent')
 // ************************************************************
 
 // 有3個板，就產生3個表單 totalForm.f1 2 3
@@ -124,7 +124,7 @@ const privacy = ref({})
 // 先抓取文章分類+設個預設的
 const categoryList = reactive([])
 const categoryCodeList = computed(() =>
-  articleRule?.category?.map(c => {
+  parent?.childBoard?.article?.category?.map(c => {
     if (c.c === 1) {
       return { label: t('review'), value: 1 }
     } else {
@@ -142,7 +142,8 @@ const uniqueList = computed(() => {
   if (board?.uniqueData?.length > 0) {
     return board.uniqueData.map(u => {
       return {
-        label: t('semester') + ':' + (u.c80 || t('none')) + ',' + t('time') + ':' + ((u.c85[0] && u.c85[0] !== '無') ? u.c85[0] : t('none')) + ',' + t('location') + ':' + ((u.c85[1] && u.c85[1] !== '無') ? u.c85[1] : t('none')), value: u._id
+        label: parent.childBoard.rule.transformTable.c80[langWord.value] + ':' + (u.c80 || t('none')) + ',' + parent.childBoard.rule.transformTable.c85[langWord.value] + ':' + ((u.c85 && u.c85 !== '無') ? u.c85 : t('none')) + ',' + parent.childBoard.rule.transformTable.c90[langWord.value] + ':' + ((u.c90 && u.c90 !== '無') ? u.c90 : t('none')),
+        value: u._id
       }
     })
   }
@@ -152,9 +153,9 @@ const uniqueList = computed(() => {
 // form 基礎欄位建立(依照article)
 const init = () => {
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
-  if (articleRule?.category?.length > 0) {
+  if (parent?.childBoard?.article?.category?.length > 0) {
     categoryList.length = 0
-    categoryList.push(...articleRule.category)
+    categoryList.push(...parent?.childBoard?.article.category)
     // 對應加上form.fx
     categoryList?.forEach(f => {
       form['f' + f.c] = { title: '', content: f.contentTemplate[0] || '' }

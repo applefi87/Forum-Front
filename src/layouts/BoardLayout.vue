@@ -139,7 +139,6 @@ const hasArticle = ref(false)
 const board = reactive({})
 const boards = reactive([])
 const parent = reactive({})
-const articleRule = reactive({})
 const article = reactive([])
 const articles = reactive([])
 // 給articlePage用的
@@ -191,10 +190,8 @@ const init = async () => {
             const { data } = await api.get('/board/' + parentID)
             for (const k in parent) delete parent[k]
             Object.assign(parent, data.result)
-            for (const k in articleRule) delete articleRule[k]
-            Object.assign(articleRule, parent.childBoard?.article)
             // 母版要開放文章
-            if (articleRule.active) {
+            if (parent.childBoard?.article?.active) {
               // console.log('有文章區')
               hasArticle.value = true
               findArticle = true
@@ -203,9 +200,6 @@ const init = async () => {
           if (!findArticle) {
             // 不然就清空不顯示
             hasArticle.value = false
-            for (const k in articleRule) {
-              delete articleRule[k]
-            }
           }
         } catch (error) {
           // console.log(error.response.data)
@@ -313,7 +307,6 @@ provide('article', article)
 provide('articleMsg', articleMsg)
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
-provide('articleRule', readonly(articleRule))
 provide('viewArticleState', viewArticleState)
 provide('editArticleContent', editArticleContent)
 provide('editArticleState', editArticleState)
