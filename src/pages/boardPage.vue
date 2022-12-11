@@ -88,13 +88,14 @@ const filtedBoards = computed(() => {
   })
 })
 const pagination = ref({ rowsPerPage: 15 })
+
 const columns = computed(() => [
   // 分母沒值會報錯，所以先預留1來保底
   { name: 'review', align: 'left', label: t('score'), field: row => (Math.ceil(row.beScored?.scoreSum / (row.beScored?.amount || 1)) || ''), sortable: true, sortOrder: 'da' },
   {
     name: 'department',
     required: true,
-    label: t('department'),
+    label: board.childBoard.rule.transformTable.c0[langWord.value],
     align: 'left',
     field: row => row.colData.c0,
     // 似乎在header設就好
@@ -102,16 +103,15 @@ const columns = computed(() => [
     headerClasses: 'q-table--col-auto-width'
   },
   // , headerClasses: 'q-table--col-auto-width'
-  { name: 'score', align: 'left', label: t('credits'), field: row => (row.colData.c50 || 0), sortable: true, sortOrder: 'da' },
-  { name: 'required', align: 'left', label: t('required'), field: row => row.colData.c55, sortable: true, sortOrder: 'da' },
+  { name: 'score', align: 'left', label: board.childBoard.rule.transformTable.c50[langWord.value], field: row => (row.colData.c50 || 0), sortable: true, sortOrder: 'da' },
+  { name: 'required', align: 'left', label: board.childBoard.rule.transformTable.c55[langWord.value], field: row => row.colData.c55, sortable: true, sortOrder: 'da' },
   {
     name: 'title',
     align: 'left',
-    label: t('className'),
+    label: board.childBoard.rule.transformTable[board.childBoard.rule.titleCol[langWord.value]][langWord.value],
     field: row => row.colData[board.childBoard.rule.titleCol[langWord.value]]
   },
-  { name: 'teacher', align: 'left', label: t('teacher'), field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
-
+  { name: 'teacher', align: 'left', label: board.childBoard.rule.transformTable.c60[langWord.value], field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
   { name: 'rewiewNumber', align: 'left', label: t('review'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
   {
     name: 'tag',

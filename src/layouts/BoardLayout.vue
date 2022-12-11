@@ -28,6 +28,8 @@
             <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
               :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
             <q-checkbox v-model="filterAll" :label="t('all')" />
+            <br>
+            <q-checkbox v-model="onlyRated" :label="t('onlyRated')" />
           </div>
           <br>
 
@@ -145,6 +147,7 @@ const articleMsg = reactive({ datas: [], _id: '', isSelf: false })
 const viewArticleState = ref(false)
 const filterC0 = ref('')
 const filterAll = ref(false)
+const onlyRated = ref(false)
 const filterOptions = shallowRef([])
 // 之後再自動抓
 const filterUnique = ref('')
@@ -285,6 +288,7 @@ const getChildboard = async () => {
         col: 'c80',
         text: filterUnique.value
       }],
+      onlyRated: onlyRated.value,
       langWord: langWord.value
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?test=' + encodedFilter)
