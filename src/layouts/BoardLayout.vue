@@ -122,6 +122,10 @@ if (!users.local) users.local = useQuasar().lang.getLocale()
 locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
+  // 語系切換，如果板塊有清單，則重新抓一次(因為語言要換)
+  if (tab.value === 'boards' && boards.length > 0) {
+    getChildboard()
+  }
 })
 
 const boardInfoForm = reactive({ chartTitle: 'scoreChart', averageTitle: 'averageScore', scoreSum: 0, amount: 0, datas: [] })
