@@ -77,9 +77,9 @@
         </q-form>
       </q-card-section>
       <q-card-section class="row items-center q-pb-none" style="padding:5px ">
-        <q-btn :label="t('submit')" @click="publish()" color="primary" :loading="publishing" class="q-ma-sm">
+        <q-btn :label="t('submit')" @click.prevent="publish()" color="primary" :loading="publishing" class="q-ma-sm">
         </q-btn>
-        <q-btn :label="t('close')" flat class="q-ma-sm close-register" @click="publishArticleState = false" />
+        <q-btn :label="t('close')" flat class="q-ma-sm close-register" @click.prevent="publishArticleState = false" />
       </q-card-section>
     </q-card>
   </q-dialog>

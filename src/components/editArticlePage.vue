@@ -67,7 +67,7 @@
         </q-form>
       </q-card-section>
       <q-card-section class="row items-center q-pb-none" style="padding:5px">
-        <q-btn :label="t('submit')" @click="update()" color="primary" :loading="updating"></q-btn>
+        <q-btn :label="t('submit')" @click.prevent="update()" color="primary" :loading="updating"></q-btn>
         <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click="editArticleState = false" />
       </q-card-section>
     </q-card>
@@ -156,7 +156,7 @@ const update = () => {
         repNotify(data)
         editArticleState.value = false
         // 自動重整才能看到評分
-        router.go(0)
+        // router.go(0)
       } catch (error) {
         // console.log(error.response.data)
         repNotify(error.response.data)
