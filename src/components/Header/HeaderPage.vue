@@ -100,7 +100,7 @@ const login = async () => {
     const rep = await users.login(loginForm)
     notify(rep)
     if (rep.success) {
-      router.go(0)
+      window.location.reload()
       loginForm.account = ''
       loginForm.password = ''
     }
@@ -117,7 +117,7 @@ const logout = async () => {
     // console.log(error)
   }
   // console.log('del')
-  router.go(0)
+  window.location.reload()
 }
 
 provide('registerState', registerState)
