@@ -156,7 +156,7 @@ const update = () => {
         repNotify(data)
         editArticleState.value = false
         // 自動重整才能看到評分
-        router.go()
+        router.go(0)
       } catch (error) {
         // console.log(error.response.data)
         repNotify(error.response.data)

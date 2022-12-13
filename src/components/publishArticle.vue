@@ -205,7 +205,7 @@ const publish = () => {
         // console.log(data.result)
         publishArticleState.value = false
         // 自動重整才能看到評分
-        router.go()
+        router.go(0)
       } catch (error) {
         // console.log(error.response.data)
         repNotify(error.response.data)

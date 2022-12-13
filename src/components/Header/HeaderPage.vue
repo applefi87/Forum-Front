@@ -19,6 +19,7 @@
       <div class="row no-wrap q-pa-md">
         <q-btn :label='t("logout")' color="primary c-w" @click="logout" flat class="q-ml-sm" no-caps />
       </div>
+      <b>{{ t('contactMe') }} <br>applefi87@gmail.com</b>
     </q-btn-dropdown>
     <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none"
       v-model="loginState">

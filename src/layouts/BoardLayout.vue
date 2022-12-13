@@ -58,6 +58,7 @@
 
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>
+      <b>{{ t('contactMe') }} <br>applefi87@gmail.com</b>
       <q-select v-model="locale" :options="localeOptions" label="Language:" borderless emit-value map-options />
     </q-drawer>
     <q-page-container style="height: 100% !important ;background: #999">
