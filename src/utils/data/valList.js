@@ -25,11 +25,11 @@ export function emailVal(isSchool) {
       // val => val.match(/^[a-z0-9]+@[a-z0-9\.]+\.edu\.[a-z0-9\.]+$/) || '格式錯誤/必須為學校信箱')
       // 初期限制要有".edu.tw"結尾才行
       // eslint-disable-next-line no-useless-escape
-      val => (/^[a-z0-9]+@[a-z0-9\.]+\.edu\.tw$/).test(val) || '格式錯誤，僅可含英小寫、數、@、./必須為學校信箱')
+      val => (/^[a-z0-9]+@[a-z0-9\.]+\.edu\.tw$/).test(val) || '僅可含英小寫、數、@、./,且必須為學校信箱')
   } else {
     rule.push(
       // eslint-disable-next-line no-useless-escape
-      val => (/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/).test(val) || '格式錯誤，僅可含英小寫、數、@、.'
+      val => (/^[a-z0-9]+@[a-z0-9]+\.[a-z0-9\.]+$/).test(val) || '僅可含英小寫、數、@、.'
     )
   }
   return rule

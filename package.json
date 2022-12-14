@@ -1,9 +1,9 @@
 {
-  "name": "quasar-project",
+  "name": "ntnu_course_review",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
-  "author": "applefi87 <werrtyyui@yahoo.com.tw>",
+  "description": "課程評價 師大課程評價 台大課程評價 台科課程評價 all-pass allpass ",
+  "productName": "師大課程評價 | 歐趴網All-Pass | NTNU Course Review",
+  "author": "applifi87",
   "private": true,
   "scripts": {
     "build": "quasar build",

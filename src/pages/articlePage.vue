@@ -185,7 +185,7 @@ const columns = computed(() => [
   {
     name: 'semester',
     align: 'left',
-    label: t('semester'),
+    label: parent.childBoard.rule.transformTable.c80[langWord.value],
     field: row => {
       const unique = board?.uniqueData?.find(i => i._id === row.uniqueId)
       // 極少數會讀不道uniqueData
@@ -209,7 +209,6 @@ const columns = computed(() => [
   { name: 'tags', align: 'left', label: t('tags'), field: row => row.tags, sortable: true, sortOrder: 'da' },
   { name: 'content', align: 'left', label: parent?.childBoard?.article?.category[0]?.contentCol[langWord.value], field: row => row.content, sortOrder: 'da' }
 ])
-
 // 要去母版看規則
 provide('articleMsg', articleMsg)
 provide('articles', articles)

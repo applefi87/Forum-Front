@@ -157,7 +157,6 @@ const langWord = inject('langWord')
 const viewArticleState = inject('viewArticleState')
 const parent = inject('parent')
 const article = inject('article')
-const articleRule = inject('articleRule')
 // ************************************************************
 // 有3個板，就產生3個表單 totalForm.f1 2 3
 // 用for 建置 加上讀取規則自動產生
@@ -167,7 +166,7 @@ const selectCat = ref(null)
 // 先抓取文章分類+設個預設的
 const categoryList = reactive([])
 const categoryCodeList = computed(() =>
-  articleRule?.category?.map(c => {
+  parent?.childBoard?.article?.category?.map(c => {
     if (c.c === 1) {
       return { label: t('review'), value: 1 }
     } else {
@@ -182,9 +181,9 @@ const category = computed(() => categoryList.find(c => {
 // form 基礎欄位建立(依照article)
 const init = () => {
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
-  if (articleRule?.category?.length > 0) {
+  if (parent?.childBoard?.article?.category?.length > 0) {
     categoryList.length = 0
-    categoryList.push(...articleRule.category)
+    categoryList.push(...parent?.childBoard?.article?.category)
     // 對應加上form.fx
     categoryList?.forEach(f => {
       form['f' + f.c] = { title: '', content: '' }

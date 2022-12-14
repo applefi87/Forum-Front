@@ -17,14 +17,22 @@
       <chartInfo v-if="boardInfoForm.amount > 0" :form="boardInfoForm" />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="boards" v-if="hasChild" class="searchRows">
+          <!-- <q-input borderless dense v-model="search" :placeholder="t('search')" outlined>
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input> -->
           <q-select outlined v-model="filterUnique" :options="filterUniqueOptions" label="學期" dense options-dense
             :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
           <div>
             <q-select outlined v-model="filterC0" :options="filterOptions" label="開課系所" dense options-dense
               :disable="filterAll" :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'" />
             <q-checkbox v-model="filterAll" :label="t('all')" />
+            <br>
+            <q-checkbox v-model="onlyRated" :label="t('onlyRated')" />
           </div>
           <br>
+
           <q-btn :loading="getChildboardLoading" color="primary" @click="getChildboard" :label="t('search')">
             <template v-slot:getChildboardLoading>
               Loading...
@@ -50,6 +58,7 @@
 
     </q-drawer>
     <q-drawer v-model='rightDrawerState' side="right" bordered :width="300" no-swipe-open no-swipe-close>
+      <b>{{ t('contactMe') }} <br>applefi87@gmail.com</b>
       <q-select v-model="locale" :options="localeOptions" label="Language:" borderless emit-value map-options />
     </q-drawer>
     <q-page-container style="height: 100% !important ;background: #999">
@@ -88,7 +97,6 @@ import editArticlePage from 'src/components/editArticlePage.vue'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-// import { useBoardStore } from 'src/stores/board'
 import { useRoute, useRouter } from 'vue-router'
 import { api, apiAuth } from 'src/boot/axios'
 const route = useRoute()
@@ -99,7 +107,7 @@ const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
 const loginState = inject('loginState')
 const langWord = inject('langWord')
-
+// const search = ref('')
 const leftDrawerActive = true
 const publishArticleState = ref(false)
 const editArticleState = ref(false)
@@ -117,6 +125,10 @@ if (!users.local) users.local = useQuasar().lang.getLocale()
 locale.value = users.local
 watch(locale, () => {
   users.local = locale.value
+  // 語系切換，如果板塊有清單，則重新抓一次(因為語言要換)
+  if (tab.value === 'boards' && boards.length > 0) {
+    getChildboard()
+  }
 })
 
 const boardInfoForm = reactive({ chartTitle: 'scoreChart', averageTitle: 'averageScore', scoreSum: 0, amount: 0, datas: [] })
@@ -128,7 +140,6 @@ const hasArticle = ref(false)
 const board = reactive({})
 const boards = reactive([])
 const parent = reactive({})
-const articleRule = reactive({})
 const article = reactive([])
 const articles = reactive([])
 // 給articlePage用的
@@ -136,6 +147,7 @@ const articleMsg = reactive({ datas: [], _id: '', isSelf: false })
 const viewArticleState = ref(false)
 const filterC0 = ref('')
 const filterAll = ref(false)
+const onlyRated = ref(false)
 const filterOptions = shallowRef([])
 // 之後再自動抓
 const filterUnique = ref('')
@@ -179,10 +191,8 @@ const init = async () => {
             const { data } = await api.get('/board/' + parentID)
             for (const k in parent) delete parent[k]
             Object.assign(parent, data.result)
-            for (const k in articleRule) delete articleRule[k]
-            Object.assign(articleRule, parent.childBoard?.article)
             // 母版要開放文章
-            if (articleRule.active) {
+            if (parent.childBoard?.article?.active) {
               // console.log('有文章區')
               hasArticle.value = true
               findArticle = true
@@ -191,9 +201,6 @@ const init = async () => {
           if (!findArticle) {
             // 不然就清空不顯示
             hasArticle.value = false
-            for (const k in articleRule) {
-              delete articleRule[k]
-            }
           }
         } catch (error) {
           // console.log(error.response.data)
@@ -261,16 +268,23 @@ const getChildboardLoading = ref(false)
 const getChildboard = async () => {
   try {
     getChildboardLoading.value = true
+    // 順序重要 影響後端index順序
     const encodedFilter = encodeURI(JSON.stringify({
       filterData: [{
         col: 'c0',
         text: filterC0.value,
         all: filterAll.value
       }],
+      // search: [{
+      //   col: 'c40',
+      //   text: search.value
+      // }],
       filterUnique: [{
         col: 'c80',
         text: filterUnique.value
-      }]
+      }],
+      onlyRated: onlyRated.value,
+      langWord: langWord.value
     }))
     const { data } = await api.get('/board/childs/' + (route.params.id ? route.params.id : '62fc99277f3adbe07e542a58') + '?test=' + encodedFilter)
     boards.length = 0
@@ -294,7 +308,6 @@ provide('article', article)
 provide('articleMsg', articleMsg)
 provide('hasChild', readonly(hasChild))
 provide('hasArticle', readonly(hasArticle))
-provide('articleRule', readonly(articleRule))
 provide('viewArticleState', viewArticleState)
 provide('editArticleContent', editArticleContent)
 provide('editArticleState', editArticleState)
@@ -306,7 +319,7 @@ provide('userInfoForm', userInfoForm)
 .q-header
   height: 48px
 .searchRows > .row
-  margin-bottom: 30px
+  margin-bottom: 20px
 .q-drawer-container
   &:deep(.q-drawer)
     top: 48px

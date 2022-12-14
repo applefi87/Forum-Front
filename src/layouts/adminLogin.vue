@@ -23,7 +23,6 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { useQuasar } from 'quasar'
 import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
@@ -45,12 +44,11 @@ const login = async () => {
   try {
     const rep = await users.login(loginForm)
     notify(rep)
-    if (rep.success) {
-      loginForm.account = ''
-      loginForm.password = ''
-      loginForm.keepLogin = false
-      router.push('/home')
-    }
+    router.push('/home')
+    // 先跳再切，不然會突然有未填寫的樣子出現，其實應可不用畢竟頁面重載入
+    // loginForm.account = ''
+    // loginForm.password = ''
+    // loginForm.keepLogin = false
   } catch (error) {
     notify(error.response.data)
     // console.log(error.response.data)

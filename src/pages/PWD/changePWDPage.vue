@@ -47,7 +47,7 @@ const changePWD = async () => {
     pwdVerifying.value = true
     const rep = await users.changePWD(form)
     notify(rep)
-    router.push('/')
+    router.push('/home')
   } catch (error) {
     notify(error.response.data)
     // console.log(error.response.data)

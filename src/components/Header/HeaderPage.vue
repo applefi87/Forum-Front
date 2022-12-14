@@ -19,6 +19,7 @@
       <div class="row no-wrap q-pa-md">
         <q-btn :label='t("logout")' color="primary c-w" @click="logout" flat class="q-ml-sm" no-caps />
       </div>
+      <b>{{ t('contactMe') }} <br>applefi87@gmail.com</b>
     </q-btn-dropdown>
     <q-btn-dropdown v-else class="login" dense flat icon="login" :label='t("login")' dropdown-icon="none"
       v-model="loginState">
@@ -99,7 +100,7 @@ const login = async () => {
     const rep = await users.login(loginForm)
     notify(rep)
     if (rep.success) {
-      router.go(0)
+      window.location.reload()
       loginForm.account = ''
       loginForm.password = ''
     }
@@ -116,7 +117,7 @@ const logout = async () => {
     // console.log(error)
   }
   // console.log('del')
-  router.go(0)
+  window.location.reload()
 }
 
 provide('registerState', registerState)

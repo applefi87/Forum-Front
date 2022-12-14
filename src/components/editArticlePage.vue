@@ -67,8 +67,8 @@
         </q-form>
       </q-card-section>
       <q-card-section class="row items-center q-pb-none" style="padding:5px">
-        <q-btn :label="t('submit')" @click="update()" color="primary" :loading="updating"></q-btn>
-        <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click="editArticleState = false" />
+        <q-btn :label="t('submit')" @click.prevent="update()" color="primary" :loading="updating"></q-btn>
+        <q-btn :label="t('close')" flat class="q-ml-sm close-register" @click.prevent="editArticleState = false" />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -97,7 +97,7 @@ const editArticleContent = inject('editArticleContent')
 // 版有unique資料
 const board = inject('board')
 // 母版有能留言的規則
-const articleRule = inject('articleRule')
+const parent = inject('parent')
 // ************************************************************
 const formRef = ref(null)
 const quill = ref(null)
@@ -110,16 +110,16 @@ const categoryList = reactive([])
 // 獨立選單建立*********
 const uniqueInfo = computed(() => {
   const u = board.uniqueData.find(u => u._id === editArticleContent.uniqueId)
-  return (t('semester') + ':' + (u.c80 || t('none')) + ',' + t('time') + ':' + (u.c85[0] || t('none')) + ',' + t('location') + ':' + (u.c85[1] || t('none')))
+  return parent.childBoard.rule.transformTable.c80[langWord.value] + ':' + (u.c80 || t('none')) + ',' + parent.childBoard.rule.transformTable.c85[langWord.value] + ':' + ((u.c85 && u.c85 !== '無') ? u.c85 : t('none')) + ',' + parent.childBoard.rule.transformTable.c90[langWord.value] + ':' + ((u.c90 && u.c90 !== '無') ? u.c90 : t('none'))
 })
 // *********************
 // form 基礎object建立(依照article),並填上原先值
 const init = () => {
   // console.log('init adit')
   // 用if因為子元件先跑完母元件才post 重仔頁面會有一段時間沒資料報錯, 要有值才使賦值
-  if (articleRule?.category?.length > 0) {
+  if (parent?.childBoard?.article?.category?.length > 0) {
     categoryList.length = 0
-    categoryList.push(...articleRule.category)
+    categoryList.push(...parent?.childBoard?.article?.category)
     if (editArticleContent?.privacy !== undefined) {
       privacy.value.value = editArticleContent.privacy
       privacy.value.label = privacyList.value.find(p => p.value === editArticleContent.privacy).label
@@ -156,7 +156,7 @@ const update = () => {
         repNotify(data)
         editArticleState.value = false
         // 自動重整才能看到評分
-        router.go()
+        window.location.reload()
       } catch (error) {
         // console.log(error.response.data)
         repNotify(error.response.data)
