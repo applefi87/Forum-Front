@@ -122,7 +122,7 @@ const columns = computed(() => [
         const rateThreshold = row.beScored?.amount / 3
         const m = new Map(Object.entries(row.beScored?.tags))
         for (const [k, v] of m) {
-          if (v < rateThreshold) m.delete(k)
+          if (!(v > rateThreshold)) m.delete(k)
         }
         return Object.fromEntries(m)
       } else {
