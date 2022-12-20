@@ -4,7 +4,10 @@
       <table>
         <!-- 個人資訊 -->
         <tr>
-          <td> <img :src="'https://source.boringavatars.com/beam/30/' + (article.user.nickName || 'you')"><br>
+          <td>
+            <Avatar :size="30" variant="beam" :name="article.user.nickName || 'you'"
+              :style="article.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (article.user.record.toBoard.amount > 20 ? '#ffc700' : article.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''" />
+            <br>
           </td>
           <td>
             <b> {{ article.user.nickName === 'owner' ? t('owner') : article.user.nickName === 'you' ? t('you') :
@@ -82,8 +85,9 @@
               <q-item-section avatar v-if="msg.state === 1">
                 <q-avatar rounded>
                   <q-icon v-if="msg.user.nickName === 'owner'" name="home" />
-                  <img v-else
-                    :src="'https://source.boringavatars.com/beam/120/' + (msg.user.nickName === 'youHide' ? 'you' : (msg.user.nickName || 'you'))">
+                  <Avatar v-else :size="30" variant="beam"
+                    :name="msg.user.nickName === 'youHide' ? 'you' : (msg.user.nickName || 'you')"
+                    :style="msg.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (msg.user.record.toBoard.amount > 20 ? '#ffc700' : msg.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''" />
                 </q-avatar>
               </q-item-section>
               <q-item-section v-if="editingId !== msg.id && msg.state === 1" class="msgContent">
@@ -146,6 +150,7 @@
 </template>
 
 <script setup >
+import Avatar from 'vue-boring-avatars'
 import { useUserStore } from 'src/stores/user'
 import { ref, reactive, inject, watch, computed, nextTick } from 'vue'
 import { apiAuth } from 'src/boot/axios'
