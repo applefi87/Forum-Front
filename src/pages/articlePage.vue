@@ -17,10 +17,9 @@
         <q-tr :props="props" v-if="props.row.state != 0">
           <q-td v-for="col in props.cols.filter(d => d.name !== 'content')" :key="col.name" :props="props" auto-width>
             <div v-if="col.name === 'user'" @click="showUserInfo(props.row)">
-              <div class=" userBTN"><img
-                  :src="'https://source.boringavatars.com/beam/30/' + (col.value === 'youHide' ? 'you' : col.value)"
-                  class="profileImg"
-                  :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''">
+              <div class=" userBTN">
+                <Avatar :size="30" variant="beam" :name="col.value === 'youHide' ? 'you' : col.value" class="profileImg"
+                  :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''" />
                 <br>
                 <b> {{ col.value === 'owner' ? t('owner') :
                     col.value === 'you' ? t('you') :
@@ -99,6 +98,7 @@
 </template>
 
 <script setup>
+import Avatar from 'vue-boring-avatars'
 import { apiAuth } from 'src/boot/axios'
 import { useUserStore } from 'src/stores/user'
 import { ref, inject, computed, provide } from 'vue'
