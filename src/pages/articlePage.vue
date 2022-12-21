@@ -18,7 +18,8 @@
           <q-td v-for="col in props.cols.filter(d => d.name !== 'content')" :key="col.name" :props="props" auto-width>
             <div v-if="col.name === 'user'" @click="showUserInfo(props.row)">
               <div class=" userBTN">
-                <Avatar :size="30" variant="beam" :name="col.value === 'youHide' ? 'you' : col.value" class="profileImg"
+                <Avatar :size="30" variant="beam" :name="col.value === 'youHide' ? 'you' : (col.value || 'you')"
+                  class="profileImg"
                   :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''" />
                 <br>
                 <b> {{ col.value === 'owner' ? t('owner') :
