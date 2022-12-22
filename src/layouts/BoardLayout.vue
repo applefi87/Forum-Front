@@ -159,12 +159,12 @@ const init = async () => {
   try {
     boards.length = 0
     const { data } = await api.get('/board/' + route.params.id)
+    for (const k in board) delete board[k]
     // 初始化就檢測JWTcookie決定是否有登陸(只有後端能讀cookie),並更新整個也面的登錄判斷點(token
     if (data.result) {
       // 左方該版資訊
       const createLeftDrawer = async () => {
         // 重整該版資訊
-        for (const k in board) delete board[k]
         Object.assign(board, data.result)
         // // console.log(data.result)
         // *****如果有被評分 顯示被評分資訊與圖表
@@ -186,10 +186,10 @@ const init = async () => {
         // *****有文章?(他的母版-開放他有文章區)
         try {
           let findArticle = false
+          for (const k in parent) delete parent[k]
           const parentID = data.result.parent
           if (parentID) {
             const { data } = await api.get('/board/' + parentID)
-            for (const k in parent) delete parent[k]
             Object.assign(parent, data.result)
             // 母版要開放文章
             if (parent.childBoard?.article?.active) {
@@ -225,12 +225,16 @@ const init = async () => {
 }
 init()
 const title = computed(() => {
+  console.log('computed')
   // 給board未讀取到的時間緩衝避免報錯
   if (board?.colData) {
+    console.log('in')
     //  有母版就抓母版設定來顯示標題文字
     if (parent?.childBoard?.rule?.titleCol) {
+      console.log(1)
       return board.colData[parent.childBoard.rule.titleCol[langWord.value]]
     } else if (board.titleCol) {
+      console.log(2)
       // 不然就會是從自己資料抓
       return board.colData[board.titleCol[langWord.value]]
     }
