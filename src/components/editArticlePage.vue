@@ -208,4 +208,7 @@ tr:deep(.editor)
 
 .scroll
   max-height: 80vh
+:deep(.editor)
+  font-size: 1rem
+  font-family: 'Noto Sans TC', Helvetica, Arial, sans-serif !important
 </style>
