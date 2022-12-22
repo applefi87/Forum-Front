@@ -77,11 +77,11 @@ const { t } = useI18n()
 // **********************************************子版清單***
 const board = inject('board')
 const boards = inject('boards')
+const filter = inject('filter')
 const langWord = inject('langWord')
 // ----------
 const reviewRule = computed(() => board.childBoard.article.category.find(i => i.c === 1))
 //
-const filter = ref('')
 const filtedBoards = computed(() => {
   return boards.filter((s) => {
     return RegExp('.*' + filter.value + '.*', 'i').test(s.colData.c40)
