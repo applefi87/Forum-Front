@@ -5,7 +5,7 @@
         <!-- 個人資訊 -->
         <tr>
           <td>
-            <Avatar :size="30" variant="beam" :name="article.user.nickName || 'you'"
+            <Avatar :size="30" variant="beam" class="profileImg" :name="article.user.nickName || 'you'"
               :style="article.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (article.user.record.toBoard.amount > 20 ? '#ffc700' : article.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''" />
             <br>
           </td>
@@ -84,18 +84,18 @@
             <q-item v-for="msg in articleMsg.datas" :key="msg.createdAt">
               <q-item-section avatar v-if="msg.state === 1">
                 <q-avatar rounded>
-                  <q-icon v-if="msg.user.nickName === 'owner'" name="home" />
-                  <Avatar v-else :size="30" variant="beam"
-                    :name="msg.user.nickName === 'youHide' ? 'you' : (msg.user.nickName || 'you')"
+                  <q-icon v-if="msg.user.nickName === 'articleOwner'" name="home" />
+                  <Avatar v-else :size="30" variant="beam" class="profileImg" :name="(msg.user.nickName === 'you') ? t('you')
+                : (msg.user.nickName === 'youHide') ? t('youHide') : (msg.user.nickName ||
+                  t('anonymous'))"
                     :style="msg.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (msg.user.record.toBoard.amount > 20 ? '#ffc700' : msg.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''" />
                 </q-avatar>
               </q-item-section>
               <q-item-section v-if="editingId !== msg.id && msg.state === 1" class="msgContent">
                 <b>
-                  {{ msg.user.nickName === 'owner' ? t('owner') : (msg.user.nickName === 'you' || (msg.user.nickName
-                      === undefined && msg.privacy === 1)) ? t('you') : (msg.user.nickName === 'youHide' ||
-                        (msg.user.nickName === undefined && msg.privacy === 0)) ? t('youHide') : (msg.user.nickName ||
-                          t('anonymous'))
+                  {{ msg.user.nickName === 'articleOwner' ? t('articleOwner') : (msg.user.nickName === 'you') ? t('you')
+                      : (msg.user.nickName === 'youHide') ? t('youHide') : (msg.user.nickName ||
+                        t('anonymous'))
                   }}
                 </b>
                 {{ msg.content }}
@@ -238,19 +238,21 @@ const privacyOptions = computed(() => {
 // 請預設給匿名，這樣匿名發文者不用選，就會是匿名id
 const msgForm = reactive({ content: '', privacy: privacyOptions.value[0] })
 const sendingMsg = ref(false)
+function updateArticleReviewAmount(state) {
+  const idx = articles.findIndex(it => it._id === articleMsg._id)
+  if (idx >= 0) {
+    articles[idx].msg1.amount += (state === '+' ? 1 : -1)
+  }
+}
 const sendMsg = async function () {
   if (msgForm.content === '') return
   sendingMsg.value = true
   const submit = { content: msgForm.content, privacy: msgForm.privacy.value }
   try {
     const { data } = await apiAuth.post('/article/msg/create/' + articleMsg._id, submit)
-    articleMsg.datas = data.result.msg1.list
+    articleMsg.datas = data.result
     notify({ title: t('msgSended'), success: true })
-    const idx = articles.findIndex(it => it._id === articleMsg._id)
-    if (idx >= 0) {
-      // console.log(article)
-      articles[idx] = data.result
-    }
+    updateArticleReviewAmount('+')
     msgForm.content = ''
     // nextTick(() => {
     //   msgBox.value.$el.scrollIntoView(false, { behavior: 'smooth' })
@@ -267,6 +269,7 @@ const deleteMsg = async function (msgId) {
     if (data.success) {
       const articleIdx = articleMsg.datas.findIndex(it => it.id === msgId)
       articleMsg.datas.splice(articleIdx, 1)
+      updateArticleReviewAmount('-')
     }
   } catch (error) {
     // console.log(error)
@@ -396,5 +399,6 @@ tr:deep(.editor)
   padding: 5px 20px
   position: sticky
   bottom: 0
-
+.profileImg
+  border-radius: 50%
 </style>
