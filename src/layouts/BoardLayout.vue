@@ -145,6 +145,7 @@ const articles = reactive([])
 // 給articlePage用的
 const articleMsg = reactive({ datas: [], _id: '', isSelf: false })
 const viewArticleState = ref(false)
+const filter = ref('')
 const filterC0 = ref('')
 const filterAll = ref(false)
 const onlyRated = ref(false)
@@ -177,12 +178,12 @@ const init = async () => {
           boardInfoForm.amount = undefined
         }
         // *****有子板?，顯示都有的UniqueOptions、filterOptions
-        const filter = data.result.childBoard.rule?.display?.filter
+        const cbFilter = data.result.childBoard.rule?.display?.filter
         hasChild.value = data.result.childBoard.active
-        filterOptions.value = filter?.dataCols?.c0?.l || ['']
-        filterC0.value = filterOptions.value.includes(filter?.dataCols?.c0?.d) ? filter?.dataCols?.c0?.d : (filterOptions.value[0] || '')
-        filterUniqueOptions.value = filter?.uniqueCols?.c80?.l || ['']
-        filterUnique.value = filterUniqueOptions.value.includes(filter?.uniqueCols?.c80?.d) ? filter?.uniqueCols?.c80?.d : (filterUniqueOptions.value[0] || '')
+        filterOptions.value = cbFilter?.dataCols?.c0?.l || ['']
+        filterC0.value = filterOptions.value.includes(cbFilter?.dataCols?.c0?.d) ? cbFilter?.dataCols?.c0?.d : (filterOptions.value[0] || '')
+        filterUniqueOptions.value = cbFilter?.uniqueCols?.c80?.l || ['']
+        filterUnique.value = filterUniqueOptions.value.includes(cbFilter?.uniqueCols?.c80?.d) ? cbFilter?.uniqueCols?.c80?.d : (filterUniqueOptions.value[0] || '')
         // *****有文章?(他的母版-開放他有文章區)
         try {
           let findArticle = false
@@ -225,16 +226,12 @@ const init = async () => {
 }
 init()
 const title = computed(() => {
-  console.log('computed')
   // 給board未讀取到的時間緩衝避免報錯
   if (board?.colData) {
-    console.log('in')
     //  有母版就抓母版設定來顯示標題文字
     if (parent?.childBoard?.rule?.titleCol) {
-      console.log(1)
       return board.colData[parent.childBoard.rule.titleCol[langWord.value]]
     } else if (board.titleCol) {
-      console.log(2)
       // 不然就會是從自己資料抓
       return board.colData[board.titleCol[langWord.value]]
     }
@@ -271,6 +268,7 @@ watch(tab, (to, from) => {
 const getChildboardLoading = ref(false)
 const getChildboard = async () => {
   try {
+    filter.value = ''
     getChildboardLoading.value = true
     // 順序重要 影響後端index順序
     const encodedFilter = encodeURI(JSON.stringify({
@@ -317,6 +315,7 @@ provide('editArticleContent', editArticleContent)
 provide('editArticleState', editArticleState)
 provide('userInfoState', userInfoState)
 provide('userInfoForm', userInfoForm)
+provide('filter', filter)
 // *********************************************子文章************************
 </script>
 <style lang="sass" scoped >
