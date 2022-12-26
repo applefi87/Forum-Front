@@ -208,7 +208,18 @@ tr:deep(.editor)
 
 .scroll
   max-height: 80vh
-:deep(.editor)
-  font-size: 1rem
+:deep(.editor.ql-snow .ql-editor)
   font-family: 'Noto Sans TC', Helvetica, Arial, sans-serif !important
+  h1
+    font-size: 6rem
+  h2
+    font-size: 3.75rem
+  h3
+    font-size: 3rem
+  h4
+    font-size: 2.125rem
+  h5
+    font-size: 1.5rem
+  h6
+    font-size: 1.25rem
 </style>

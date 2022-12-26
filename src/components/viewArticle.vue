@@ -152,7 +152,7 @@
 <script setup >
 import Avatar from 'vue-boring-avatars'
 import { useUserStore } from 'src/stores/user'
-import { ref, reactive, inject, watch, computed, nextTick } from 'vue'
+import { ref, reactive, inject, watch, computed } from 'vue'
 import { apiAuth } from 'src/boot/axios'
 import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
