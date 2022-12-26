@@ -5,6 +5,7 @@ const routes = [
     name: 'home',
     component: () => import('layouts/HomeLayout.vue'),
     children: [
+      { path: '', name: 'home', displayName: 'home', component: () => import('pages/homePage.vue') },
       { path: 'changePWD', name: 'changePWD', displayName: 'changePWD', component: () => import('pages/PWD/changePWDPage.vue') },
       { path: 'forgetPWD', name: 'forgetPWD', displayName: 'forgetPWD', component: () => import('pages/PWD/forgetPWDPage.vue') },
       { path: 'admin', name: 'admin', displayName: 'admin', component: () => import('layouts/adminLogin.vue') }
