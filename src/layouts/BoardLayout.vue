@@ -169,17 +169,17 @@ const init = async () => {
         Object.assign(board, data.result)
         // // console.log(data.result)
         // *****如果有被評分 顯示被評分資訊與圖表
-        if (data.result.beScored?.amount >= 0) {
-          boardInfoForm.scoreSum = data.result.beScored.scoreSum
-          boardInfoForm.amount = data.result.beScored.amount
+        if (board.beScored?.amount >= 0) {
+          boardInfoForm.scoreSum = board.beScored.scoreSum
+          boardInfoForm.amount = board.beScored.amount
           boardInfoForm.datas.length = 0
-          boardInfoForm.datas.push(...data.result.beScored.scoreChart)
+          boardInfoForm.datas.push(...board.beScored.scoreChart)
         } else {
           boardInfoForm.amount = undefined
         }
         // *****有子板?，顯示都有的UniqueOptions、filterOptions
-        const cbFilter = data.result.childBoard.rule?.display?.filter
-        hasChild.value = data.result.childBoard.active
+        const cbFilter = board.childBoard.rule?.display?.filter
+        hasChild.value = board.childBoard.active
         filterOptions.value = cbFilter?.dataCols?.c0?.l || ['']
         filterC0.value = filterOptions.value.includes(cbFilter?.dataCols?.c0?.d) ? cbFilter?.dataCols?.c0?.d : (filterOptions.value[0] || '')
         filterUniqueOptions.value = cbFilter?.uniqueCols?.c80?.l || ['']
@@ -188,9 +188,9 @@ const init = async () => {
         try {
           let findArticle = false
           for (const k in parent) delete parent[k]
-          const parentID = data.result.parent
+          const parentID = board.parent
           if (parentID) {
-            const { data } = await api.get('/board/' + parentID)
+            const { data } = await api.get('/board/parent/' + parentID)
             Object.assign(parent, data.result)
             // 母版要開放文章
             if (parent.childBoard?.article?.active) {
@@ -316,7 +316,7 @@ provide('editArticleState', editArticleState)
 provide('userInfoState', userInfoState)
 provide('userInfoForm', userInfoForm)
 provide('filter', filter)
-// *********************************************子文章************************
+// ******************************************** 子文章 ************************
 </script>
 <style lang="sass" scoped >
 .q-header

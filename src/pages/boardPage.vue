@@ -100,7 +100,8 @@ const columns = computed(() => [
     field: row => row.colData.c0,
     // 似乎在header設就好
     // classes: 'q-table--col-auto-width',
-    headerClasses: 'q-table--col-auto-width'
+    headerClasses: 'q-table--col-auto-width',
+    sortable: true
   },
   // , headerClasses: 'q-table--col-auto-width'
   { name: 'score', align: 'left', label: board.childBoard.rule.transformTable.c50[langWord.value], field: row => (row.colData.c50 || 0), sortable: true, sortOrder: 'da' },
@@ -109,7 +110,8 @@ const columns = computed(() => [
     name: 'title',
     align: 'left',
     label: board.childBoard.rule.transformTable[board.childBoard.rule.titleCol[langWord.value]][langWord.value],
-    field: row => row.colData[board.childBoard.rule.titleCol[langWord.value]]
+    field: row => row.colData[board.childBoard.rule.titleCol[langWord.value]],
+    sortable: true
   },
   { name: 'teacher', align: 'left', label: board.childBoard.rule.transformTable.c60[langWord.value], field: row => (row.colData.c60 || ''), sortable: true, sortOrder: 'da' },
   { name: 'rewiewNumber', align: 'left', label: t('review'), field: row => row.beScored?.amount || '', sortable: true, sortOrder: 'da' },
@@ -128,7 +130,8 @@ const columns = computed(() => [
       } else {
         return {}
       }
-    }
+    },
+    sortable: true
   }
 ]
 )
