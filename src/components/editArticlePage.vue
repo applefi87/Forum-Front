@@ -56,7 +56,7 @@
             <!-- content(放最後) ****************************-->
             <tr>
               <td style="vertical-align:text-top ; padding-top: 30px">{{
-                  category.contentCol[langWord]
+                category.contentCol[langWord]
               }}</td>
               <td style=" padding-top: 20px">
                 <QuillEditor class="editor" toolbar="essential" theme="snow"
@@ -82,10 +82,9 @@ import { ref, reactive, inject, watch, computed } from 'vue'
 import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { apiAuth } from 'src/boot/axios'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { titleVal, mustSelectVal } from 'src/utils/data/valList.js'
 const route = useRoute()
-const router = useRouter()
 const { t } = useI18n()
 
 // import { useArticleStore } from 'src/stores/article'
@@ -207,7 +206,7 @@ tr:deep(.editor)
   min-height: 200px
 
 .scroll
-  max-height: 80vh
+  max-height: 70vh
 :deep(.editor.ql-snow .ql-editor)
   font-family: 'Noto Sans TC', Helvetica, Arial, sans-serif !important
   h1

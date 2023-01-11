@@ -3,7 +3,7 @@
     <q-card v-if="category" style="position:relative;">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
-        <q-btn icon=" close" flat round dense v-close-popup />
+        <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
       <q-card-section class="scroll">
         <q-form ref="formRef">
@@ -65,7 +65,7 @@
             <!-- content(放最後) ****************************-->
             <tr>
               <td style="vertical-align:text-top ; padding-top: 30px">{{
-                  category.contentCol[langWord]
+                category.contentCol[langWord]
               }}</td>
               <td style=" padding-top: 20px">
                 <QuillEditor class="editor" toolbar="essential" theme="snow" ref="quill"
@@ -252,7 +252,7 @@ td:first-child
 tr:deep(.editor)
   min-height: 200px
 .scroll
-  max-height: 80vh
+  max-height: 70vh
 :deep(.editor.ql-snow .ql-editor)
   font-family: 'Noto Sans TC', Helvetica, Arial, sans-serif !important
   h1

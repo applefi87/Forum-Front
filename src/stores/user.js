@@ -33,7 +33,6 @@ export const useUserStore = defineStore('user', {
         const { data } = await api.post('/user/login', form)
         // 使用者資訊存起來
         this.token = data.result.token
-        // console.log(this.token)
         this._id = data.result._id
         this.account = data.result.account
         this.role = data.result.role
@@ -43,6 +42,14 @@ export const useUserStore = defineStore('user', {
         return reply(error.response?.data)
       }
     },
+    clearLocalStorage() {
+      this.token = null
+      this._id = null
+      this.role = null
+      this.account = ''
+      this.role = null
+      this.notification = null
+    },
     async logout() {
       try {
         // apiAuth預帶抓users.token (boot裡)
@@ -51,22 +58,14 @@ export const useUserStore = defineStore('user', {
       } catch (error) {
         return reply(error?.response?.data)
       } finally {
-        this.token = null
-        this._id = null
-        this.role = null
-        this.account = ''
-        this.role = null
+        this.clearLocalStorage()
       }
     },
     async changePWD(form) {
       try {
         const { data } = await apiAuth.post('/user/changePWD', form)
         if (data.success) {
-          this.token = null
-          this._id = null
-          this.role = null
-          this.account = ''
-          this.role = null
+          this.clearLocalStorage()
         }
         return reply(data)
       } catch (error) {

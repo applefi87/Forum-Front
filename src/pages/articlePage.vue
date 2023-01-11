@@ -23,10 +23,10 @@
                   :style="props.row.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (props.row.user.record.toBoard.amount > 20 ? '#ffc700' : props.row.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''" />
                 <br>
                 <b> {{ col.value === 'owner' ? t('owner') :
-                    col.value === 'you' ? t('you') :
-                      col.value === 'youHide' ?
-                        t('youHide') : (col.value || t('anonymous'))
-                }}</b>
+    col.value === 'you' ? t('you') :
+      col.value === 'youHide' ?
+        t('youHide') : (col.value || t('anonymous'))
+}}</b>
               </div>
             </div>
             <div v-else-if="col.name === 'review'" @click="viewArticle(props.row)">
@@ -36,9 +36,9 @@
             <div v-else-if="col.name === 'tags'" @click="viewArticle(props.row)"
               style="width:120px;display:flex;flex-wrap:wrap;align-content: center;justify-content: center;">
               <p class="tag" v-for="t in (col.value)" :tag="t" :key="t">
-                {{ parent.childBoard.article.category[0].tagOption
-                  [t][langWord]
-                }}
+                {{ parent.childBoard?.article.category[0].tagOption
+  [t][langWord]
+}}
               </p>
             </div>
             <div v-else-if="col.name === 'title'" class=" title" @click="viewArticle(props.row)">
@@ -186,7 +186,7 @@ const columns = computed(() => [
   {
     name: 'semester',
     align: 'left',
-    label: parent.childBoard.rule.transformTable.c80[langWord.value],
+    label: parent.childBoard?.rule.transformTable.c80[langWord.value],
     field: row => {
       const unique = board?.uniqueData?.find(i => i._id === row.uniqueId)
       // 極少數會讀不道uniqueData
