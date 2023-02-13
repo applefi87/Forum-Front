@@ -21,7 +21,6 @@ const routes = [
     displayName: 'board',
     component: () => import('layouts/BoardLayout.vue')
   },
-
   {
     path: '/404',
     name: '404',
