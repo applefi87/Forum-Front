@@ -13,7 +13,8 @@
       <q-btn-dropdown dense flat dropdown-icon="notifications">
         <q-list>
           <q-item clickable v-close-popup v-for="it of users.notification" :key="it.time">
-            <router-link :to="`/board/${it.board._id}?article=${it.article}&msg1=${it.msg1}&action=${it.action}`"
+            <router-link
+              :to="`/board/${it.board._id}?article=${it.article || ''}&msg1=${it.msg1 || ''}&action=${it.action}`"
               class="btnLink" target="_blank">
               <div> <b>{{ it.user.nickName }}</b>回應了{{ it.action }}
                 <!-- {{ it.targetTitleCol[langWord] }} -->
@@ -23,9 +24,7 @@
                 }}</b>的{{ it.type }}評價<br />
                 {{ it.detail }}<br />
                 {{
-                  new Intl.DateTimeFormat("chinese", {
-                    dateStyle: 'full', timeStyle: 'long'
-                  }).format(new Date(it.time))
+                  new Intl.DateTimeFormat("chinese", { dateStyle: 'full', timeStyle: 'long' }).format(new Date(it.time))
                 }}<br />
               </div>
             </router-link>
