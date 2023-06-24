@@ -10,7 +10,8 @@
             <br>
           </td>
           <td>
-            <b> {{ article.user.nickName === 'owner' ? t('owner') : article.user.nickName === 'you' ? t('you') :
+            <b> {{
+              article.user.nickName === 'owner' ? t('owner') : article.user.nickName === 'you' ? t('you') :
                 article.user.nickName === 'youHide' ? t('youHide') : (article.user.nickName || t('anonymous'))
             }}</b>
           </td>
@@ -34,7 +35,8 @@
           <td>{{ t('tags') }}</td>
           <td>
             <p class="tag" v-for="t in (article.tags)" :tag="t" :key="t">
-              {{ parent.childBoard.article.category[0].tagOption
+              {{
+                parent.childBoard.article.category[0].tagOption
                 [t][langWord]
               }}
             </p>
@@ -51,7 +53,7 @@
         <!-- content(放最後) ****************************-->
         <tr>
           <td style="vertical-align:text-top ; padding-top: 30px">{{
-              category.contentCol[langWord]
+            category.contentCol[langWord]
           }}</td>
           <td style=" padding-top: 20px">
             <div class="htmlContent" v-html="article.content"></div>
@@ -91,9 +93,11 @@
                     :style="msg.user?.record?.toBoard?.amount > 3 ? { 'box-shadow': '0 0 0 6px ' + (msg.user.record.toBoard.amount > 20 ? '#ffc700' : msg.user.record.toBoard.amount > 10 ? '#D6D8EA' : '#B87333') } : ''" />
                 </q-avatar>
               </q-item-section>
-              <q-item-section v-if="editingId !== msg.id && msg.state === 1" class="msgContent">
+              <q-item-section v-if="editingId !== msg.id && msg.state === 1" class="msgContent"
+                :style="msg.id.toString() === $route.query.msg1 ? 'background:#abd5ff' : ''">
                 <b>
-                  {{ msg.user.nickName === 'articleOwner' ? t('articleOwner') : (msg.user.nickName === 'you') ? t('you')
+                  {{
+                    msg.user.nickName === 'articleOwner' ? t('articleOwner') : (msg.user.nickName === 'you') ? t('you')
                       : (msg.user.nickName === 'youHide') ? t('youHide') : (msg.user.nickName ||
                         t('anonymous'))
                   }}
@@ -153,10 +157,12 @@
 import Avatar from 'vue-boring-avatars'
 import { useUserStore } from 'src/stores/user'
 import { ref, reactive, inject, watch, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { apiAuth } from 'src/boot/axios'
 import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
+const route = useRoute()
 // 初始變數
 const langWord = inject('langWord')
 const viewArticleState = inject('viewArticleState')
@@ -388,6 +394,7 @@ tr:deep(.editor)
     display: flex
     width:100%
   .msgContent
+    border-radius: 7px
     display: inline-block
     max-width: 100%
     word-wrap: break-all

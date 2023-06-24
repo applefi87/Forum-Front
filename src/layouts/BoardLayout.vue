@@ -197,6 +197,11 @@ const init = async () => {
               // console.log('有文章區')
               hasArticle.value = true
               findArticle = true
+              // 加工文章區規則:(如果是評價/教學，部分欄位自動生成)
+              const reviewIdx = parent.childBoard.article.category.findIndex(c => c.c === 0)
+              if (reviewIdx >= 0) {
+                // parent.childBoard.article.category[reviewIdx]
+              }
             }
           }
           if (!findArticle) {

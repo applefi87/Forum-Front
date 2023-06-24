@@ -40,7 +40,8 @@ apiAuth.interceptors.response.use(res => {
           const { data } = await apiAuth.post('/user/extend', {})
           // 後台偵測到就直接換新cookie 所以不用改
           // // 更新 JWT
-          users.token = data.result
+          users.token = data.result.token
+          users.notification = data.result.notification
           // // 使用新的 JWT 再次嘗試原始請求
           error.config.headers.authorization = `Bearer ${users.token}`
           return await axios(error.config)

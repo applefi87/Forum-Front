@@ -103,10 +103,8 @@
 import Avatar from 'vue-boring-avatars'
 import { apiAuth } from 'src/boot/axios'
 import { useUserStore } from 'src/stores/user'
-import { ref, inject, computed, provide, watch } from 'vue'
+import { ref, inject, computed, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
-const route = useRoute()
 const { t } = useI18n()
 const users = useUserStore()
 // **********************************************子版清單***
@@ -122,7 +120,7 @@ const editArticleContent = inject('editArticleContent')
 const langWord = inject('langWord')
 const userInfoState = inject('userInfoState')
 const userInfoForm = inject('userInfoForm')
-let setNotificationed = false
+
 const pagination = ref({ rowsPerPage: 20 })
 const confirmDelete = ref(false)
 const deleteId = ref()
@@ -140,27 +138,6 @@ const showUserInfo = (a) => {
   userInfoState.value = true
 }
 
-function jump2Msg() {
-  console.log(articles.length)
-  if (route.query.article && articles?.length > 0) {
-    const idx = articles.findIndex(a => a._id === route.query.article)
-    if (idx >= 0) {
-      setNotificationed = true
-      if (route.query.msg1) {
-        const msgIdx = articles[idx].msg1.list.findIndex(m => m.id.toString() === route.query.msg1)
-        if (msgIdx >= 0) {
-          const msg1 = articles[idx].msg1.list[msgIdx]
-          articles[idx].msg1.list.splice(msgIdx, 1)
-          articles[idx].msg1.list.unshift(msg1)
-        }
-      }
-      viewArticle(articles[idx])
-    }
-  }
-}
-watch(articles, () => {
-  if (!setNotificationed) jump2Msg()
-})
 const banArticle = async (id) => {
   // console.log(id)
   const { data } = await apiAuth.delete('/article/banArticle/' + id)
@@ -205,7 +182,6 @@ const viewArticle = (a) => {
   if (a.msg1?.list) articleMsg.datas.push(...a.msg1?.list)
   viewArticleState.value = true
 }
-
 // --
 const columns = computed(() => [
   {

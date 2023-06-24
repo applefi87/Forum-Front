@@ -16,6 +16,7 @@ export const useUserStore = defineStore('user', {
       role: null,
       score: 0,
       local: null,
+      notification: [],
       tab: 'boards'
     }
   },
@@ -34,9 +35,10 @@ export const useUserStore = defineStore('user', {
         // 使用者資訊存起來
         this.token = data.result.token
         this._id = data.result._id
-        this.account = data.result.account
+        this.nickName = data.result.nickName
         this.role = data.result.role
         this.score = data.result.score
+        this.notification = data.result.notification
         return reply(data)
       } catch (error) {
         return reply(error.response?.data)
@@ -48,7 +50,7 @@ export const useUserStore = defineStore('user', {
       this.role = null
       this.account = ''
       this.role = null
-      this.notification = null
+      this.notification = []
     },
     async logout() {
       try {

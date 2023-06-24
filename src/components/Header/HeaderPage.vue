@@ -9,6 +9,32 @@
         {{ t('home') }}
       </q-btn>
     </q-toolbar-title>
+    <div class="q-pa-md">
+      <q-btn-dropdown dense flat dropdown-icon="notifications">
+        <q-list>
+          <q-item clickable v-close-popup v-for="it of users.notification" :key="it.time">
+            <router-link
+              :to="`/board/${it.board._id}?article=${it.article || ''}&msg1=${it.msg1 || ''}&action=${it.action}`"
+              class="btnLink" target="_blank">
+              <div> <b>{{ it.user.nickName }}</b>回應了{{ it.action }}
+                <!-- {{ it.targetTitleCol[langWord] }} -->
+                你對<b>{{
+                (it.board.titleCol ? it.board.titleCol[langWord] :
+                  it.board.colData[it.board.parent.childBoard.rule.titleCol[langWord]]).slice(0, 20)
+                }}</b>的{{ it.type }}評價<br />
+                {{ it.detail }}<br />
+                {{
+                  new Intl.DateTimeFormat("chinese", { dateStyle: 'full', timeStyle: 'long' }).format(new Date(it.time))
+                }}<br />
+              </div>
+            </router-link>
+            <!-- <q-item-section>
+              <q-item-label>Photos</q-item-label>
+            </q-item-section> -->
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+    </div>
     <q-select class="langSelect gt-md" v-model="locale" :options="localeOptions" label="Language:" borderless emit-value
       map-options />
     <!-- https://quasar.dev/vue-components/button-dropdown -->
@@ -65,6 +91,7 @@ import { accountVal, passwordVal } from 'src/utils/data/valList.js'
 const router = useRouter()
 const users = useUserStore()
 // ****
+const langWord = inject('langWord')
 const leftDrawerState = inject('leftDrawerState')
 const rightDrawerState = inject('rightDrawerState')
 const loginState = inject('loginState')
@@ -138,4 +165,17 @@ provide('registerState', registerState)
   text-transform: capitalize
 .loginBox
   width: 250px
+//
+.btnLink
+  max-width: 300px
+  width: 100%
+  height: 100%
+  cursor: pointer
+  text-decoration: none
+  &>div
+    color: black
+    white-space: nowrap
+    text-overflow: ellipsis
+    text-align: center
+
 </style>
